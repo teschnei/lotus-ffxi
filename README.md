@@ -1,8 +1,11 @@
 # lotus-engine
-This repository is the implementation of lotus-engine, plus an implementation of FFXI using it.
+This repository is the implementation of FFXI using lotus-engine
 
 Currently it can only load maps, non-player character models, animations, some schedulers/generators/particles, and collision meshes.
-It is mostly just a demonstration of lotus-engine as I implement various rendering techniques for fun.  
+It is mostly just a demonstration of lotus-engine as I implement various rendering techniques for fun.
+
+# Cloning
+The repo uses submodules, so don't forget --recursive when cloning.  If you did forget, you can use `git submodule update --init --recursive` to fix it.
 
 # Build Requirements
 * (Windows) Visual Studio 2022
