@@ -1,7 +1,7 @@
 #pragma once
-#include "engine/entity/component/component.h"
+#include <lotus/entity/component/component.h>
 #include "actor_component.h"
-#include "engine/entity/component/animation_component.h"
+#include <lotus/entity/component/animation_component.h>
 #include <memory>
 
 namespace FFXI

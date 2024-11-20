@@ -2,8 +2,8 @@
 
 #include "dat/generator.h"
 #include "dat/scheduler.h"
-#include "engine/core.h"
-#include "engine/input.h"
+#include <lotus/core.h>
+#include <lotus/input.h>
 #include <glm/gtx/vector_angle.hpp>
 
 namespace FFXI

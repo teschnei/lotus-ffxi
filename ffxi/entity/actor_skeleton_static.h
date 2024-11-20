@@ -3,10 +3,10 @@
 #include <unordered_map>
 #include <span>
 #include "actor_data.h"
-#include "engine/task.h"
-#include "engine/worker_task.h"
-#include "engine/renderer/animation.h"
-#include "engine/renderer/skeleton.h"
+#include <lotus/task.h>
+#include <lotus/worker_task.h>
+#include <lotus/renderer/animation.h>
+#include <lotus/renderer/skeleton.h>
 #include "dat/sk2.h"
 
 namespace lotus

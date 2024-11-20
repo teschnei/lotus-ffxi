@@ -1,9 +1,9 @@
 #include "particle.h"
 
-#include "engine/scene.h"
-#include "engine/entity/component/particle_component.h"
-#include "engine/entity/component/particle_raster_component.h"
-#include "engine/entity/component/particle_raytrace_component.h"
+#include <lotus/scene.h>
+#include <lotus/entity/component/particle_component.h>
+#include <lotus/entity/component/particle_raster_component.h>
+#include <lotus/entity/component/particle_raytrace_component.h>
 #include "component/particle_component.h"
 
 lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, std::tuple<>>> FFXIParticle::Init(lotus::Engine* engine, lotus::Scene* scene, std::weak_ptr<lotus::Entity> parent, FFXI::Generator* generator, std::shared_ptr<lotus::Model> model, size_t index)

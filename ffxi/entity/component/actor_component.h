@@ -1,7 +1,7 @@
 #pragma once
-#include "engine/entity/component/component.h"
-#include "engine/entity/component/render_base_component.h"
-#include "engine/entity/component/animation_component.h"
+#include <lotus/entity/component/component.h>
+#include <lotus/entity/component/render_base_component.h>
+#include <lotus/entity/component/animation_component.h>
 #include "dat/sk2.h"
 #include <memory>
 #include <span>

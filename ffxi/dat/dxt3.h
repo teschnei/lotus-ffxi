@@ -1,7 +1,7 @@
 #pragma once
 
 #include "dat_chunk.h"
-#include "engine/renderer/texture.h"
+#include <lotus/renderer/texture.h>
 
 namespace FFXI
 {

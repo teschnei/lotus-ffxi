@@ -1,10 +1,10 @@
 #include "equipment_test_component.h"
 
-#include "engine/core.h"
-#include "engine/entity/entity.h"
-#include "engine/input.h"
+#include <lotus/core.h>
+#include <lotus/entity/entity.h>
+#include <lotus/input.h>
 
-#include "ffxi/entity/actor.h"
+#include "entity/actor.h"
 
 namespace FFXI
 {

@@ -1,9 +1,9 @@
 #include "particle_component.h"
 
-#include "engine/core.h"
-#include "engine/game.h"
-#include "engine/scene.h"
-#include "engine/entity/component/particle_component.h"
+#include <lotus/core.h>
+#include <lotus/game.h>
+#include <lotus/scene.h>
+#include <lotus/entity/component/particle_component.h>
 #include "entity/component/generator_component.h"
 #include "entity/component/actor_skeleton_component.h"
 #include "dat/generator.h"

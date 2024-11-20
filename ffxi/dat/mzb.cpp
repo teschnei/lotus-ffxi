@@ -3,10 +3,10 @@
 #include <filesystem>
 #include "key_tables.h"
 #include "stb.h"
-#include "engine/core.h"
-#include "engine/entity/component/camera_component.h"
-#include "engine/entity/component/static_collision_component.h"
-#include "engine/renderer/vulkan/renderer.h"
+#include <lotus/core.h>
+#include <lotus/entity/component/camera_component.h>
+#include <lotus/entity/component/static_collision_component.h>
+#include <lotus/renderer/vulkan/renderer.h>
 
 namespace FFXI
 {

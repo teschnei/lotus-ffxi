@@ -1,8 +1,8 @@
 #pragma once
-#include "engine/entity/component/component.h"
-#include "engine/entity/component/deformed_mesh_component.h"
-#include "engine/entity/component/deformable_raytrace_component.h"
-#include "ffxi/entity/actor_skeleton_static.h"
+#include <lotus/entity/component/component.h>
+#include <lotus/entity/component/deformed_mesh_component.h>
+#include <lotus/entity/component/deformable_raytrace_component.h>
+#include "entity/actor_skeleton_static.h"
 #include <memory>
 #include <unordered_map>
 #include <variant>

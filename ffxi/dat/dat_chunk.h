@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <memory>
-#include "engine/types.h"
+#include <lotus/types.h>
 
 namespace FFXI
 {

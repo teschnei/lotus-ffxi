@@ -1,6 +1,6 @@
 #pragma once
-#include "engine/entity/component/component.h"
-#include "engine/light_manager.h"
+#include <lotus/entity/component/component.h>
+#include <lotus/light_manager.h>
 #include <memory>
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>

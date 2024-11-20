@@ -1,6 +1,6 @@
 #pragma once
 
-#include <engine/config.h>
+#include <lotus/config.h>
 #include <filesystem>
 
 class FFXIConfig : public lotus::Config

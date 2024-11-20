@@ -8,23 +8,23 @@
 #include "entity/third_person_ffxi_camera.h"
 #include "entity/third_person_ffxiv_camera.h"
 
-#include "engine/scene.h"
-#include "engine/ui/element.h"
-#include "engine/ui/ui.h"
+#include <lotus/scene.h>
+#include <lotus/ui/element.h>
+#include <lotus/ui/ui.h>
 
-#include "engine/entity/component/deformable_raster_component.h"
-#include "engine/entity/component/deformable_raytrace_component.h"
+#include <lotus/entity/component/deformable_raster_component.h>
+#include <lotus/entity/component/deformable_raytrace_component.h>
 
-#include "engine/entity/component/instanced_raster_component.h"
-#include "engine/entity/component/instanced_raytrace_component.h"
-#include "engine/entity/component/static_collision_component.h"
+#include <lotus/entity/component/instanced_raster_component.h>
+#include <lotus/entity/component/instanced_raytrace_component.h>
+#include <lotus/entity/component/static_collision_component.h>
 
-#include "engine/entity/component/particle_component.h"
-#include "engine/entity/component/particle_raster_component.h"
-#include "engine/entity/component/particle_raytrace_component.h"
+#include <lotus/entity/component/particle_component.h>
+#include <lotus/entity/component/particle_raster_component.h>
+#include <lotus/entity/component/particle_raytrace_component.h>
 
-#include "engine/entity/component/camera_component.h"
-#include "engine/entity/component/camera_cascades_component.h"
+#include <lotus/entity/component/camera_component.h>
+#include <lotus/entity/component/camera_cascades_component.h>
 #include "entity/component/camera_third_person_component.h"
 
 #include "entity/component/actor_component.h"

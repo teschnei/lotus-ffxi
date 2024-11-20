@@ -1,7 +1,7 @@
 #pragma once
-#include "engine/entity/component/component.h"
-#include "engine/renderer/model.h"
-#include "engine/audio.h"
+#include <lotus/entity/component/component.h>
+#include <lotus/renderer/model.h>
+#include <lotus/audio.h>
 #include "actor_component.h"
 
 class SchedulerResources;

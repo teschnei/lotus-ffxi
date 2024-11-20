@@ -1,6 +1,6 @@
 #include "generator_component.h"
 
-#include "engine/core.h"
+#include <lotus/core.h>
 #include "ffxi.h"
 #include "generator_light_component.h"
 #include "dat/generator.h"

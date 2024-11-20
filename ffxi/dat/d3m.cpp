@@ -2,8 +2,8 @@
 
 #include <numeric>
 #include <vulkan/vulkan_enums.hpp>
-#include "engine/core.h"
-#include "engine/renderer/vulkan/renderer.h"
+#include <lotus/core.h>
+#include <lotus/renderer/vulkan/renderer.h>
 
 namespace FFXI
 {

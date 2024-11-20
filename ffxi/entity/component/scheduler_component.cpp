@@ -1,6 +1,6 @@
 #include "scheduler_component.h"
 
-#include "engine/core.h"
+#include <lotus/core.h>
 
 #include "ffxi.h"
 #include "dat/scheduler.h"

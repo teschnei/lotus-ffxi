@@ -3,7 +3,7 @@
 #include "dat_chunk.h"
 #include <latch>
 #include <atomic>
-#include "engine/renderer/model.h"
+#include <lotus/renderer/model.h>
 #include <glm/glm.hpp>
 
 namespace FFXI

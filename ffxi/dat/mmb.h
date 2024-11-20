@@ -6,8 +6,8 @@
 #include <atomic>
 #include <glm/glm.hpp>
 #include "dat_chunk.h"
-#include "engine/renderer/vulkan/vulkan_inc.h"
-#include "engine/renderer/model.h"
+#include <lotus/renderer/vulkan/vulkan_inc.h>
+#include <lotus/renderer/model.h>
 
 namespace FFXI
 {

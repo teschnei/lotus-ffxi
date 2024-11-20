@@ -1,8 +1,8 @@
 #pragma once
 
-#include "engine/renderer/vulkan/renderer.h"
-#include "engine/entity/entity.h"
-#include "engine/entity/component/animation_component.h"
+#include <lotus/renderer/vulkan/renderer.h>
+#include <lotus/entity/entity.h>
+#include <lotus/entity/component/animation_component.h>
 #include "component/actor_component.h"
 
 namespace lotus

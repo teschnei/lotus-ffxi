@@ -4,8 +4,8 @@
 #include <glm/glm.hpp>
 #include <optional>
 #include "dat_chunk.h"
-#include "engine/renderer/model.h"
-#include "engine/entity/component/camera_component.h"
+#include <lotus/renderer/model.h>
+#include <lotus/entity/component/camera_component.h>
 
 namespace FFXI
 {

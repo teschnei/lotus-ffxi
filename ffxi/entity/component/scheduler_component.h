@@ -1,5 +1,5 @@
 #pragma once
-#include "engine/entity/component/component.h"
+#include <lotus/entity/component/component.h>
 #include "actor_skeleton_component.h"
 
 class SchedulerResources;

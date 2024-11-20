@@ -1,9 +1,9 @@
 #pragma once
 
 #include <memory>
-#include "engine/renderer/model.h"
+#include <lotus/renderer/model.h>
 #include "dat/dat.h"
-#include "engine/entity/component/component.h"
+#include <lotus/entity/component/component.h>
 #include "scheduler_resources.h"
 
 namespace lotus

@@ -1,8 +1,8 @@
 #include "classic_third_person_input_component.h"
 
-#include "engine/core.h"
-#include "engine/input.h"
-#include "engine/renderer/vulkan/renderer.h"
+#include <lotus/core.h>
+#include <lotus/input.h>
+#include <lotus/renderer/vulkan/renderer.h>
 #include <glm/gtx/vector_angle.hpp>
 
 #include <iostream>

@@ -12,7 +12,7 @@
 #include "dat/mo2.h"
 #include "dat/cib.h"
 #include "entity/loader/actor_loader.h"
-#include "engine/renderer/animation.h"
+#include <lotus/renderer/animation.h>
 
 lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, Actor::InitComponents>> Actor::Init(lotus::Engine* engine, lotus::Scene* scene, uint16_t modelid)
 {

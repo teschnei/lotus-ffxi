@@ -1,9 +1,9 @@
 #pragma once
-#include "engine/core.h"
-#include "engine/renderer/mesh.h"
-#include "engine/renderer/texture.h"
+#include <lotus/core.h>
+#include <lotus/renderer/mesh.h>
+#include <lotus/renderer/texture.h>
 #include "stb.h"
-#include "engine/renderer/vulkan/renderer.h"
+#include <lotus/renderer/vulkan/renderer.h>
 #include <glm/glm.hpp>
 
 class TestTextureLoader

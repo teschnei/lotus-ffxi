@@ -2,7 +2,7 @@
 #include <string>
 #include <memory>
 #include <filesystem>
-#include "engine/types.h"
+#include <lotus/types.h>
 #include "dat_chunk.h"
 
 namespace FFXI

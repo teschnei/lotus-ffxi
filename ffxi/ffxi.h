@@ -3,8 +3,8 @@
 #include "system_dat.h"
 #include "audio/ffxi_audio.h"
 #include "dat/dat_loader.h"
-#include "engine/core.h"
-#include "engine/game.h"
+#include <lotus/core.h>
+#include <lotus/game.h>
 
 namespace FFXI
 {

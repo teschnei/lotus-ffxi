@@ -1,6 +1,6 @@
 #pragma once
-#include "engine/entity/entity.h"
-#include "engine/renderer/mesh.h"
+#include <lotus/entity/entity.h>
+#include <lotus/renderer/mesh.h>
 #include "dat/mzb.h"
 
 namespace lotus

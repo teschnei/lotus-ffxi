@@ -1,6 +1,6 @@
 #include "landscape_component.h"
 
-#include "engine/core.h"
+#include <lotus/core.h>
 #include "vana_time.h"
 #include <glm/gtx/rotate_vector.hpp>
 

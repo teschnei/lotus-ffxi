@@ -1,13 +1,13 @@
 #pragma once
-#include "engine/entity/entity.h"
-#include "engine/task.h"
+#include <lotus/entity/entity.h>
+#include <lotus/task.h>
 #include "dat/sk2.h"
 #include "dat/scheduler.h"
 #include "dat/generator.h"
-#include "engine/entity/component/animation_component.h"
-#include "engine/entity/component/render_base_component.h"
-#include "engine/entity/component/deformable_raster_component.h"
-#include "engine/entity/component/deformable_raytrace_component.h"
+#include <lotus/entity/component/animation_component.h>
+#include <lotus/entity/component/render_base_component.h>
+#include <lotus/entity/component/deformable_raster_component.h>
+#include <lotus/entity/component/deformable_raytrace_component.h>
 #include "component/actor_component.h"
 #include "component/actor_skeleton_component.h"
 

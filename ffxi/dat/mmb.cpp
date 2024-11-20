@@ -1,10 +1,10 @@
 #include "mmb.h"
 #include "key_tables.h"
 #include <list>
-#include "engine/core.h"
-#include "engine/renderer/model.h"
-#include "engine/renderer/vulkan/renderer.h"
-#include "engine/entity/component/instanced_models_component.h"
+#include <lotus/core.h>
+#include <lotus/renderer/model.h>
+#include <lotus/renderer/vulkan/renderer.h>
+#include <lotus/entity/component/instanced_models_component.h>
 
 namespace FFXI
 {

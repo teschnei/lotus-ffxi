@@ -5,7 +5,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <vector>
 #include <array>
-#include "engine/renderer/skeleton.h"
+#include <lotus/renderer/skeleton.h>
 
 namespace FFXI
 {

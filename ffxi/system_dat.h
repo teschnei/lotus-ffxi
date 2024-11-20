@@ -1,8 +1,8 @@
 #pragma once
 
 #include <unordered_map>
-#include "engine/renderer/model.h"
-#include "engine/renderer/texture.h"
+#include <lotus/renderer/model.h>
+#include <lotus/renderer/texture.h>
 
 class FFXIGame;
 namespace FFXI

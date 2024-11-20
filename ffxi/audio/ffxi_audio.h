@@ -4,7 +4,7 @@
 #include <array>
 #include <unordered_map>
 #include <optional>
-#include "engine/audio.h"
+#include <lotus/audio.h>
 
 namespace SoLoud
 {

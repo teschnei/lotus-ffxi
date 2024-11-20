@@ -1,5 +1,5 @@
 #include "actor_skeleton_static.h"
-#include "engine/core.h"
+#include <lotus/core.h>
 #include "ffxi.h"
 #include "dat/sk2.h"
 #include "dat/cib.h"
