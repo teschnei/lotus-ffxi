@@ -1,7 +1,7 @@
 #include "generator.h"
 #include "d3m.h"
+#include <cmath>
 #include <cstring>
-#include <glm/gtc/constants.hpp>
 
 namespace FFXI
 {

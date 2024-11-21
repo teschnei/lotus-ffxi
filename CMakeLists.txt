@@ -1,5 +1,4 @@
-cmake_minimum_required( VERSION 3.13 FATAL_ERROR )
-cmake_policy( VERSION 3.13 )
+cmake_minimum_required( VERSION 3.28 FATAL_ERROR )
 
 project(lotus-ffxi)
 

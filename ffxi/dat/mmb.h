@@ -4,10 +4,11 @@
 #include <vector>
 #include <latch>
 #include <atomic>
-#include <glm/glm.hpp>
 #include "dat_chunk.h"
 #include <lotus/renderer/vulkan/vulkan_inc.h>
 #include <lotus/renderer/model.h>
+
+import glm;
 
 namespace FFXI
 {

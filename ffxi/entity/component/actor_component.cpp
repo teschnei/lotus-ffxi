@@ -4,7 +4,8 @@
 #include "dat/scheduler.h"
 #include <lotus/core.h>
 #include <lotus/input.h>
-#include <glm/gtx/vector_angle.hpp>
+
+import glm;
 
 namespace FFXI
 {

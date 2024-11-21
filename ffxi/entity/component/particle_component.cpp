@@ -7,9 +7,8 @@
 #include "entity/component/generator_component.h"
 #include "entity/component/actor_skeleton_component.h"
 #include "dat/generator.h"
-#include <glm/gtc/random.hpp>
-#include <glm/gtx/rotate_vector.hpp>
-#include <glm/gtx/euler_angles.hpp>
+
+import glm;
 
 namespace FFXI
 {
@@ -399,7 +398,7 @@ namespace FFXI
         }
 
         base_component.setPos(local_pos + origin);
-        base_component.setRot(glm::toQuat(rot_mat));
+        base_component.setRot(glm::quat_cast(rot_mat));
         base_component.setScale(local_scale);
 
         co_return;
@@ -576,7 +575,7 @@ namespace FFXI
         }
         auto rot_mat = glm::eulerAngleXZY(local_rot.x, local_rot.z, local_rot.y);
         base_component.setPos(local_pos + origin);
-        base_component.setRot(glm::toQuat(rot_mat));
+        base_component.setRot(glm::quat_cast(rot_mat));
         base_component.setScale(kf_scale);
         if (light > 0)
         {

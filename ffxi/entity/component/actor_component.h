@@ -5,8 +5,8 @@
 #include "dat/sk2.h"
 #include <memory>
 #include <span>
-#include <glm/glm.hpp>
-#include <glm/gtx/quaternion.hpp>
+
+import glm;
 
 namespace FFXI
 {

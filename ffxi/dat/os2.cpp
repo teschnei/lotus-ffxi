@@ -1,6 +1,5 @@
 #include "os2.h"
 #include <string>
-#include <glm/glm.hpp>
 #include <unordered_map>
 
 #pragma pack(push,2)
@@ -173,7 +172,7 @@ FFXI::OS2::OS2(char* _name, uint8_t* _buffer, size_t _len) : DatChunk(_name, _bu
             //end
             case 0xFFFF:
             {
-                
+
             }
             break;
             default:
@@ -192,7 +191,7 @@ FFXI::OS2::OS2(char* _name, uint8_t* _buffer, size_t _len) : DatChunk(_name, _bu
 
     float* vertex_buffer = (float*)((uint16_t*)header + header->mVertOfs);
     BoneIndices* bone_indices = (BoneIndices*)((uint16_t*)header + header->mWeightDataOfs);
-    
+
     size_t one_weight_count = -1;
     size_t two_weight_count = 0;
     if (header->mWeightedVertCountOfs > 0)

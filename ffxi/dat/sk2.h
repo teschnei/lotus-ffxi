@@ -1,11 +1,11 @@
 #pragma once
 
 #include "dat_chunk.h"
-#include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
 #include <vector>
 #include <array>
 #include <lotus/renderer/skeleton.h>
+
+import glm;
 
 namespace FFXI
 {

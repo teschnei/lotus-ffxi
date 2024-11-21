@@ -2,9 +2,10 @@
 
 #include <vector>
 #include <string>
-#include <glm/glm.hpp>
 #include "dat_chunk.h"
 #include "d3m.h"
+
+import glm;
 
 namespace FFXI
 {

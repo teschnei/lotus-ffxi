@@ -3,7 +3,8 @@
 #include <lotus/core.h>
 #include <lotus/input.h>
 #include <lotus/renderer/vulkan/renderer.h>
-#include <glm/gtx/vector_angle.hpp>
+
+import glm;
 
 namespace FFXI
 {

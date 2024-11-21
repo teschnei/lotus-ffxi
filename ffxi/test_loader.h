@@ -4,7 +4,8 @@
 #include <lotus/renderer/texture.h>
 #include "stb.h"
 #include <lotus/renderer/vulkan/renderer.h>
-#include <glm/glm.hpp>
+
+import glm;
 
 class TestTextureLoader
 {

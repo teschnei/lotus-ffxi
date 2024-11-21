@@ -2,9 +2,10 @@
 
 #include "dat_chunk.h"
 #include <vector>
-#include <glm/glm.hpp>
 #include <string>
 #include <lotus/renderer/vulkan/vulkan_inc.h>
+
+import glm;
 
 namespace FFXI
 {

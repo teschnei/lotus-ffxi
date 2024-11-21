@@ -1,7 +1,5 @@
 #include "particle_tester.h"
 
-#include <glm/gtx/rotate_vector.hpp>
-
 #include "ffxi.h"
 
 #include "dat/generator.h"
@@ -12,6 +10,7 @@
 #include "entity/component/actor_skeleton_component.h"
 #include "entity/component/scheduler_component.h"
 
+import glm;
 
 ParticleTester::ParticleTester(lotus::Entity* _entity, lotus::Engine* _engine, FFXI::ActorSkeletonComponent& _actor) : Component(_entity, _engine), actor(_actor)
 {

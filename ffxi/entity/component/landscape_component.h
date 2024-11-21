@@ -2,8 +2,8 @@
 #include <lotus/entity/component/component.h>
 #include <lotus/light_manager.h>
 #include <memory>
-#include <glm/glm.hpp>
-#include <glm/gtx/quaternion.hpp>
+
+import glm;
 
 namespace FFXI
 {

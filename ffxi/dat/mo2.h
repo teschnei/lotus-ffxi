@@ -4,7 +4,8 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <glm/gtc/quaternion.hpp>
+
+import glm;
 
 namespace FFXI
 {

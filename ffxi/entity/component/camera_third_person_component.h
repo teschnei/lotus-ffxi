@@ -3,8 +3,8 @@
 #include <lotus/entity/component/camera_component.h>
 #include "actor_component.h"
 #include <memory>
-#include <glm/glm.hpp>
-#include <glm/gtx/quaternion.hpp>
+
+import glm;
 
 namespace FFXI
 {

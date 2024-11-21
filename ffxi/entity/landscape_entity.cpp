@@ -16,8 +16,8 @@
 #include <lotus/entity/component/instanced_raster_component.h>
 #include <lotus/entity/component/instanced_raytrace_component.h>
 #include "component/landscape_component.h"
-#include <glm/gtx/rotate_vector.hpp>
-#include <glm/gtc/color_space.hpp>
+
+import glm;
 
 lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, std::tuple<>>> FFXILandscapeEntity::Init(lotus::Engine* engine, lotus::Scene* scene, size_t zoneid)
 {
@@ -104,7 +104,7 @@ lotus::WorkerTask<> FFXILandscapeEntity::Load(std::shared_ptr<lotus::Entity> ent
         else if (memcmp(chunk->name, "effe", 4) == 0)
         {
             for (const auto& chunk2 : chunk->children)
-            { 
+            {
                 //d3s, d3a, mmb
                 //children -> generators, keyframes
                 if (auto dxt3 = dynamic_cast<FFXI::DXT3*>(chunk2.get()))
@@ -190,7 +190,7 @@ lotus::WorkerTask<> FFXILandscapeEntity::Load(std::shared_ptr<lotus::Entity> ent
             std::string name(mzb_piece.id, 16);
 
             auto pos_mat = glm::translate(glm::mat4{ 1.f }, glm::vec3{ mzb_piece.fTransX, mzb_piece.fTransY, mzb_piece.fTransZ });
-            auto rot_mat = glm::toMat4(glm::quat{ glm::vec3{mzb_piece.fRotX, mzb_piece.fRotY, mzb_piece.fRotZ} });
+            auto rot_mat = glm::mat4_cast(glm::quat{ glm::vec3{mzb_piece.fRotX, mzb_piece.fRotY, mzb_piece.fRotZ} });
             auto scale_mat = glm::scale(glm::mat4{ 1.f }, glm::vec3{ mzb_piece.fScaleX, mzb_piece.fScaleY, mzb_piece.fScaleZ });
 
             glm::mat4 model = pos_mat * rot_mat * scale_mat;

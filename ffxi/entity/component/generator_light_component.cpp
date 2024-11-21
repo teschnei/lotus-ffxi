@@ -6,9 +6,8 @@
 #include <lotus/entity/component/particle_component.h>
 #include "entity/component/generator_component.h"
 #include "dat/generator.h"
-#include <glm/gtc/random.hpp>
-#include <glm/gtx/rotate_vector.hpp>
-#include <glm/gtx/euler_angles.hpp>
+
+import glm;
 
 namespace FFXI
 {

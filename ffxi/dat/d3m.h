@@ -4,7 +4,8 @@
 #include <latch>
 #include <atomic>
 #include <lotus/renderer/model.h>
-#include <glm/glm.hpp>
+
+import glm;
 
 namespace FFXI
 {

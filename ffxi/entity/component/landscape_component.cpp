@@ -2,7 +2,6 @@
 
 #include <lotus/core.h>
 #include "vana_time.h"
-#include <glm/gtx/rotate_vector.hpp>
 
 namespace FFXI
 {
