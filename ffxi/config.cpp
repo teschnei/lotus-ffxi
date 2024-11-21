@@ -5,16 +5,13 @@
 #include <winreg.h>
 #endif
 
-FFXIConfig::FFXIConfig(): lotus::Config()
+FFXIConfig::FFXIConfig() : lotus::Config()
 {
     if (ffxi.ffxi_install_path.empty())
     {
 #ifdef _WIN32
-        auto keys = {
-            R"(SOFTWARE\PlayOnline\InstallFolder)",
-            R"(SOFTWARE\PlayOnlineUS\InstallFolder)",
-            R"(SOFTWARE\PlayOnlineEU\InstallFolder)"
-        };
+        auto keys = {R"(SOFTWARE\PlayOnline\InstallFolder)", R"(SOFTWARE\PlayOnlineUS\InstallFolder)",
+                     R"(SOFTWARE\PlayOnlineEU\InstallFolder)"};
         std::string value;
         uint32_t size = 512;
         value.resize(size);
@@ -29,8 +26,9 @@ FFXIConfig::FFXIConfig(): lotus::Config()
             }
         }
 #else
-        const char *path = getenv("FFXI_PATH");
-        if (path) {
+        const char* path = getenv("FFXI_PATH");
+        if (path)
+        {
             ffxi.ffxi_install_path = path;
         }
 #endif

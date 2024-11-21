@@ -1,6 +1,6 @@
 #include "mo2.h"
 
-#pragma pack(push,2)
+#pragma pack(push, 2)
 struct Animation
 {
     uint16_t _pad;
@@ -36,7 +36,7 @@ FFXI::MO2::MO2(char* _name, uint8_t* _buffer, size_t _len) : DatChunk(_name, _bu
     glm::vec3 trans;
     glm::vec3 scale;
 
-    for(uint16_t e = 0; e < header->elements; ++e)
+    for (uint16_t e = 0; e < header->elements; ++e)
     {
         Element* ele = elements + e;
 
@@ -57,18 +57,18 @@ FFXI::MO2::MO2(char* _name, uint8_t* _buffer, size_t _len) : DatChunk(_name, _bu
                 scale.y = ele->scale.y > 0 ? data[ele->scale.y + f] : ele->scale_base.y;
                 scale.z = ele->scale.z > 0 ? data[ele->scale.z + f] : ele->scale_base.z;
 
-                animation_data[ele->bone].push_back({ rot, trans, scale });
+                animation_data[ele->bone].push_back({rot, trans, scale});
             }
         }
         else
         {
             for (uint16_t f = 0; f < header->frames; ++f)
             {
-                animation_data[ele->bone].push_back({ glm::quat{1, 0, 0, 0}, glm::vec3{0}, glm::vec3{1} });
+                animation_data[ele->bone].push_back({glm::quat{1, 0, 0, 0}, glm::vec3{0}, glm::vec3{1}});
             }
         }
     }
-    //animations don't use frame 0 (FFXI thing?)
+    // animations don't use frame 0 (FFXI thing?)
     frames = header->frames - 1;
     for (auto& [frame, frame_data] : animation_data)
     {

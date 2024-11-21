@@ -1,7 +1,7 @@
 #include "adpcmstream.h"
 
-#include <cstring>
 #include <cstddef>
+#include <cstring>
 
 ADPCMStreamInstance::ADPCMStreamInstance(ADPCMStream* adpcm) : adpcm(adpcm)
 {
@@ -25,7 +25,8 @@ unsigned int ADPCMStreamInstance::getAudio(float* buffer, unsigned int samples, 
         {
             for (uint32_t i = 0; i < mChannels; ++i)
             {
-                memcpy(buffer + i * buffer_size + written + offset, data.data() + adpcm->block_size * i + offset, sizeof(float) * (adpcm->block_size - offset));
+                memcpy(buffer + i * buffer_size + written + offset, data.data() + adpcm->block_size * i + offset,
+                       sizeof(float) * (adpcm->block_size - offset));
             }
             data = adpcm->getNextBlock();
             written += (adpcm->block_size - offset);
@@ -35,7 +36,8 @@ unsigned int ADPCMStreamInstance::getAudio(float* buffer, unsigned int samples, 
         {
             for (uint32_t i = 0; i < mChannels; ++i)
             {
-                memcpy(buffer + i * buffer_size + written + offset, data.data() + adpcm->block_size * i + offset, sizeof(float) * (samples - written));
+                memcpy(buffer + i * buffer_size + written + offset, data.data() + adpcm->block_size * i + offset,
+                       sizeof(float) * (samples - written));
             }
             offset += (samples - written);
             written += (samples - written);
@@ -52,12 +54,13 @@ unsigned int ADPCMStreamInstance::getAudio(float* buffer, unsigned int samples, 
 
 bool ADPCMStreamInstance::hasEnded()
 {
-    //loops forever
+    // loops forever
     return false;
 }
 
-ADPCMStream::ADPCMStream(std::ifstream&& _file, uint32_t _blocks, uint32_t _block_size, uint32_t _loop_start, uint32_t _channels, float _sample_rate) :
-    samples(_blocks * _block_size), loop_start(_loop_start), block_size(_block_size)
+ADPCMStream::ADPCMStream(std::ifstream&& _file, uint32_t _blocks, uint32_t _block_size, uint32_t _loop_start,
+                         uint32_t _channels, float _sample_rate)
+    : samples(_blocks * _block_size), loop_start(_loop_start), block_size(_block_size)
 {
     file = std::move(_file);
     data_begin = file.tellg();
@@ -69,10 +72,7 @@ ADPCMStream::ADPCMStream(std::ifstream&& _file, uint32_t _blocks, uint32_t _bloc
     decoder_state.resize(mChannels * 2);
 }
 
-SoLoud::AudioSourceInstance* ADPCMStream::createInstance()
-{
-    return new ADPCMStreamInstance(this);
-}
+SoLoud::AudioSourceInstance* ADPCMStream::createInstance() { return new ADPCMStreamInstance(this); }
 
 std::vector<float> ADPCMStream::getNextBlock()
 {
@@ -89,7 +89,7 @@ std::vector<float> ADPCMStream::getNextBlock()
     for (size_t channel = 0; channel < mChannels; channel++)
     {
         int base_index = channel * (1 + block_size / 2);
-        int scale = 0x0C - std::to_integer<int>((compressed_block_start[base_index] & std::byte{ 0b1111 }));
+        int scale = 0x0C - std::to_integer<int>((compressed_block_start[base_index] & std::byte{0b1111}));
         int index = std::to_integer<size_t>(compressed_block_start[base_index] >> 4);
         if (index < 5)
         {
@@ -99,9 +99,12 @@ std::vector<float> ADPCMStream::getNextBlock()
                 for (uint8_t nibble = 0; nibble < 2; ++nibble)
                 {
                     int value = std::to_integer<int>(sample_byte >> (4 * nibble) & std::byte(0b1111));
-                    if (value >= 8) value -= 16;
+                    if (value >= 8)
+                        value -= 16;
                     value <<= scale;
-                    value += (decoder_state[channel * 2] * filter0[index] + decoder_state[channel * 2 + 1] * filter1[index]) / 256;
+                    value += (decoder_state[channel * 2] * filter0[index] +
+                              decoder_state[channel * 2 + 1] * filter1[index]) /
+                             256;
                     decoder_state[channel * 2 + 1] = decoder_state[channel * 2];
                     decoder_state[channel * 2] = value > 0x7FFF ? 0x7FFF : value < -0x8000 ? -0x8000 : value;
                     output.push_back(int16_t(decoder_state[channel * 2]) / float(0x8000));

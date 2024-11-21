@@ -1,11 +1,9 @@
 #include "adpcm.h"
 
-#include <cstring>
 #include <cstddef>
+#include <cstring>
 
-ADPCMInstance::ADPCMInstance(ADPCM* adpcm) : adpcm(adpcm)
-{
-}
+ADPCMInstance::ADPCMInstance(ADPCM* adpcm) : adpcm(adpcm) {}
 
 unsigned int ADPCMInstance::getAudio(float* buffer, unsigned int samples, unsigned int buffer_size)
 {
@@ -36,8 +34,9 @@ bool ADPCMInstance::hasEnded()
     return false;
 }
 
-ADPCM::ADPCM(std::ifstream&& file, uint32_t _blocks, uint32_t _block_size, uint32_t _loop_start, uint32_t _channels, float _sample_rate) :
-    samples(_blocks * _block_size), loop_start(_loop_start), block_size(_block_size)
+ADPCM::ADPCM(std::ifstream&& file, uint32_t _blocks, uint32_t _block_size, uint32_t _loop_start, uint32_t _channels,
+             float _sample_rate)
+    : samples(_blocks * _block_size), loop_start(_loop_start), block_size(_block_size)
 {
     mChannels = _channels;
     mBaseSamplerate = _sample_rate;
@@ -60,7 +59,7 @@ ADPCM::ADPCM(std::ifstream&& file, uint32_t _blocks, uint32_t _block_size, uint3
         for (size_t channel = 0; channel < mChannels; channel++)
         {
             int base_index = channel * (1 + block_size / 2);
-            int scale = 0x0C - std::to_integer<int>((compressed_block_start[base_index] & std::byte{ 0b1111 }));
+            int scale = 0x0C - std::to_integer<int>((compressed_block_start[base_index] & std::byte{0b1111}));
             int index = std::to_integer<size_t>(compressed_block_start[base_index] >> 4);
             if (index < 5)
             {
@@ -70,9 +69,12 @@ ADPCM::ADPCM(std::ifstream&& file, uint32_t _blocks, uint32_t _block_size, uint3
                     for (uint8_t nibble = 0; nibble < 2; ++nibble)
                     {
                         int value = std::to_integer<int>(sample_byte >> (4 * nibble) & std::byte(0b1111));
-                        if (value >= 8) value -= 16;
+                        if (value >= 8)
+                            value -= 16;
                         value <<= scale;
-                        value += (decoder_state[channel * 2] * filter0[index] + decoder_state[channel * 2 + 1] * filter1[index]) / 256;
+                        value += (decoder_state[channel * 2] * filter0[index] +
+                                  decoder_state[channel * 2 + 1] * filter1[index]) /
+                                 256;
                         decoder_state[channel * 2 + 1] = decoder_state[channel * 2];
                         decoder_state[channel * 2] = value > 0x7FFF ? 0x7FFF : value < -0x8000 ? -0x8000 : value;
                         data[channel].push_back(int16_t(decoder_state[channel * 2]) / float(0x8000));
@@ -83,7 +85,4 @@ ADPCM::ADPCM(std::ifstream&& file, uint32_t _blocks, uint32_t _block_size, uint3
     }
 }
 
-SoLoud::AudioSourceInstance* ADPCM::createInstance()
-{
-    return new ADPCMInstance(this);
-}
+SoLoud::AudioSourceInstance* ADPCM::createInstance() { return new ADPCMInstance(this); }

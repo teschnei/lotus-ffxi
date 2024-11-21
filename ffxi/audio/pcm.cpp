@@ -3,9 +3,7 @@
 #include <algorithm>
 #include <cstring>
 
-PCMInstance::PCMInstance(PCM* pcm) : pcm(pcm)
-{
-}
+PCMInstance::PCMInstance(PCM* pcm) : pcm(pcm) {}
 
 unsigned int PCMInstance::getAudio(float* buffer, unsigned int samples, unsigned int buffer_size)
 {
@@ -33,8 +31,9 @@ bool PCMInstance::hasEnded()
     return false;
 }
 
-PCM::PCM(std::ifstream&& file, uint32_t _samples, uint32_t block_size, uint32_t _loop_start, uint32_t _channels, float _sample_rate) :
-    samples(_samples), loop_start(_loop_start)
+PCM::PCM(std::ifstream&& file, uint32_t _samples, uint32_t block_size, uint32_t _loop_start, uint32_t _channels,
+         float _sample_rate)
+    : samples(_samples), loop_start(_loop_start)
 {
     mChannels = _channels;
     mBaseSamplerate = _sample_rate;
@@ -51,12 +50,9 @@ PCM::PCM(std::ifstream&& file, uint32_t _samples, uint32_t block_size, uint32_t 
         for (auto& channel_data : data)
         {
             file.read((char*)block.data(), block_size * sizeof(int16_t));
-            std::ranges::transform(block, std::back_inserter(channel_data), [](auto& u) {return u / float(0x8000); });
+            std::ranges::transform(block, std::back_inserter(channel_data), [](auto& u) { return u / float(0x8000); });
         }
     }
 }
 
-SoLoud::AudioSourceInstance* PCM::createInstance()
-{
-    return new PCMInstance(this);
-}
+SoLoud::AudioSourceInstance* PCM::createInstance() { return new PCMInstance(this); }

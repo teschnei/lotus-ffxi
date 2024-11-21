@@ -1,24 +1,24 @@
 #pragma once
 
-#include <memory>
-#include <lotus/renderer/model.h>
 #include "dat/dat.h"
-#include <lotus/entity/component/component.h>
 #include "scheduler_resources.h"
+#include <lotus/entity/component/component.h>
+#include <lotus/renderer/model.h>
+#include <memory>
 
 namespace lotus
 {
-    class Engine;
+class Engine;
 }
 
 namespace FFXI
 {
-    class Generator;
-    class Keyframe;
-    class Scheduler;
-    class ActorSkeletonComponent;
-    class SchedulerComponent;
-}
+class Generator;
+class Keyframe;
+class Scheduler;
+class ActorSkeletonComponent;
+class SchedulerComponent;
+} // namespace FFXI
 
 class ParticleTester : public lotus::Component::Component<ParticleTester>
 {
@@ -27,14 +27,15 @@ public:
     lotus::Task<> init();
     lotus::Task<> tick(lotus::time_point time, lotus::duration delta);
     bool handleInput(lotus::Input*, const SDL_Event&);
+
 private:
     FFXI::ActorSkeletonComponent& actor;
     std::vector<std::shared_ptr<lotus::Model>> models;
     std::unique_ptr<SchedulerResources> scheduler_resources;
     std::unordered_map<std::string, std::shared_ptr<lotus::Texture>> texture_map;
-    bool add{ false };
-    bool casting{ false };
-    bool finished{ false };
-    FFXI::SchedulerComponent* casting_scheduler{ nullptr };
+    bool add{false};
+    bool casting{false};
+    bool finished{false};
+    FFXI::SchedulerComponent* casting_scheduler{nullptr};
     lotus::time_point start_time;
 };

@@ -1,24 +1,28 @@
 #pragma once
 
-#include <vector>
-#include <unordered_map>
-#include <memory>
 #include <lotus/renderer/model.h>
 #include <lotus/renderer/texture.h>
+#include <memory>
+#include <unordered_map>
+#include <vector>
 
 class FFXIGame;
 namespace FFXI
 {
-    class Dat;
-    class Generator;
-    class Scheduler;
-    class Keyframe;
-    class DatChunk;
-}
+class Dat;
+class Generator;
+class Scheduler;
+class Keyframe;
+class DatChunk;
+} // namespace FFXI
 
 class SchedulerResources
 {
-    struct _private_tag { explicit _private_tag() = default; };
+    struct _private_tag
+    {
+        explicit _private_tag() = default;
+    };
+
 public:
     static lotus::Task<std::unique_ptr<SchedulerResources>> Load(FFXIGame* game, const FFXI::Dat& dat);
 
@@ -28,14 +32,15 @@ public:
     SchedulerResources(FFXIGame* game, _private_tag);
 
 private:
-    FFXIGame* game{ nullptr };
+    FFXIGame* game{nullptr};
 
     SchedulerResources(const SchedulerResources&) = delete;
     SchedulerResources(SchedulerResources&&) = default;
     SchedulerResources& operator=(const SchedulerResources&) = delete;
     SchedulerResources& operator=(SchedulerResources&&) = default;
 
-    void ParseDir(FFXI::DatChunk*, std::vector<lotus::Task<std::shared_ptr<lotus::Texture>>>& texture_tasks, std::vector<lotus::Task<>>& model_tasks);
+    void ParseDir(FFXI::DatChunk*, std::vector<lotus::Task<std::shared_ptr<lotus::Texture>>>& texture_tasks,
+                  std::vector<lotus::Task<>>& model_tasks);
 
     std::vector<std::shared_ptr<lotus::Model>> generator_models;
     std::unordered_map<std::string, FFXI::Keyframe*> keyframes;

@@ -21,11 +21,11 @@ std::pair<uint8_t*, uint32_t> FFXI::Scheduler::getStage(uint32_t stage)
         char* id = (char*)(ret + 8);
 
         if (len == 0)
-            return { nullptr, 0 };
+            return {nullptr, 0};
 
         ret += length;
         frame += delay;
         current_stage++;
     }
-    return { ret, frame };
+    return {ret, frame};
 }

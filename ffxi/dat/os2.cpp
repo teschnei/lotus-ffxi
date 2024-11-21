@@ -2,8 +2,8 @@
 #include <string>
 #include <unordered_map>
 
-#pragma pack(push,2)
-//from noesis
+#pragma pack(push, 2)
+// from noesis
 struct MeshHeader
 {
     uint16_t mUnknown1;
@@ -87,98 +87,101 @@ FFXI::OS2::OS2(char* _name, uint8_t* _buffer, size_t _len) : DatChunk(_name, _bu
         uint16_t cmd = *(uint16_t*)(draw_cmds);
         draw_cmds += sizeof(uint16_t);
 
-        //these probably map pretty well to opengl cmds (maybe even vulkan commands) but we need a flat VB anyways for acceleration structures
+        // these probably map pretty well to opengl cmds (maybe even vulkan commands) but we need a flat VB anyways for
+        // acceleration structures
         switch (cmd)
         {
-            //draw state
-            case 0x8010:
-            {
-                DrawStateHeader* draw_state = (DrawStateHeader*)draw_cmds;
-                draw_cmds += 44;
-                meshes.push_back({});
-                meshes.back().specular_exponent = draw_state->specular_exponent;
-                meshes.back().specular_intensity = draw_state->specular_intensity;
-            }
-            break;
-            //set material
-            case 0x8000:
-            {
-                if (!meshes.back().tex_name.empty()) DEBUG_BREAK();
-                meshes.back().tex_name = std::string{ (char*)draw_cmds, 16 };
-                draw_cmds += 16;
-            }
-            break;
-            //triangle list
-            case 0x0054:
-            {
-                uint16_t count = *(uint16_t*)draw_cmds;
-                draw_cmds += sizeof(uint16_t);
+        // draw state
+        case 0x8010:
+        {
+            DrawStateHeader* draw_state = (DrawStateHeader*)draw_cmds;
+            draw_cmds += 44;
+            meshes.push_back({});
+            meshes.back().specular_exponent = draw_state->specular_exponent;
+            meshes.back().specular_intensity = draw_state->specular_intensity;
+        }
+        break;
+        // set material
+        case 0x8000:
+        {
+            if (!meshes.back().tex_name.empty())
+                DEBUG_BREAK();
+            meshes.back().tex_name = std::string{(char*)draw_cmds, 16};
+            draw_cmds += 16;
+        }
+        break;
+        // triangle list
+        case 0x0054:
+        {
+            uint16_t count = *(uint16_t*)draw_cmds;
+            draw_cmds += sizeof(uint16_t);
 
-                for (size_t j = 0; j < count; ++j)
-                {
-                    TriangleList* list = (TriangleList*)draw_cmds;
-                    for (size_t vertex = 0; vertex < 3; ++vertex)
-                    {
-                        meshes.back().indices.push_back({ list->indices[vertex], list->uvs[vertex] });
-                    }
-                    draw_cmds += sizeof(TriangleList);
-                }
-            }
-            break;
-            //triangle strip
-            case 0x5453:
+            for (size_t j = 0; j < count; ++j)
             {
-                uint16_t count = *(uint16_t*)draw_cmds;
-                draw_cmds += sizeof(uint16_t);
                 TriangleList* list = (TriangleList*)draw_cmds;
-                TriangleStrip prev {};
-                TriangleStrip prev2 {};
                 for (size_t vertex = 0; vertex < 3; ++vertex)
                 {
-                    meshes.back().indices.push_back({ list->indices[vertex], list->uvs[vertex] });
+                    meshes.back().indices.push_back({list->indices[vertex], list->uvs[vertex]});
                 }
-                prev.index = list->indices[2]; prev.uv = list->uvs[2];
-                prev2.index = list->indices[1]; prev2.uv = list->uvs[1];
                 draw_cmds += sizeof(TriangleList);
-
-                for (size_t j = 0; j < count - 1; ++j)
-                {
-                    TriangleStrip* strip = (TriangleStrip*)draw_cmds;
-                    meshes.back().indices.push_back({prev2.index, prev2.uv});
-                    meshes.back().indices.push_back({prev.index, prev.uv});
-                    meshes.back().indices.push_back({ strip->index, strip->uv });
-                    prev2 = prev;
-                    prev = *strip;
-                    draw_cmds += sizeof(TriangleStrip);
-                }
             }
-            break;
-            //unknown
-            case 0x4353:
+        }
+        break;
+        // triangle strip
+        case 0x5453:
+        {
+            uint16_t count = *(uint16_t*)draw_cmds;
+            draw_cmds += sizeof(uint16_t);
+            TriangleList* list = (TriangleList*)draw_cmds;
+            TriangleStrip prev{};
+            TriangleStrip prev2{};
+            for (size_t vertex = 0; vertex < 3; ++vertex)
             {
-                uint16_t count = *(uint16_t*)draw_cmds;
+                meshes.back().indices.push_back({list->indices[vertex], list->uvs[vertex]});
+            }
+            prev.index = list->indices[2];
+            prev.uv = list->uvs[2];
+            prev2.index = list->indices[1];
+            prev2.uv = list->uvs[1];
+            draw_cmds += sizeof(TriangleList);
 
-                draw_cmds += 8 + sizeof(uint16_t) * count;
-            }
-            break;
-            //unknown
-            case 0x0043:
+            for (size_t j = 0; j < count - 1; ++j)
             {
-                uint16_t count = *(uint16_t*)draw_cmds;
+                TriangleStrip* strip = (TriangleStrip*)draw_cmds;
+                meshes.back().indices.push_back({prev2.index, prev2.uv});
+                meshes.back().indices.push_back({prev.index, prev.uv});
+                meshes.back().indices.push_back({strip->index, strip->uv});
+                prev2 = prev;
+                prev = *strip;
+                draw_cmds += sizeof(TriangleStrip);
+            }
+        }
+        break;
+        // unknown
+        case 0x4353:
+        {
+            uint16_t count = *(uint16_t*)draw_cmds;
 
-                draw_cmds += count * 10;
-            }
-            break;
-            //end
-            case 0xFFFF:
-            {
+            draw_cmds += 8 + sizeof(uint16_t) * count;
+        }
+        break;
+        // unknown
+        case 0x0043:
+        {
+            uint16_t count = *(uint16_t*)draw_cmds;
 
-            }
-            break;
-            default:
-            {
-                DEBUG_BREAK();
-            }
+            draw_cmds += count * 10;
+        }
+        break;
+        // end
+        case 0xFFFF:
+        {
+        }
+        break;
+        default:
+        {
+            DEBUG_BREAK();
+        }
         }
     }
 
@@ -209,11 +212,11 @@ FFXI::OS2::OS2(char* _name, uint8_t* _buffer, size_t _len) : DatChunk(_name, _bu
     for (size_t i = 0; i < one_weight_count; ++i)
     {
         WeightingVertexMirror vertex{};
-        vertex.pos = { vertex_buffer[0], vertex_buffer[1], vertex_buffer[2] };
+        vertex.pos = {vertex_buffer[0], vertex_buffer[1], vertex_buffer[2]};
         vertex_buffer += 3;
         if (normals)
         {
-            vertex.norm = { vertex_buffer[0], vertex_buffer[1], vertex_buffer[2] };
+            vertex.norm = {vertex_buffer[0], vertex_buffer[1], vertex_buffer[2]};
             vertex_buffer += 3;
         }
         if (use_bone_table)
@@ -235,16 +238,16 @@ FFXI::OS2::OS2(char* _name, uint8_t* _buffer, size_t _len) : DatChunk(_name, _bu
     {
         WeightingVertexMirror vertex1{};
         WeightingVertexMirror vertex2{};
-        vertex1.pos = { vertex_buffer[0], vertex_buffer[2], vertex_buffer[4] };
-        vertex2.pos = { vertex_buffer[1], vertex_buffer[3], vertex_buffer[5] };
+        vertex1.pos = {vertex_buffer[0], vertex_buffer[2], vertex_buffer[4]};
+        vertex2.pos = {vertex_buffer[1], vertex_buffer[3], vertex_buffer[5]};
         vertex_buffer += 6;
         vertex1.weight = vertex_buffer[0];
         vertex2.weight = vertex_buffer[1];
         vertex_buffer += 2;
         if (normals)
         {
-            vertex1.norm = { vertex_buffer[0], vertex_buffer[2], vertex_buffer[4] };
-            vertex2.norm = { vertex_buffer[1], vertex_buffer[3], vertex_buffer[5] };
+            vertex1.norm = {vertex_buffer[0], vertex_buffer[2], vertex_buffer[4]};
+            vertex2.norm = {vertex_buffer[1], vertex_buffer[3], vertex_buffer[5]};
             vertex_buffer += 6;
         }
         if (use_bone_table)

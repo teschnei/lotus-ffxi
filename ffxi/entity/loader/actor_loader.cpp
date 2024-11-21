@@ -6,25 +6,21 @@
 
 std::vector<vk::VertexInputBindingDescription> getBindingDescriptions()
 {
-    return std::vector<vk::VertexInputBindingDescription>
-    {
-        {
-            .binding = 0,
-            .stride = sizeof(FFXI::OS2::Vertex),
-            .inputRate = vk::VertexInputRate::eVertex,
-        },
-        {
-            .binding = 1,
-            .stride = sizeof(FFXI::OS2::Vertex),
-            .inputRate = vk::VertexInputRate::eVertex,
-        }
-    };
+    return std::vector<vk::VertexInputBindingDescription>{{
+                                                              .binding = 0,
+                                                              .stride = sizeof(FFXI::OS2::Vertex),
+                                                              .inputRate = vk::VertexInputRate::eVertex,
+                                                          },
+                                                          {
+                                                              .binding = 1,
+                                                              .stride = sizeof(FFXI::OS2::Vertex),
+                                                              .inputRate = vk::VertexInputRate::eVertex,
+                                                          }};
 }
 
 std::vector<vk::VertexInputAttributeDescription> getAttributeDescriptions()
 {
-    return std::vector<vk::VertexInputAttributeDescription>
-    {
+    return std::vector<vk::VertexInputAttributeDescription>{
         {
             .location = 0,
             .binding = 0,
@@ -52,7 +48,8 @@ std::vector<vk::VertexInputAttributeDescription> getAttributeDescriptions()
     };
 }
 
-lotus::Task<> FFXIActorLoader::LoadModel(std::shared_ptr<lotus::Model> model, lotus::Engine* engine, std::span<FFXI::OS2* const> os2s)
+lotus::Task<> FFXIActorLoader::LoadModel(std::shared_ptr<lotus::Model> model, lotus::Engine* engine,
+                                         std::span<FFXI::OS2* const> os2s)
 {
     if (!pipeline_flag.test_and_set())
     {
@@ -69,8 +66,11 @@ lotus::Task<> FFXIActorLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
     {
         if (os2->meshes.size() > 0)
         {
-            std::shared_ptr<lotus::Buffer> material_buffer = engine->renderer->gpu->memory_manager->GetBuffer(lotus::Material::getMaterialBufferSize(engine) * os2->meshes.size(),
-                vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eShaderDeviceAddress, vk::MemoryPropertyFlagBits::eDeviceLocal);
+            std::shared_ptr<lotus::Buffer> material_buffer = engine->renderer->gpu->memory_manager->GetBuffer(
+                lotus::Material::getMaterialBufferSize(engine) * os2->meshes.size(),
+                vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst |
+                    vk::BufferUsageFlagBits::eShaderDeviceAddress,
+                vk::MemoryPropertyFlagBits::eDeviceLocal);
             uint32_t material_buffer_offset = 0;
             for (const auto& os2_mesh : os2->meshes)
             {
@@ -82,8 +82,12 @@ lotus::Task<> FFXIActorLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
                 std::vector<uint16_t> mesh_indices;
                 std::vector<uint8_t> indices_uint8;
                 std::shared_ptr<lotus::Texture> texture = lotus::Texture::getTexture(os2_mesh.tex_name);
-                if (!texture) texture = lotus::Texture::getTexture("default");
-                material_map.insert(std::make_pair(mesh.get(), lotus::Material::make_material(engine, material_buffer, material_buffer_offset, texture, 0, os2_mesh.specular_exponent, os2_mesh.specular_intensity)));
+                if (!texture)
+                    texture = lotus::Texture::getTexture("default");
+                material_map.insert(std::make_pair(
+                    mesh.get(),
+                    lotus::Material::make_material(engine, material_buffer, material_buffer_offset, texture, 0,
+                                                   os2_mesh.specular_exponent, os2_mesh.specular_intensity)));
                 material_buffer_offset += lotus::Material::getMaterialBufferSize(engine);
 
                 int passes = os2->mirror ? 2 : 1;
@@ -131,21 +135,30 @@ lotus::Task<> FFXIActorLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
                 indices_uint8.resize(mesh_indices.size() * sizeof(uint16_t));
                 memcpy(indices_uint8.data(), mesh_indices.data(), indices_uint8.size());
 
-                vk::BufferUsageFlags vertex_usage_flags = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eStorageBuffer;
-                vk::BufferUsageFlags index_usage_flags = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer;
+                vk::BufferUsageFlags vertex_usage_flags = vk::BufferUsageFlagBits::eTransferDst |
+                                                          vk::BufferUsageFlagBits::eVertexBuffer |
+                                                          vk::BufferUsageFlagBits::eStorageBuffer;
+                vk::BufferUsageFlags index_usage_flags =
+                    vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer;
 
                 if (engine->config->renderer.RaytraceEnabled())
                 {
-                    vertex_usage_flags |= vk::BufferUsageFlagBits::eShaderDeviceAddress | vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
-                    index_usage_flags |= vk::BufferUsageFlagBits::eStorageBuffer | vk::BufferUsageFlagBits::eShaderDeviceAddress | vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
+                    vertex_usage_flags |= vk::BufferUsageFlagBits::eShaderDeviceAddress |
+                                          vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
+                    index_usage_flags |= vk::BufferUsageFlagBits::eStorageBuffer |
+                                         vk::BufferUsageFlagBits::eShaderDeviceAddress |
+                                         vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
                 }
 
-                mesh->vertex_buffer = engine->renderer->gpu->memory_manager->GetBuffer(vertices_uint8.size(), vertex_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
-                mesh->index_buffer = engine->renderer->gpu->memory_manager->GetBuffer(indices_uint8.size(), index_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
+                mesh->vertex_buffer = engine->renderer->gpu->memory_manager->GetBuffer(
+                    vertices_uint8.size(), vertex_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
+                mesh->index_buffer = engine->renderer->gpu->memory_manager->GetBuffer(
+                    indices_uint8.size(), index_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
                 mesh->setIndexCount(mesh_indices.size());
                 mesh->setVertexCount(os2_vertices.size());
                 mesh->setMaxIndex(*std::ranges::max_element(mesh_indices));
-                mesh->setVertexInputAttributeDescription(getAttributeDescriptions(), sizeof(FFXI::OS2::WeightingVertex));
+                mesh->setVertexInputAttributeDescription(getAttributeDescriptions(),
+                                                         sizeof(FFXI::OS2::WeightingVertex));
                 mesh->setVertexInputBindingDescription(getBindingDescriptions());
                 mesh->pipelines.push_back(pipeline);
                 mesh->pipelines.push_back(pipeline_shadowmap);
@@ -223,7 +236,8 @@ void FFXIActorLoader::InitPipeline(lotus::Engine* engine)
     depth_stencil.stencilTestEnable = false;
 
     vk::PipelineColorBlendAttachmentState color_blend_attachment;
-    color_blend_attachment.colorWriteMask = vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA;
+    color_blend_attachment.colorWriteMask = vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG |
+                                            vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA;
     color_blend_attachment.blendEnable = false;
     color_blend_attachment.alphaBlendOp = vk::BlendOp::eAdd;
     color_blend_attachment.colorBlendOp = vk::BlendOp::eAdd;
@@ -246,7 +260,8 @@ void FFXIActorLoader::InitPipeline(lotus::Engine* engine)
     color_blend_attachment_revealage.dstAlphaBlendFactor = vk::BlendFactor::eOneMinusSrcColor;
 
     std::vector<vk::PipelineColorBlendAttachmentState> color_blend_attachment_states(7, color_blend_attachment);
-    std::vector<vk::PipelineColorBlendAttachmentState> color_blend_attachment_states_subpass1{ color_blend_attachment_accumulation, color_blend_attachment_revealage };
+    std::vector<vk::PipelineColorBlendAttachmentState> color_blend_attachment_states_subpass1{
+        color_blend_attachment_accumulation, color_blend_attachment_revealage};
 
     vk::PipelineColorBlendStateCreateInfo color_blending;
     color_blending.logicOpEnable = false;
@@ -262,12 +277,9 @@ void FFXIActorLoader::InitPipeline(lotus::Engine* engine)
     color_blending_subpass1.attachmentCount = static_cast<uint32_t>(color_blend_attachment_states_subpass1.size());
     color_blending_subpass1.pAttachments = color_blend_attachment_states_subpass1.data();
 
-    std::vector<vk::DynamicState> dynamic_states = { vk::DynamicState::eScissor, vk::DynamicState::eViewport };
-    vk::PipelineDynamicStateCreateInfo dynamic_state_ci
-    {
-        .dynamicStateCount = static_cast<uint32_t>(dynamic_states.size()),
-        .pDynamicStates = dynamic_states.data()
-    };
+    std::vector<vk::DynamicState> dynamic_states = {vk::DynamicState::eScissor, vk::DynamicState::eViewport};
+    vk::PipelineDynamicStateCreateInfo dynamic_state_ci{
+        .dynamicStateCount = static_cast<uint32_t>(dynamic_states.size()), .pDynamicStates = dynamic_states.data()};
 
     vk::GraphicsPipelineCreateInfo pipeline_info;
     pipeline_info.stageCount = static_cast<uint32_t>(shaderStages.size());
@@ -292,7 +304,7 @@ void FFXIActorLoader::InitPipeline(lotus::Engine* engine)
     vert_shader_stage_info.module = *vertex_module;
     frag_shader_stage_info.module = *fragment_module;
 
-    shaderStages = { vert_shader_stage_info, frag_shader_stage_info };
+    shaderStages = {vert_shader_stage_info, frag_shader_stage_info};
 
     pipeline_info.stageCount = static_cast<uint32_t>(shaderStages.size());
     pipeline_info.pStages = shaderStages.data();

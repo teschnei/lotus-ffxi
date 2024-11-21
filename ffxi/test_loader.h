@@ -1,8 +1,8 @@
 #pragma once
+#include "stb.h"
 #include <lotus/core.h>
 #include <lotus/renderer/mesh.h>
 #include <lotus/renderer/texture.h>
-#include "stb.h"
 #include <lotus/renderer/vulkan/renderer.h>
 
 import glm;
@@ -19,7 +19,8 @@ public:
         texture->setWidth(texWidth);
         texture->setHeight(texHeight);
 
-        if (!pixels) {
+        if (!pixels)
+        {
             throw std::runtime_error("failed to load texture image!");
         }
 
@@ -28,7 +29,10 @@ public:
         memcpy(texture_data.data(), pixels, imageSize);
         stbi_image_free(pixels);
 
-        texture->image = engine->renderer->gpu->memory_manager->GetImage(texture->getWidth(), texture->getHeight(), vk::Format::eR8G8B8A8Unorm, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal);
+        texture->image = engine->renderer->gpu->memory_manager->GetImage(
+            texture->getWidth(), texture->getHeight(), vk::Format::eR8G8B8A8Unorm, vk::ImageTiling::eOptimal,
+            vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
+            vk::MemoryPropertyFlagBits::eDeviceLocal);
 
         vk::ImageViewCreateInfo image_view_info;
         image_view_info.image = texture->image->image;
@@ -58,7 +62,7 @@ public:
 
         texture->sampler = engine->renderer->gpu->device->createSamplerUnique(sampler_info, nullptr);
 
-        std::vector<std::vector<uint8_t>> texture_datas{ std::move(texture_data) };
+        std::vector<std::vector<uint8_t>> texture_datas{std::move(texture_data)};
         co_await texture->Init(engine, std::move(texture_datas));
     }
 };

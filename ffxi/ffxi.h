@@ -1,16 +1,16 @@
 #pragma once
-#include "config.h"
-#include "system_dat.h"
 #include "audio/ffxi_audio.h"
+#include "config.h"
 #include "dat/dat_loader.h"
+#include "system_dat.h"
 #include <lotus/core.h>
 #include <lotus/game.h>
 
 namespace FFXI
 {
-    class Generator;
-    class Scheduler;
-}
+class Generator;
+class Scheduler;
+} // namespace FFXI
 
 class FFXIGame : public lotus::Game
 {

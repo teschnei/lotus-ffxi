@@ -1,22 +1,26 @@
 #pragma once
 
-#include <unordered_map>
 #include <lotus/renderer/model.h>
 #include <lotus/renderer/texture.h>
+#include <unordered_map>
 
 class FFXIGame;
 namespace FFXI
 {
-    class Dat;
-    class Generator;
-    class Keyframe;
-    class Scheduler;
-    class DatChunk;
-}
+class Dat;
+class Generator;
+class Keyframe;
+class Scheduler;
+class DatChunk;
+} // namespace FFXI
 
 class SystemDat
 {
-    struct _private_tag { explicit _private_tag() = default; };
+    struct _private_tag
+    {
+        explicit _private_tag() = default;
+    };
+
 public:
     static lotus::Task<std::unique_ptr<SystemDat>> Load(FFXIGame* game);
 
@@ -24,8 +28,9 @@ public:
     std::unordered_map<std::string, FFXI::Scheduler*> schedulers;
 
     SystemDat(FFXIGame* game, _private_tag);
+
 private:
-    FFXIGame* game{ nullptr };
+    FFXIGame* game{nullptr};
 
     SystemDat(const SystemDat&) = delete;
     SystemDat(SystemDat&&) = default;

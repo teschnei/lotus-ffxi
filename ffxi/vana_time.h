@@ -1,7 +1,7 @@
 #pragma once
 
-#include <lotus/types.h>
 #include <chrono>
+#include <lotus/types.h>
 
 struct FFXITime
 {
@@ -26,10 +26,7 @@ struct FFXITime
         return time_point{duration_cast<duration>(system_clock::now().time_since_epoch()) - BaseDate};
     }
 
-    static inline duration vana_time() noexcept
-    {
-        return now().time_since_epoch();
-    }
+    static inline duration vana_time() noexcept { return now().time_since_epoch(); }
 
 private:
     static constexpr duration BaseDate = std::chrono::duration_cast<duration>(std::chrono::seconds(1009810800));

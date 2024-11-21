@@ -2,7 +2,8 @@
 
 #include "ffxi.h"
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[])
+{
 
     lotus::Settings settings;
     settings.app_name = "core-test";
