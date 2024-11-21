@@ -9,8 +9,7 @@ import glm;
 
 namespace FFXI
 {
-ActorComponent::ActorComponent(lotus::Entity* _entity, lotus::Engine* _engine,
-                               lotus::Component::RenderBaseComponent& _base_component,
+ActorComponent::ActorComponent(lotus::Entity* _entity, lotus::Engine* _engine, lotus::Component::RenderBaseComponent& _base_component,
                                lotus::Component::AnimationComponent& _animation)
     : Component(_entity, _engine), base_component(_base_component), animation(_animation)
 {
@@ -23,8 +22,7 @@ lotus::Task<> ActorComponent::tick(lotus::time_point time, lotus::duration delta
     auto source_rot_vec = glm::vec3{1.f, 0.f, 0.f} * base_component.getRot();
     auto dest_rot_vec = glm::vec3{1.f, 0.f, 0.f} * rot * model_offset_rot;
 
-    auto diff = glm::orientedAngle(glm::normalize(glm::vec2{source_rot_vec.x, source_rot_vec.z}),
-                                   glm::normalize(glm::vec2{dest_rot_vec.x, dest_rot_vec.z}));
+    auto diff = glm::orientedAngle(glm::normalize(glm::vec2{source_rot_vec.x, source_rot_vec.z}), glm::normalize(glm::vec2{dest_rot_vec.x, dest_rot_vec.z}));
     auto max_turn_rate = ms * 0.00001f;
     diff = std::clamp(diff, -max_turn_rate, max_turn_rate);
 

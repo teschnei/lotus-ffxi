@@ -69,8 +69,7 @@ DXT3::DXT3(char* _name, uint8_t* _buffer, size_t _len) : DatChunk(_name, _buffer
         {
             for (uint32_t j = 0; j < width; ++j)
             {
-                memcpy(pixels.data() + ((i * static_cast<uint64_t>(width) + j) * 4), &infob1->palet[(size_t)(*buf_p)],
-                       4);
+                memcpy(pixels.data() + ((i * static_cast<uint64_t>(width) + j) * 4), &infob1->palet[(size_t)(*buf_p)], 4);
                 ++buf_p;
             }
         }
@@ -105,10 +104,9 @@ lotus::Task<> DXT3Loader::LoadTexture(std::shared_ptr<lotus::Texture> texture, l
     texture_data.resize(imageSize);
     memcpy(texture_data.data(), dxt3->pixels.data(), imageSize);
 
-    texture->image = engine->renderer->gpu->memory_manager->GetImage(
-        texture->getWidth(), texture->getHeight(), dxt3->format, vk::ImageTiling::eOptimal,
-        vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
-        vk::MemoryPropertyFlagBits::eDeviceLocal);
+    texture->image = engine->renderer->gpu->memory_manager->GetImage(texture->getWidth(), texture->getHeight(), dxt3->format, vk::ImageTiling::eOptimal,
+                                                                     vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
+                                                                     vk::MemoryPropertyFlagBits::eDeviceLocal);
 
     vk::ImageViewCreateInfo image_view_info;
     image_view_info.image = texture->image->image;

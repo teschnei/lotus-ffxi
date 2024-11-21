@@ -9,9 +9,8 @@
 
 namespace FFXI
 {
-SchedulerComponent::SchedulerComponent(lotus::Entity* _entity, lotus::Engine* _engine, ActorSkeletonComponent& _actor,
-                                       FFXI::Scheduler* _scheduler, SchedulerResources* _resources,
-                                       FFXI::SchedulerComponent* _parent)
+SchedulerComponent::SchedulerComponent(lotus::Entity* _entity, lotus::Engine* _engine, ActorSkeletonComponent& _actor, FFXI::Scheduler* _scheduler,
+                                       SchedulerResources* _resources, FFXI::SchedulerComponent* _parent)
     : Component(_entity, _engine), actor(_actor), scheduler(_scheduler), resources(_resources), parent(_parent)
 {
 }
@@ -25,8 +24,7 @@ lotus::Task<> SchedulerComponent::tick(lotus::time_point time, lotus::duration d
         remove();
         co_return;
     }
-    auto frame_number =
-        std::chrono::duration_cast<std::chrono::milliseconds>(time - start_time).count() * (60.f / 1000.f);
+    auto frame_number = std::chrono::duration_cast<std::chrono::milliseconds>(time - start_time).count() * (60.f / 1000.f);
     auto [buffer, next_frame] = scheduler->getStage(stage);
 
     std::string current_scheduler;
@@ -54,22 +52,19 @@ lotus::Task<> SchedulerComponent::tick(lotus::time_point time, lotus::duration d
             // generator
             {
                 auto real_duration = std::chrono::milliseconds((duration * 1000) / 60);
-                if (auto generator = resources->generators.find(std::string(id, 4));
-                    generator != resources->generators.end())
+                if (auto generator = resources->generators.find(std::string(id, 4)); generator != resources->generators.end())
                 {
-                    engine->game->scene->AddComponents(co_await GeneratorComponent::make_component(
-                        entity, engine, generator->second, real_duration, this));
+                    engine->game->scene->AddComponents(co_await GeneratorComponent::make_component(entity, engine, generator->second, real_duration, this));
                 }
                 else if (auto generator = actor.getGenerator(std::string(id, 4)))
                 {
-                    engine->game->scene->AddComponents(
-                        co_await GeneratorComponent::make_component(entity, engine, generator, real_duration, this));
+                    engine->game->scene->AddComponents(co_await GeneratorComponent::make_component(entity, engine, generator, real_duration, this));
                 }
                 else if (auto system_generator = ffxigame->system_dat->generators.find(std::string(id, 4));
                          system_generator != ffxigame->system_dat->generators.end())
                 {
-                    engine->game->scene->AddComponents(co_await GeneratorComponent::make_component(
-                        entity, engine, system_generator->second, real_duration, this));
+                    engine->game->scene->AddComponents(
+                        co_await GeneratorComponent::make_component(entity, engine, system_generator->second, real_duration, this));
                 }
             }
             break;
@@ -78,22 +73,19 @@ lotus::Task<> SchedulerComponent::tick(lotus::time_point time, lotus::duration d
         case 0x03:
         case 0x3C:
         {
-            if (auto scheduler = resources->schedulers.find(std::string(id, 4));
-                scheduler != resources->schedulers.end())
+            if (auto scheduler = resources->schedulers.find(std::string(id, 4)); scheduler != resources->schedulers.end())
             {
-                engine->game->scene->AddComponents(co_await SchedulerComponent::make_component(
-                    entity, engine, actor, scheduler->second, resources, this));
+                engine->game->scene->AddComponents(co_await SchedulerComponent::make_component(entity, engine, actor, scheduler->second, resources, this));
             }
             else if (auto scheduler = actor.getScheduler(std::string(id, 4)))
             {
-                engine->game->scene->AddComponents(
-                    co_await SchedulerComponent::make_component(entity, engine, actor, scheduler, resources, this));
+                engine->game->scene->AddComponents(co_await SchedulerComponent::make_component(entity, engine, actor, scheduler, resources, this));
             }
             else if (auto system_scheduler = ffxigame->system_dat->schedulers.find(std::string(id, 4));
                      system_scheduler != ffxigame->system_dat->schedulers.end())
             {
-                engine->game->scene->AddComponents(co_await SchedulerComponent::make_component(
-                    entity, engine, actor, system_scheduler->second, resources, this));
+                engine->game->scene->AddComponents(
+                    co_await SchedulerComponent::make_component(entity, engine, actor, system_scheduler->second, resources, this));
             }
             break;
         }

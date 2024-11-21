@@ -12,9 +12,7 @@ namespace FFXI
 {
 class Scheduler;
 class Generator;
-class ActorComponent
-    : public lotus::Component::Component<ActorComponent,
-                                         lotus::Component::Before<lotus::Component::RenderBaseComponent>>
+class ActorComponent : public lotus::Component::Component<ActorComponent, lotus::Component::Before<lotus::Component::RenderBaseComponent>>
 {
 public:
     explicit ActorComponent(lotus::Entity*, lotus::Engine* engine, lotus::Component::RenderBaseComponent& physics,

@@ -8,9 +8,8 @@ import glm;
 
 namespace FFXI
 {
-ModernThirdPersonInputComponent::ModernThirdPersonInputComponent(
-    lotus::Entity* _entity, lotus::Engine* _engine, ActorComponent& _actor,
-    lotus::Component::AnimationComponent& _animation_component)
+ModernThirdPersonInputComponent::ModernThirdPersonInputComponent(lotus::Entity* _entity, lotus::Engine* _engine, ActorComponent& _actor,
+                                                                 lotus::Component::AnimationComponent& _animation_component)
     : Component(_entity, _engine), actor(_actor), animation_component(_animation_component)
 {
 }
@@ -33,12 +32,10 @@ lotus::Task<> ModernThirdPersonInputComponent::tick(lotus::time_point time, lotu
         auto width = 0.3f;
 
         auto new_pos = pos + (glm::length(offset)) * glm::normalize(offset);
-        auto step_task = engine->renderer->raytrace_queryer->query(lotus::RaytraceQueryer::ObjectFlags::LevelCollision,
-                                                                   pos + step_height, glm::normalize(offset), 0.f,
-                                                                   glm::length(offset) + width);
-        auto pos_task =
-            engine->renderer->raytrace_queryer->query(lotus::RaytraceQueryer::ObjectFlags::LevelCollision,
-                                                      new_pos + step_height, glm::vec3{0.f, 1.f, 0.f}, 0.f, 500.f);
+        auto step_task = engine->renderer->raytrace_queryer->query(lotus::RaytraceQueryer::ObjectFlags::LevelCollision, pos + step_height,
+                                                                   glm::normalize(offset), 0.f, glm::length(offset) + width);
+        auto pos_task = engine->renderer->raytrace_queryer->query(lotus::RaytraceQueryer::ObjectFlags::LevelCollision, new_pos + step_height,
+                                                                  glm::vec3{0.f, 1.f, 0.f}, 0.f, 500.f);
 
         if (co_await step_task == glm::length(offset) + width)
         {
@@ -84,8 +81,7 @@ lotus::Task<> ModernThirdPersonInputComponent::tick(lotus::time_point time, lotu
         }
     }
 
-    actor.setModelOffsetRot(glm::angleAxis(glm::orientedAngle(glm::vec2{1.f, 0.f}, glm::vec2{face_dir.x, face_dir.z}),
-                                           glm::vec3{0.f, 1.f, 0.f}));
+    actor.setModelOffsetRot(glm::angleAxis(glm::orientedAngle(glm::vec2{1.f, 0.f}, glm::vec2{face_dir.x, face_dir.z}), glm::vec3{0.f, 1.f, 0.f}));
 
     moving_prev = moving;
     co_return;

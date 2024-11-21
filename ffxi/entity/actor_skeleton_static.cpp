@@ -10,8 +10,7 @@
 
 namespace FFXI
 {
-lotus::Task<std::shared_ptr<const ActorSkeletonStatic>> ActorSkeletonStatic::getSkeleton(lotus::Engine* engine,
-                                                                                         size_t id)
+lotus::Task<std::shared_ptr<const ActorSkeletonStatic>> ActorSkeletonStatic::getSkeleton(lotus::Engine* engine, size_t id)
 {
     auto skel = skeleton_map.find(id);
     if (skel != skeleton_map.end())
@@ -27,8 +26,7 @@ lotus::Task<std::shared_ptr<const ActorSkeletonStatic>> ActorSkeletonStatic::get
     co_return ptr;
 }
 
-lotus::Task<std::shared_ptr<const ActorSkeletonStatic>> ActorSkeletonStatic::getSkeleton(lotus::Engine* engine,
-                                                                                         ActorData::PCDatIDs dat_ids)
+lotus::Task<std::shared_ptr<const ActorSkeletonStatic>> ActorSkeletonStatic::getSkeleton(lotus::Engine* engine, ActorData::PCDatIDs dat_ids)
 {
     size_t id = dat_ids.skel;
     auto skel = skeleton_map.find(id);
@@ -52,9 +50,9 @@ lotus::Task<std::shared_ptr<const ActorSkeletonStatic>> ActorSkeletonStatic::get
     co_return ptr;
 }
 
-lotus::WorkerTask<std::shared_ptr<ActorSkeletonStatic>>
-ActorSkeletonStatic::loadSkeleton(lotus::Engine* engine, std::span<size_t> skeleton_ids, std::span<size_t> motions,
-                                  std::span<size_t> dw_motions_l, std::span<size_t> dw_motions_r)
+lotus::WorkerTask<std::shared_ptr<ActorSkeletonStatic>> ActorSkeletonStatic::loadSkeleton(lotus::Engine* engine, std::span<size_t> skeleton_ids,
+                                                                                          std::span<size_t> motions, std::span<size_t> dw_motions_l,
+                                                                                          std::span<size_t> dw_motions_r)
 
 {
     auto skeleton = std::shared_ptr<ActorSkeletonStatic>(new ActorSkeletonStatic());
@@ -79,8 +77,7 @@ ActorSkeletonStatic::loadSkeleton(lotus::Engine* engine, std::span<size_t> skele
                 {
                     anim = skeleton->animations
                                .emplace(mo2->name, std::make_unique<lotus::Animation>(
-                                                       mo2->name, std::chrono::milliseconds(static_cast<int>(
-                                                                      1000 * (1.f / 30.f) / mo2->speed))))
+                                                       mo2->name, std::chrono::milliseconds(static_cast<int>(1000 * (1.f / 30.f) / mo2->speed))))
                                .first;
                 }
                 auto& animation = anim->second;
@@ -136,8 +133,7 @@ ActorSkeletonStatic::loadSkeleton(lotus::Engine* engine, std::span<size_t> skele
     co_return skeleton;
 }
 
-std::unordered_map<std::string, std::unique_ptr<lotus::Animation>>
-ActorSkeletonStatic::loadAnimationDat(lotus::Engine* engine, size_t dat_id)
+std::unordered_map<std::string, std::unique_ptr<lotus::Animation>> ActorSkeletonStatic::loadAnimationDat(lotus::Engine* engine, size_t dat_id)
 {
     const auto& dat = static_cast<FFXIGame*>(engine->game)->dat_loader->GetDat(dat_id);
     std::unordered_map<std::string, std::unique_ptr<lotus::Animation>> animation_map;
@@ -151,11 +147,11 @@ ActorSkeletonStatic::loadAnimationDat(lotus::Engine* engine, size_t dat_id)
             auto anim = animation_map.find(mo2->name);
             if (anim == animation_map.end())
             {
-                anim = animation_map
-                           .emplace(mo2->name, std::make_unique<lotus::Animation>(
-                                                   mo2->name, std::chrono::milliseconds(
-                                                                  static_cast<int>(1000 * (1.f / 30.f) / mo2->speed))))
-                           .first;
+                anim =
+                    animation_map
+                        .emplace(mo2->name,
+                                 std::make_unique<lotus::Animation>(mo2->name, std::chrono::milliseconds(static_cast<int>(1000 * (1.f / 30.f) / mo2->speed))))
+                        .first;
             }
             auto& animation = anim->second;
 
@@ -187,36 +183,22 @@ ActorSkeletonStatic::loadAnimationDat(lotus::Engine* engine, size_t dat_id)
 
 ActorSkeletonStatic::ActorSkeletonStatic() {}
 
-const std::unordered_map<std::string, FFXI::Scheduler*> ActorSkeletonStatic::getSchedulers() const
-{
-    return scheduler_map;
-}
+const std::unordered_map<std::string, FFXI::Scheduler*> ActorSkeletonStatic::getSchedulers() const { return scheduler_map; }
 
-const std::unordered_map<std::string, FFXI::Generator*> ActorSkeletonStatic::getGenerators() const
-{
-    return generator_map;
-}
+const std::unordered_map<std::string, FFXI::Generator*> ActorSkeletonStatic::getGenerators() const { return generator_map; }
 
-const std::unordered_map<std::string, std::unique_ptr<lotus::Animation>>& ActorSkeletonStatic::getAnimations() const
-{
-    return animations;
-}
+const std::unordered_map<std::string, std::unique_ptr<lotus::Animation>>& ActorSkeletonStatic::getAnimations() const { return animations; }
 
-const std::unordered_map<std::string, std::unique_ptr<lotus::Animation>>&
-ActorSkeletonStatic::getBattleAnimations(size_t index) const
+const std::unordered_map<std::string, std::unique_ptr<lotus::Animation>>& ActorSkeletonStatic::getBattleAnimations(size_t index) const
 {
     return battle_animations[index];
 }
 
-std::tuple<const std::unordered_map<std::string, std::unique_ptr<lotus::Animation>>&,
-           const std::unordered_map<std::string, std::unique_ptr<lotus::Animation>>&>
+std::tuple<const std::unordered_map<std::string, std::unique_ptr<lotus::Animation>>&, const std::unordered_map<std::string, std::unique_ptr<lotus::Animation>>&>
 ActorSkeletonStatic::getBattleAnimationsDualWield(size_t index) const
 {
     return {dw_animations_l[index], dw_animations_r[index]};
 }
 
-std::span<const FFXI::SK2::GeneratorPoint, FFXI::SK2::GeneratorPointMax> ActorSkeletonStatic::getGeneratorPoints() const
-{
-    return generator_points;
-}
+std::span<const FFXI::SK2::GeneratorPoint, FFXI::SK2::GeneratorPointMax> ActorSkeletonStatic::getGeneratorPoints() const { return generator_points; }
 } // namespace FFXI

@@ -12,12 +12,11 @@ import glm;
 
 namespace FFXI
 {
-ParticleComponent::ParticleComponent(lotus::Entity* _entity, lotus::Engine* _engine,
-                                     lotus::Component::ParticleComponent& _engine_particle,
-                                     lotus::Component::RenderBaseComponent& _base, std::weak_ptr<lotus::Entity> _actor,
-                                     FFXI::Generator* _generator, size_t _index)
-    : Component(_entity, _engine), particle_component(_engine_particle), base_component(_base), actor(_actor),
-      generator(_generator), index(_index), start_time(engine->getSimulationTime())
+ParticleComponent::ParticleComponent(lotus::Entity* _entity, lotus::Engine* _engine, lotus::Component::ParticleComponent& _engine_particle,
+                                     lotus::Component::RenderBaseComponent& _base, std::weak_ptr<lotus::Entity> _actor, FFXI::Generator* _generator,
+                                     size_t _index)
+    : Component(_entity, _engine), particle_component(_engine_particle), base_component(_base), actor(_actor), generator(_generator), index(_index),
+      start_time(engine->getSimulationTime())
 {
     for (const auto& chunk : generator->parent->children)
     {
@@ -40,11 +39,8 @@ lotus::Task<> ParticleComponent::init()
     // TODO: 90% sure this should be generator->header->flags1 & 0x02?
     if (generator->header->flags2 == 0x80 && generator->header->flags3 == 0x08)
     {
-        auto actor_component =
-            engine->game->scene->component_runners->getComponent<FFXI::ActorSkeletonComponent>(actor.lock().get());
-        auto animation_component =
-            engine->game->scene->component_runners->getComponent<lotus::Component::AnimationComponent>(
-                actor.lock().get());
+        auto actor_component = engine->game->scene->component_runners->getComponent<FFXI::ActorSkeletonComponent>(actor.lock().get());
+        auto animation_component = engine->game->scene->component_runners->getComponent<lotus::Component::AnimationComponent>(actor.lock().get());
         auto generator_points = actor_component->getSkeletonStatic()->getGeneratorPoints();
         if (auto bone_id = generator->header->bone_point >> 2; bone_id < FFXI::SK2::GeneratorPointMax)
         {
@@ -55,14 +51,10 @@ lotus::Task<> ParticleComponent::init()
     }
     else if (generator->header->flags1 & 0x01)
     {
-        auto actor_component =
-            engine->game->scene->component_runners->getComponent<FFXI::ActorSkeletonComponent>(actor.lock().get());
-        auto animation_component =
-            engine->game->scene->component_runners->getComponent<lotus::Component::AnimationComponent>(
-                actor.lock().get());
+        auto actor_component = engine->game->scene->component_runners->getComponent<FFXI::ActorSkeletonComponent>(actor.lock().get());
+        auto animation_component = engine->game->scene->component_runners->getComponent<lotus::Component::AnimationComponent>(actor.lock().get());
         auto generator_points = actor_component->getSkeletonStatic()->getGeneratorPoints();
-        if (auto bone_id = (generator->header->flags1 + ((generator->header->bone_point & 0x01) << 8)) >> 4;
-            bone_id < FFXI::SK2::GeneratorPointMax)
+        if (auto bone_id = (generator->header->flags1 + ((generator->header->bone_point & 0x01) << 8)) >> 4; bone_id < FFXI::SK2::GeneratorPointMax)
         {
             auto& bone_point = generator_points[bone_id];
             bone = &animation_component->skeleton->bones[bone_point.bone_index];
@@ -90,8 +82,7 @@ lotus::Task<> ParticleComponent::init()
             pos_flags = *(uint16_t*)(command + 2);
             id = std::string((char*)command + 8, 4);
             local_pos = *(glm::vec3*)(command + 16);
-            duration =
-                std::chrono::milliseconds(((long long)((long long)(*(uint16_t*)(command + 30)) * (1000 / 60.f))));
+            duration = std::chrono::milliseconds(((long long)((long long)(*(uint16_t*)(command + 30)) * (1000 / 60.f))));
         }
         break;
         case 0x02:
@@ -102,8 +93,7 @@ lotus::Task<> ParticleComponent::init()
         case 0x03:
         {
             auto dpos_fluctuation = *(glm::vec3*)(command);
-            dpos += glm::vec3(lotus::random::GetRandomNumber(dpos_fluctuation.x),
-                              lotus::random::GetRandomNumber(dpos_fluctuation.y),
+            dpos += glm::vec3(lotus::random::GetRandomNumber(dpos_fluctuation.x), lotus::random::GetRandomNumber(dpos_fluctuation.y),
                               lotus::random::GetRandomNumber(dpos_fluctuation.z));
         }
         break;
@@ -135,8 +125,7 @@ lotus::Task<> ParticleComponent::init()
         case 0x0a:
         {
             auto rot_fluctuation = *(glm::vec3*)(command);
-            local_rot += glm::vec3(lotus::random::GetRandomNumber(rot_fluctuation.x),
-                                   lotus::random::GetRandomNumber(rot_fluctuation.y),
+            local_rot += glm::vec3(lotus::random::GetRandomNumber(rot_fluctuation.x), lotus::random::GetRandomNumber(rot_fluctuation.y),
                                    lotus::random::GetRandomNumber(rot_fluctuation.z));
         }
         break;
@@ -146,8 +135,7 @@ lotus::Task<> ParticleComponent::init()
         case 0x0c:
         {
             auto drot_fluctuation = *(glm::vec3*)(command);
-            drot += glm::vec3(lotus::random::GetRandomNumber(drot_fluctuation.x),
-                              lotus::random::GetRandomNumber(drot_fluctuation.y),
+            drot += glm::vec3(lotus::random::GetRandomNumber(drot_fluctuation.x), lotus::random::GetRandomNumber(drot_fluctuation.y),
                               lotus::random::GetRandomNumber(drot_fluctuation.z));
         }
         break;
@@ -159,8 +147,7 @@ lotus::Task<> ParticleComponent::init()
         case 0x10:
         {
             auto scale_fluctuation = *(glm::vec3*)(command);
-            local_scale += glm::vec3(lotus::random::GetRandomNumber(scale_fluctuation.x),
-                                     lotus::random::GetRandomNumber(scale_fluctuation.y),
+            local_scale += glm::vec3(lotus::random::GetRandomNumber(scale_fluctuation.x), lotus::random::GetRandomNumber(scale_fluctuation.y),
                                      lotus::random::GetRandomNumber(scale_fluctuation.z));
         }
         break;
@@ -178,8 +165,7 @@ lotus::Task<> ParticleComponent::init()
         case 0x13:
         {
             auto dscale_fluctuation = *(glm::vec3*)(command);
-            dscale += glm::vec3(lotus::random::GetRandomNumber(dscale_fluctuation.x),
-                                lotus::random::GetRandomNumber(dscale_fluctuation.y),
+            dscale += glm::vec3(lotus::random::GetRandomNumber(dscale_fluctuation.x), lotus::random::GetRandomNumber(dscale_fluctuation.y),
                                 lotus::random::GetRandomNumber(dscale_fluctuation.z));
         }
         break;
@@ -187,8 +173,7 @@ lotus::Task<> ParticleComponent::init()
         {
             auto color = *(uint32_t*)(command);
             particle_component.color =
-                glm::vec4{(color & 0xFF) / 128.f, ((color & 0xFF00) >> 8) / 128.f, ((color & 0xFF0000) >> 16) / 128.f,
-                          ((color & 0xFF000000) >> 24) / 128.f};
+                glm::vec4{(color & 0xFF) / 128.f, ((color & 0xFF00) >> 8) / 128.f, ((color & 0xFF0000) >> 16) / 128.f, ((color & 0xFF000000) >> 24) / 128.f};
         }
         break;
         case 0x17:
@@ -218,8 +203,7 @@ lotus::Task<> ParticleComponent::init()
             auto gen_height_fluctuation = *(float*)(command + 32);
             auto rotations = *(uint32_t*)(command + 40);
 
-            glm::vec3 cylinder{gen_radius + lotus::random::GetRandomNumber(gen_radius_fluctuation),
-                               lotus::random::GetRandomNumber(gen_height), 0.f};
+            glm::vec3 cylinder{gen_radius + lotus::random::GetRandomNumber(gen_radius_fluctuation), lotus::random::GetRandomNumber(gen_height), 0.f};
             float cylinder_rot = 0.f;
             if (rotations > 0)
             {
@@ -335,11 +319,9 @@ lotus::Task<> ParticleComponent::init()
             // assume sub generator is in same place as generator
             for (const auto& chunk : generator->parent->children)
             {
-                if (auto sub_generator = dynamic_cast<FFXI::Generator*>(chunk.get());
-                    sub_generator && std::string(chunk->name, 4) == sub_generator_id)
+                if (auto sub_generator = dynamic_cast<FFXI::Generator*>(chunk.get()); sub_generator && std::string(chunk->name, 4) == sub_generator_id)
                 {
-                    engine->game->scene->AddComponents(co_await FFXI::GeneratorComponent::make_component(
-                        entity, engine, sub_generator, duration, nullptr));
+                    engine->game->scene->AddComponents(co_await FFXI::GeneratorComponent::make_component(entity, engine, sub_generator, duration, nullptr));
                     break;
                 }
             }
@@ -399,8 +381,7 @@ lotus::Task<> ParticleComponent::init()
         command += (data_size - 1) * sizeof(uint32_t);
     }
 
-    auto parent_render =
-        engine->game->scene->component_runners->getComponent<lotus::Component::RenderBaseComponent>(actor.lock().get());
+    auto parent_render = engine->game->scene->component_runners->getComponent<lotus::Component::RenderBaseComponent>(actor.lock().get());
     origin = parent_render ? parent_render->getPos() : glm::vec3{};
     if (bone)
     {
@@ -439,8 +420,7 @@ lotus::Task<> ParticleComponent::tick(lotus::time_point time, lotus::duration de
 
     glm::vec3 kf_scale = local_scale;
 
-    float movement = 30.f / ((float)std::chrono::nanoseconds(1s).count() /
-                             std::chrono::duration_cast<std::chrono::nanoseconds>(delta).count());
+    float movement = 30.f / ((float)std::chrono::nanoseconds(1s).count() / std::chrono::duration_cast<std::chrono::nanoseconds>(delta).count());
     auto spawn_delta = time - start_time;
     float progress = static_cast<float>(spawn_delta.count()) / static_cast<float>(duration.count());
 
@@ -584,9 +564,7 @@ lotus::Task<> ParticleComponent::tick(lotus::time_point time, lotus::duration de
     }
     if (!(pos_flags & 0x80))
     {
-        auto parent_render =
-            engine->game->scene->component_runners->getComponent<lotus::Component::RenderBaseComponent>(
-                actor.lock().get());
+        auto parent_render = engine->game->scene->component_runners->getComponent<lotus::Component::RenderBaseComponent>(actor.lock().get());
         origin = parent_render ? parent_render->getPos() : glm::vec3{};
         if (bone)
         {
@@ -599,8 +577,7 @@ lotus::Task<> ParticleComponent::tick(lotus::time_point time, lotus::duration de
     base_component.setScale(kf_scale);
     if (light > 0)
     {
-        engine->lights->UpdateLight(
-            light, {.pos = local_pos + origin, .intensity = 100.f, .colour = glm::vec3(1.f), .radius = 0.05f});
+        engine->lights->UpdateLight(light, {.pos = local_pos + origin, .intensity = 100.f, .colour = glm::vec3(1.f), .radius = 0.05f});
     }
     co_return;
 }

@@ -125,20 +125,17 @@ inline std::vector<vk::VertexInputAttributeDescription> getMMBAttributeDescripti
     attribute_descriptions[5].binding = 1;
     attribute_descriptions[5].location = 5;
     attribute_descriptions[5].format = vk::Format::eR32G32B32A32Sfloat;
-    attribute_descriptions[5].offset =
-        offsetof(lotus::Component::InstancedModelsComponent::InstanceInfo, model) + sizeof(float) * 4;
+    attribute_descriptions[5].offset = offsetof(lotus::Component::InstancedModelsComponent::InstanceInfo, model) + sizeof(float) * 4;
 
     attribute_descriptions[6].binding = 1;
     attribute_descriptions[6].location = 6;
     attribute_descriptions[6].format = vk::Format::eR32G32B32A32Sfloat;
-    attribute_descriptions[6].offset =
-        offsetof(lotus::Component::InstancedModelsComponent::InstanceInfo, model) + sizeof(float) * 8;
+    attribute_descriptions[6].offset = offsetof(lotus::Component::InstancedModelsComponent::InstanceInfo, model) + sizeof(float) * 8;
 
     attribute_descriptions[7].binding = 1;
     attribute_descriptions[7].location = 7;
     attribute_descriptions[7].format = vk::Format::eR32G32B32A32Sfloat;
-    attribute_descriptions[7].offset =
-        offsetof(lotus::Component::InstancedModelsComponent::InstanceInfo, model) + sizeof(float) * 12;
+    attribute_descriptions[7].offset = offsetof(lotus::Component::InstancedModelsComponent::InstanceInfo, model) + sizeof(float) * 12;
 
     attribute_descriptions[8].binding = 1;
     attribute_descriptions[8].location = 8;
@@ -148,20 +145,17 @@ inline std::vector<vk::VertexInputAttributeDescription> getMMBAttributeDescripti
     attribute_descriptions[9].binding = 1;
     attribute_descriptions[9].location = 9;
     attribute_descriptions[9].format = vk::Format::eR32G32B32A32Sfloat;
-    attribute_descriptions[9].offset =
-        offsetof(lotus::Component::InstancedModelsComponent::InstanceInfo, model_t) + sizeof(float) * 4;
+    attribute_descriptions[9].offset = offsetof(lotus::Component::InstancedModelsComponent::InstanceInfo, model_t) + sizeof(float) * 4;
 
     attribute_descriptions[10].binding = 1;
     attribute_descriptions[10].location = 10;
     attribute_descriptions[10].format = vk::Format::eR32G32B32A32Sfloat;
-    attribute_descriptions[10].offset =
-        offsetof(lotus::Component::InstancedModelsComponent::InstanceInfo, model_t) + sizeof(float) * 8;
+    attribute_descriptions[10].offset = offsetof(lotus::Component::InstancedModelsComponent::InstanceInfo, model_t) + sizeof(float) * 8;
 
     attribute_descriptions[11].binding = 1;
     attribute_descriptions[11].location = 11;
     attribute_descriptions[11].format = vk::Format::eR32G32B32A32Sfloat;
-    attribute_descriptions[11].offset =
-        offsetof(lotus::Component::InstancedModelsComponent::InstanceInfo, model_t) + sizeof(float) * 12;
+    attribute_descriptions[11].offset = offsetof(lotus::Component::InstancedModelsComponent::InstanceInfo, model_t) + sizeof(float) * 12;
 
     attribute_descriptions[12].binding = 1;
     attribute_descriptions[12].location = 12;
@@ -171,14 +165,12 @@ inline std::vector<vk::VertexInputAttributeDescription> getMMBAttributeDescripti
     attribute_descriptions[13].binding = 1;
     attribute_descriptions[13].location = 13;
     attribute_descriptions[13].format = vk::Format::eR32G32B32Sfloat;
-    attribute_descriptions[13].offset =
-        offsetof(lotus::Component::InstancedModelsComponent::InstanceInfo, model_it) + sizeof(float) * 3;
+    attribute_descriptions[13].offset = offsetof(lotus::Component::InstancedModelsComponent::InstanceInfo, model_it) + sizeof(float) * 3;
 
     attribute_descriptions[14].binding = 1;
     attribute_descriptions[14].location = 14;
     attribute_descriptions[14].format = vk::Format::eR32G32B32Sfloat;
-    attribute_descriptions[14].offset =
-        offsetof(lotus::Component::InstancedModelsComponent::InstanceInfo, model_it) + sizeof(float) * 6;
+    attribute_descriptions[14].offset = offsetof(lotus::Component::InstancedModelsComponent::InstanceInfo, model_it) + sizeof(float) * 6;
 
     return attribute_descriptions;
 }
@@ -290,9 +282,8 @@ MMB::MMB(char* _name, uint8_t* _buffer, size_t _len) : DatChunk(_name, _buffer, 
                     SMMBBlockVertex2* vertex_head = (SMMBBlockVertex2*)(buffer + offset);
                     vertex.pos = {vertex_head->x, vertex_head->y, vertex_head->z};
                     vertex.normal = {vertex_head->hx, vertex_head->hy, vertex_head->hz};
-                    vertex.color = {((vertex_head->color & 0xFF0000) >> 16) / 128.f,
-                                    ((vertex_head->color & 0xFF00) >> 8) / 128.f, (vertex_head->color & 0xFF) / 128.f,
-                                    ((vertex_head->color & 0xFF000000) >> 24) / 128.f};
+                    vertex.color = {((vertex_head->color & 0xFF0000) >> 16) / 128.f, ((vertex_head->color & 0xFF00) >> 8) / 128.f,
+                                    (vertex_head->color & 0xFF) / 128.f, ((vertex_head->color & 0xFF000000) >> 24) / 128.f};
                     vertex.tex_coord = {vertex_head->u, vertex_head->v};
                     offset += sizeof(SMMBBlockVertex2);
                 }
@@ -301,17 +292,15 @@ MMB::MMB(char* _name, uint8_t* _buffer, size_t _len) : DatChunk(_name, _buffer, 
                     SMMBBlockVertex* vertex_head = (SMMBBlockVertex*)(buffer + offset);
                     vertex.pos = {vertex_head->x, vertex_head->y, vertex_head->z};
                     vertex.normal = {vertex_head->hx, vertex_head->hy, vertex_head->hz};
-                    vertex.color = {((vertex_head->color & 0xFF0000) >> 16) / 128.f,
-                                    ((vertex_head->color & 0xFF00) >> 8) / 128.f, (vertex_head->color & 0xFF) / 128.f,
-                                    ((vertex_head->color & 0xFF000000) >> 24) / 128.f};
+                    vertex.color = {((vertex_head->color & 0xFF0000) >> 16) / 128.f, ((vertex_head->color & 0xFF00) >> 8) / 128.f,
+                                    (vertex_head->color & 0xFF) / 128.f, ((vertex_head->color & 0xFF000000) >> 24) / 128.f};
                     vertex.tex_coord = {vertex_head->u, vertex_head->v};
                     offset += sizeof(SMMBBlockVertex);
                 }
                 // displace vertices slightly because RTX can't use mesh order to determine z-fighting
                 float mesh_offset = 0.00001f;
-                glm::vec3 mesh_scale =
-                    glm::vec3(vertex.normal.x * mesh_offset * model_index, vertex.normal.y * mesh_offset * model_index,
-                              vertex.normal.z * mesh_offset * model_index);
+                glm::vec3 mesh_scale = glm::vec3(vertex.normal.x * mesh_offset * model_index, vertex.normal.y * mesh_offset * model_index,
+                                                 vertex.normal.z * mesh_offset * model_index);
                 vertex.pos += mesh_scale;
                 mesh.vertices.push_back(std::move(vertex));
             }
@@ -319,8 +308,7 @@ MMB::MMB(char* _name, uint8_t* _buffer, size_t _len) : DatChunk(_name, _buffer, 
             uint16_t num_indices = *(uint16_t*)(buffer + offset);
             offset += 4;
 
-            if ((head->id[0] == 'M' && head->id[1] == 'M' && head->id[2] == 'B') ||
-                (head->id[0] != 'M' && head2->d3 == 2))
+            if ((head->id[0] == 'M' && head->id[1] == 'M' && head->id[2] == 'B') || (head->id[0] != 'M' && head2->d3 == 2))
             {
                 mesh.topology = vk::PrimitiveTopology::eTriangleList;
                 for (int i = 0; i < num_indices; ++i)
@@ -434,11 +422,10 @@ lotus::Task<> MMBLoader::LoadModel(std::shared_ptr<lotus::Model> model, lotus::E
     std::shared_ptr<lotus::Buffer> material_buffer;
     if (mmb->meshes.size() > 0)
     {
-        material_buffer = engine->renderer->gpu->memory_manager->GetBuffer(
-            lotus::Material::getMaterialBufferSize(engine) * mmb->meshes.size(),
-            vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst |
-                vk::BufferUsageFlagBits::eShaderDeviceAddress,
-            vk::MemoryPropertyFlagBits::eDeviceLocal);
+        material_buffer = engine->renderer->gpu->memory_manager->GetBuffer(lotus::Material::getMaterialBufferSize(engine) * mmb->meshes.size(),
+                                                                           vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst |
+                                                                               vk::BufferUsageFlagBits::eShaderDeviceAddress,
+                                                                           vk::MemoryPropertyFlagBits::eDeviceLocal);
     }
     uint32_t material_buffer_offset = 0;
 
@@ -448,8 +435,7 @@ lotus::Task<> MMBLoader::LoadModel(std::shared_ptr<lotus::Model> model, lotus::E
         std::shared_ptr<lotus::Texture> texture = lotus::Texture::getTexture(mmb_mesh.textureName);
         if (!texture)
             texture = lotus::Texture::getTexture("default");
-        material_map.insert(std::make_pair(
-            mesh.get(), lotus::Material::make_material(engine, material_buffer, material_buffer_offset, texture, 1)));
+        material_map.insert(std::make_pair(mesh.get(), lotus::Material::make_material(engine, material_buffer, material_buffer_offset, texture, 1)));
         material_buffer_offset += lotus::Material::getMaterialBufferSize(engine);
 
         mesh->setVertexInputAttributeDescription(getMMBAttributeDescriptions(), sizeof(FFXI::MMB::Vertex));
@@ -473,18 +459,16 @@ lotus::Task<> MMBLoader::LoadModel(std::shared_ptr<lotus::Model> model, lotus::E
 
         if (engine->config->renderer.RaytraceEnabled())
         {
-            vertex_usage_flags |= vk::BufferUsageFlagBits::eStorageBuffer |
-                                  vk::BufferUsageFlagBits::eShaderDeviceAddress |
+            vertex_usage_flags |= vk::BufferUsageFlagBits::eStorageBuffer | vk::BufferUsageFlagBits::eShaderDeviceAddress |
                                   vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
-            index_usage_flags |= vk::BufferUsageFlagBits::eStorageBuffer |
-                                 vk::BufferUsageFlagBits::eShaderDeviceAddress |
+            index_usage_flags |= vk::BufferUsageFlagBits::eStorageBuffer | vk::BufferUsageFlagBits::eShaderDeviceAddress |
                                  vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
         }
 
-        mesh->vertex_buffer = engine->renderer->gpu->memory_manager->GetBuffer(
-            vertices_uint8.size(), vertex_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
-        mesh->index_buffer = engine->renderer->gpu->memory_manager->GetBuffer(indices_uint8.size(), index_usage_flags,
-                                                                              vk::MemoryPropertyFlagBits::eDeviceLocal);
+        mesh->vertex_buffer =
+            engine->renderer->gpu->memory_manager->GetBuffer(vertices_uint8.size(), vertex_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
+        mesh->index_buffer =
+            engine->renderer->gpu->memory_manager->GetBuffer(indices_uint8.size(), index_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
 
         mesh->setMaxIndex(*std::ranges::max_element(mmb_mesh.indices));
 
@@ -553,8 +537,8 @@ void MMBLoader::InitPipeline(lotus::Engine* engine)
     depth_stencil.stencilTestEnable = false;
 
     vk::PipelineColorBlendAttachmentState color_blend_attachment;
-    color_blend_attachment.colorWriteMask = vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG |
-                                            vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA;
+    color_blend_attachment.colorWriteMask =
+        vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA;
     color_blend_attachment.blendEnable = false;
     color_blend_attachment.alphaBlendOp = vk::BlendOp::eAdd;
     color_blend_attachment.colorBlendOp = vk::BlendOp::eAdd;
@@ -578,8 +562,8 @@ void MMBLoader::InitPipeline(lotus::Engine* engine)
     color_blending.blendConstants[3] = 0.0f;
 
     std::vector<vk::DynamicState> dynamic_states = {vk::DynamicState::eScissor, vk::DynamicState::eViewport};
-    vk::PipelineDynamicStateCreateInfo dynamic_state_ci{
-        .dynamicStateCount = static_cast<uint32_t>(dynamic_states.size()), .pDynamicStates = dynamic_states.data()};
+    vk::PipelineDynamicStateCreateInfo dynamic_state_ci{.dynamicStateCount = static_cast<uint32_t>(dynamic_states.size()),
+                                                        .pDynamicStates = dynamic_states.data()};
 
     vk::PipelineViewportStateCreateInfo viewport_info{.viewportCount = 1, .scissorCount = 1};
 

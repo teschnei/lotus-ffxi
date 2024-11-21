@@ -32,8 +32,7 @@ lotus::Task<std::unique_ptr<SchedulerResources>> SchedulerResources::Load(FFXIGa
     co_return std::move(dat);
 }
 
-void SchedulerResources::ParseDir(FFXI::DatChunk* chunk,
-                                  std::vector<lotus::Task<std::shared_ptr<lotus::Texture>>>& texture_tasks,
+void SchedulerResources::ParseDir(FFXI::DatChunk* chunk, std::vector<lotus::Task<std::shared_ptr<lotus::Texture>>>& texture_tasks,
                                   std::vector<lotus::Task<>>& model_tasks)
 {
     // not sure if by design or not, but it seems like all the subitems don't have any overlapping names
@@ -51,8 +50,7 @@ void SchedulerResources::ParseDir(FFXI::DatChunk* chunk,
         {
             if (dxt3->width > 0)
             {
-                texture_tasks.push_back(
-                    lotus::Texture::LoadTexture(dxt3->name, FFXI::DXT3Loader::LoadTexture, game->engine.get(), dxt3));
+                texture_tasks.push_back(lotus::Texture::LoadTexture(dxt3->name, FFXI::DXT3Loader::LoadTexture, game->engine.get(), dxt3));
             }
         }
         else if (auto keyframe = dynamic_cast<FFXI::Keyframe*>(child_chunk.get()))
@@ -64,16 +62,14 @@ void SchedulerResources::ParseDir(FFXI::DatChunk* chunk,
     {
         if (auto d3m = dynamic_cast<FFXI::D3M*>(child_chunk.get()))
         {
-            auto [model, model_task] =
-                lotus::Model::LoadModel(std::string(d3m->name, 4), FFXI::D3MLoader::LoadD3M, game->engine.get(), d3m);
+            auto [model, model_task] = lotus::Model::LoadModel(std::string(d3m->name, 4), FFXI::D3MLoader::LoadD3M, game->engine.get(), d3m);
             generator_models.push_back(model);
             if (model_task)
                 model_tasks.push_back(std::move(*model_task));
         }
         else if (auto d3a = dynamic_cast<FFXI::D3A*>(child_chunk.get()))
         {
-            auto [model, model_task] = lotus::Model::LoadModel(std::string(d3a->name, 4) + "_d3a",
-                                                               FFXI::D3MLoader::LoadD3A, game->engine.get(), d3a);
+            auto [model, model_task] = lotus::Model::LoadModel(std::string(d3a->name, 4) + "_d3a", FFXI::D3MLoader::LoadD3A, game->engine.get(), d3a);
             generator_models.push_back(model);
             if (model_task)
                 model_tasks.push_back(std::move(*model_task));

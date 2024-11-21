@@ -99,7 +99,7 @@ std::unique_ptr<SoLoud::AudioSource> FFXI::Audio::loadSound(uint32_t id)
             return as;
         }
     }
-    throw std::runtime_error("sound not found: " + id);
+    throw std::runtime_error(std::format("sound not found: {}", id));
 }
 
 std::unique_ptr<SoLoud::AudioSource> FFXI::Audio::loadMusic(uint32_t id)
@@ -111,7 +111,7 @@ std::unique_ptr<SoLoud::AudioSource> FFXI::Audio::loadMusic(uint32_t id)
             return as;
         }
     }
-    throw std::runtime_error("music not found: " + id);
+    throw std::runtime_error(std::format("music not found: {}", id));
 }
 
 std::unique_ptr<SoLoud::AudioSource> FFXI::Audio::loadAudioSource(std::filesystem::path path)
@@ -133,13 +133,11 @@ std::unique_ptr<SoLoud::AudioSource> FFXI::Audio::loadAudioSource(std::filesyste
         float sample_rate = (header->sample_rate_low + header->sample_rate_high);
         if (header->sample_format == SampleFormat::ADPCM)
         {
-            return std::make_unique<ADPCM>(std::move(file), header->sample_blocks, header->blocksize,
-                                           header->loop_start, header->channels, sample_rate);
+            return std::make_unique<ADPCM>(std::move(file), header->sample_blocks, header->blocksize, header->loop_start, header->channels, sample_rate);
         }
         else if (header->sample_format == SampleFormat::PCM)
         {
-            return std::make_unique<PCM>(std::move(file), header->sample_blocks, header->blocksize, header->loop_start,
-                                         header->channels, sample_rate);
+            return std::make_unique<PCM>(std::move(file), header->sample_blocks, header->blocksize, header->loop_start, header->channels, sample_rate);
         }
     }
     else if (std::string((const char*)data.data(), 8).starts_with("BGMStrea"))
@@ -148,8 +146,7 @@ std::unique_ptr<SoLoud::AudioSource> FFXI::Audio::loadAudioSource(std::filesyste
         file.read((char*)data.data() + 8, sizeof(BGMHeader) - 8);
         BGMHeader* header = (BGMHeader*)(data.data());
         float sample_rate = (header->sample_rate_low + header->sample_rate_high);
-        return std::make_unique<ADPCMStream>(std::move(file), header->sample_blocks, header->blocksize,
-                                             header->loop_start, header->channels, sample_rate);
+        return std::make_unique<ADPCMStream>(std::move(file), header->sample_blocks, header->blocksize, header->loop_start, header->channels, sample_rate);
     }
     return nullptr;
 }

@@ -23,8 +23,7 @@ private:
 class ADPCM : public SoLoud::AudioSource
 {
 public:
-    ADPCM(std::ifstream&& file, uint32_t _blocks, uint32_t _block_size, uint32_t _loop_start, uint32_t _channels,
-          float _sample_rate);
+    ADPCM(std::ifstream&& file, uint32_t _blocks, uint32_t _block_size, uint32_t _loop_start, uint32_t _channels, float _sample_rate);
     virtual SoLoud::AudioSourceInstance* createInstance();
 
     uint32_t samples{};

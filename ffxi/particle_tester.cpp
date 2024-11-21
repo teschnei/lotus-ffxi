@@ -35,8 +35,8 @@ lotus::Task<> ParticleTester::tick(lotus::time_point time, lotus::duration delta
     if (add)
     {
         auto cast_scheduler = actor.getScheduler("cawh");
-        engine->game->scene->AddComponents(co_await FFXI::SchedulerComponent::make_component(
-            entity, engine, actor, cast_scheduler, scheduler_resources.get(), nullptr));
+        engine->game->scene->AddComponents(
+            co_await FFXI::SchedulerComponent::make_component(entity, engine, actor, cast_scheduler, scheduler_resources.get(), nullptr));
         start_time = time;
         add = false;
         casting = true;

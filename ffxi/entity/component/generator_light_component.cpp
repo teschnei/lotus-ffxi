@@ -11,8 +11,7 @@ import glm;
 
 namespace FFXI
 {
-GeneratorLightComponent::GeneratorLightComponent(lotus::Entity* _entity, lotus::Engine* _engine,
-                                                 FFXI::Generator* _generator)
+GeneratorLightComponent::GeneratorLightComponent(lotus::Entity* _entity, lotus::Engine* _engine, FFXI::Generator* _generator)
     : Component(_entity, _engine), generator(_generator)
 {
 }
@@ -51,8 +50,7 @@ lotus::Task<> GeneratorLightComponent::init()
         case 0x03:
         {
             auto dpos_fluctuation = *(glm::vec3*)(command);
-            dpos += glm::vec3(lotus::random::GetRandomNumber(dpos_fluctuation.x),
-                              lotus::random::GetRandomNumber(dpos_fluctuation.y),
+            dpos += glm::vec3(lotus::random::GetRandomNumber(dpos_fluctuation.x), lotus::random::GetRandomNumber(dpos_fluctuation.y),
                               lotus::random::GetRandomNumber(dpos_fluctuation.z));
         }
         break;
@@ -79,8 +77,8 @@ lotus::Task<> GeneratorLightComponent::init()
         case 0x16:
         {
             auto color_uint = *(uint32_t*)(command);
-            colour = glm::vec4{(color_uint & 0xFF) / 128.f, ((color_uint & 0xFF00) >> 8) / 128.f,
-                               ((color_uint & 0xFF0000) >> 16) / 128.f, ((color_uint & 0xFF000000) >> 24) / 128.f};
+            colour = glm::vec4{(color_uint & 0xFF) / 128.f, ((color_uint & 0xFF00) >> 8) / 128.f, ((color_uint & 0xFF0000) >> 16) / 128.f,
+                               ((color_uint & 0xFF000000) >> 24) / 128.f};
         }
         break;
         }
@@ -98,8 +96,7 @@ lotus::Task<> GeneratorLightComponent::init()
 
 lotus::Task<> GeneratorLightComponent::tick(lotus::time_point time, lotus::duration delta)
 {
-    float movement = 30.f / ((float)std::chrono::nanoseconds(1s).count() /
-                             std::chrono::duration_cast<std::chrono::nanoseconds>(delta).count());
+    float movement = 30.f / ((float)std::chrono::nanoseconds(1s).count() / std::chrono::duration_cast<std::chrono::nanoseconds>(delta).count());
 
     auto command = generator->buffer + generator->header->tick_command_offset - 16;
     while (command < generator->buffer + generator->header->expiry_command_offset - 16)

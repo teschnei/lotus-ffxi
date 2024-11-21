@@ -44,8 +44,7 @@ class D3MLoader
 public:
     static lotus::Task<> LoadD3M(std::shared_ptr<lotus::Model>, lotus::Engine*, D3M* d3m);
     static lotus::Task<> LoadD3A(std::shared_ptr<lotus::Model>, lotus::Engine*, D3A* d3a);
-    static lotus::Task<> LoadModelRing(std::shared_ptr<lotus::Model>, lotus::Engine*,
-                                       std::vector<D3M::Vertex>&& vertices, std::vector<uint16_t>&& indices);
+    static lotus::Task<> LoadModelRing(std::shared_ptr<lotus::Model>, lotus::Engine*, std::vector<D3M::Vertex>&& vertices, std::vector<uint16_t>&& indices);
 
 private:
     static lotus::Task<> InitPipeline(lotus::Engine*);
@@ -56,11 +55,9 @@ private:
     static inline std::atomic_flag pipeline_flag;
     static inline std::shared_ptr<lotus::Texture> blank_texture;
 
-    static lotus::Task<> LoadModelAABB(std::shared_ptr<lotus::Model>, lotus::Engine*,
-                                       std::vector<D3M::Vertex>& vertices, std::vector<uint16_t>& indices,
+    static lotus::Task<> LoadModelAABB(std::shared_ptr<lotus::Model>, lotus::Engine*, std::vector<D3M::Vertex>& vertices, std::vector<uint16_t>& indices,
                                        std::shared_ptr<lotus::Texture>, uint16_t sprite_count);
-    static lotus::Task<> LoadModelTriangle(std::shared_ptr<lotus::Model>, lotus::Engine*,
-                                           std::vector<D3M::Vertex>& vertices, std::vector<uint16_t>& indices,
+    static lotus::Task<> LoadModelTriangle(std::shared_ptr<lotus::Model>, lotus::Engine*, std::vector<D3M::Vertex>& vertices, std::vector<uint16_t>& indices,
                                            std::shared_ptr<lotus::Texture>, uint16_t sprite_count);
 
     class BlankTextureLoader

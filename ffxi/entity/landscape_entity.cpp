@@ -19,16 +19,14 @@
 
 import glm;
 
-lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, std::tuple<>>>
-FFXILandscapeEntity::Init(lotus::Engine* engine, lotus::Scene* scene, size_t zoneid)
+lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, std::tuple<>>> FFXILandscapeEntity::Init(lotus::Engine* engine, lotus::Scene* scene, size_t zoneid)
 {
     auto entity = std::make_shared<lotus::Entity>();
     co_await FFXILandscapeEntity::Load(entity, engine, zoneid, scene);
     co_return std::make_pair(entity, std::tuple<>());
 }
 
-lotus::WorkerTask<> FFXILandscapeEntity::Load(std::shared_ptr<lotus::Entity> entity, lotus::Engine* engine,
-                                              size_t zoneid, lotus::Scene* scene)
+lotus::WorkerTask<> FFXILandscapeEntity::Load(std::shared_ptr<lotus::Entity> entity, lotus::Engine* engine, size_t zoneid, lotus::Scene* scene)
 {
     size_t index = zoneid < 256 ? zoneid + 100 : zoneid + 83635;
     const auto& dat = static_cast<FFXIGame*>(engine->game)->dat_loader->GetDat(index);
@@ -75,16 +73,14 @@ lotus::WorkerTask<> FFXILandscapeEntity::Load(std::shared_ptr<lotus::Entity> ent
                             // it seems ffxi never did lighting in linear colour space, as these fog colours seem to be
                             // the final output values
                             FFXI::LandscapeComponent::LightTOD light = {
-                                uint_to_color_vec(casted->data->sunlight_diffuse1) +
-                                    uint_to_color_vec(casted->data->ambient1),
+                                uint_to_color_vec(casted->data->sunlight_diffuse1) + uint_to_color_vec(casted->data->ambient1),
                                 uint_to_color_vec(casted->data->moonlight_diffuse1),
                                 uint_to_color_vec(casted->data->ambient1),
                                 glm::convertSRGBToLinear(uint_to_color_vec(casted->data->fog1)),
                                 casted->data->max_fog_dist1 + casted->data->fog_offset,
                                 casted->data->min_fog_dist1 + casted->data->fog_offset,
                                 casted->data->brightness1,
-                                uint_to_color_vec(casted->data->sunlight_diffuse2) +
-                                    uint_to_color_vec(casted->data->ambient2),
+                                uint_to_color_vec(casted->data->sunlight_diffuse2) + uint_to_color_vec(casted->data->ambient2),
                                 uint_to_color_vec(casted->data->moonlight_diffuse2),
                                 uint_to_color_vec(casted->data->ambient2),
                                 glm::convertSRGBToLinear(uint_to_color_vec(casted->data->fog2)),
@@ -96,8 +92,7 @@ lotus::WorkerTask<> FFXILandscapeEntity::Load(std::shared_ptr<lotus::Entity> ent
                             memcpy(light.skybox_altitudes, casted->data->skybox_values, sizeof(float) * 8);
                             for (int i = 0; i < 8; ++i)
                             {
-                                light.skybox_colors[i] =
-                                    glm::convertSRGBToLinear(uint_to_color_vec(casted->data->skybox_colors[i]));
+                                light.skybox_colors[i] = glm::convertSRGBToLinear(uint_to_color_vec(casted->data->skybox_colors[i]));
                             }
                             weather_light_map[weather][time] = std::move(light);
                         }
@@ -115,14 +110,12 @@ lotus::WorkerTask<> FFXILandscapeEntity::Load(std::shared_ptr<lotus::Entity> ent
                 {
                     if (dxt3->width > 0)
                     {
-                        texture_tasks.push_back(
-                            lotus::Texture::LoadTexture(dxt3->name, FFXI::DXT3Loader::LoadTexture, engine, dxt3));
+                        texture_tasks.push_back(lotus::Texture::LoadTexture(dxt3->name, FFXI::DXT3Loader::LoadTexture, engine, dxt3));
                     }
                 }
                 else if (auto d3m = dynamic_cast<FFXI::D3M*>(chunk2.get()))
                 {
-                    auto [model, model_task] =
-                        lotus::Model::LoadModel(std::string(d3m->name, 4), FFXI::D3MLoader::LoadD3M, engine, d3m);
+                    auto [model, model_task] = lotus::Model::LoadModel(std::string(d3m->name, 4), FFXI::D3MLoader::LoadD3M, engine, d3m);
                     // TODO: if these generator models end up in a separate component, don't need to put them in the
                     // models array
                     generator_models.push_back(model);
@@ -132,8 +125,7 @@ lotus::WorkerTask<> FFXILandscapeEntity::Load(std::shared_ptr<lotus::Entity> ent
                 }
                 else if (auto d3a = dynamic_cast<FFXI::D3A*>(chunk2.get()))
                 {
-                    auto [model, model_task] = lotus::Model::LoadModel(std::string(d3a->name, 4) + "_d3a",
-                                                                       FFXI::D3MLoader::LoadD3A, engine, d3a);
+                    auto [model, model_task] = lotus::Model::LoadModel(std::string(d3a->name, 4) + "_d3a", FFXI::D3MLoader::LoadD3A, engine, d3a);
                     generator_models.push_back(model);
                     models.push_back(model);
                     if (model_task)
@@ -141,8 +133,7 @@ lotus::WorkerTask<> FFXILandscapeEntity::Load(std::shared_ptr<lotus::Entity> ent
                 }
                 else if (auto mmb = dynamic_cast<FFXI::MMB*>(chunk2.get()))
                 {
-                    auto [model, model_task] =
-                        lotus::Model::LoadModel(std::string(mmb->name, 4), FFXI::MMBLoader::LoadModel, engine, mmb);
+                    auto [model, model_task] = lotus::Model::LoadModel(std::string(mmb->name, 4), FFXI::MMBLoader::LoadModel, engine, mmb);
                     generator_models.push_back(model);
                     models.push_back(model);
                     if (model_task)
@@ -154,8 +145,7 @@ lotus::WorkerTask<> FFXILandscapeEntity::Load(std::shared_ptr<lotus::Entity> ent
                     {
                         if (auto generator = dynamic_cast<FFXI::Generator*>(chunk3.get()))
                         {
-                            scene->AddComponents(co_await FFXI::GeneratorComponent::make_component(
-                                entity.get(), engine, generator, 0ms, nullptr));
+                            scene->AddComponents(co_await FFXI::GeneratorComponent::make_component(entity.get(), engine, generator, 0ms, nullptr));
                         }
                     }
                 }
@@ -169,8 +159,7 @@ lotus::WorkerTask<> FFXILandscapeEntity::Load(std::shared_ptr<lotus::Entity> ent
         {
             if (dxt3->width > 0)
             {
-                texture_tasks.push_back(
-                    lotus::Texture::LoadTexture(dxt3->name, FFXI::DXT3Loader::LoadTexture, engine, dxt3));
+                texture_tasks.push_back(lotus::Texture::LoadTexture(dxt3->name, FFXI::DXT3Loader::LoadTexture, engine, dxt3));
             }
         }
         else if (auto mzb_chunk = dynamic_cast<FFXI::MZB*>(chunk.get()))
@@ -201,11 +190,9 @@ lotus::WorkerTask<> FFXILandscapeEntity::Load(std::shared_ptr<lotus::Entity> ent
         {
             std::string name(mzb_piece.id, 16);
 
-            auto pos_mat =
-                glm::translate(glm::mat4{1.f}, glm::vec3{mzb_piece.fTransX, mzb_piece.fTransY, mzb_piece.fTransZ});
+            auto pos_mat = glm::translate(glm::mat4{1.f}, glm::vec3{mzb_piece.fTransX, mzb_piece.fTransY, mzb_piece.fTransZ});
             auto rot_mat = glm::mat4_cast(glm::quat{glm::vec3{mzb_piece.fRotX, mzb_piece.fRotY, mzb_piece.fRotZ}});
-            auto scale_mat =
-                glm::scale(glm::mat4{1.f}, glm::vec3{mzb_piece.fScaleX, mzb_piece.fScaleY, mzb_piece.fScaleZ});
+            auto scale_mat = glm::scale(glm::mat4{1.f}, glm::vec3{mzb_piece.fScaleX, mzb_piece.fScaleY, mzb_piece.fScaleZ});
 
             glm::mat4 model = pos_mat * rot_mat * scale_mat;
             glm::mat4 model_t = glm::transpose(model);
@@ -217,8 +204,7 @@ lotus::WorkerTask<> FFXILandscapeEntity::Load(std::shared_ptr<lotus::Entity> ent
         for (auto& [name, info_vec] : temp_map)
         {
             instance_offsets[name] = std::make_pair(instance_info.size(), static_cast<uint32_t>(info_vec.size()));
-            instance_info.insert(instance_info.end(), std::make_move_iterator(info_vec.begin()),
-                                 std::make_move_iterator(info_vec.end()));
+            instance_info.insert(instance_info.end(), std::make_move_iterator(info_vec.begin()), std::make_move_iterator(info_vec.end()));
         }
 
         // quadtree component?
@@ -271,30 +257,23 @@ lotus::WorkerTask<> FFXILandscapeEntity::Load(std::shared_ptr<lotus::Entity> ent
                 }
             }
         }
-        auto [collision_model, collision_model_task] =
-            lotus::Model::LoadModel("", FFXI::CollisionLoader::LoadModel, engine, mzb->meshes, mzb->mesh_entries);
+        auto [collision_model, collision_model_task] = lotus::Model::LoadModel("", FFXI::CollisionLoader::LoadModel, engine, mzb->meshes, mzb->mesh_entries);
         std::vector<std::shared_ptr<lotus::Model>> collision_models{collision_model};
 
         for (const auto& task : model_tasks)
         {
             co_await task;
         }
-        auto models_c = co_await lotus::Component::InstancedModelsComponent::make_component(
-            entity.get(), engine, models, instance_info, instance_offsets);
-        auto models_raster =
-            engine->config->renderer.RasterizationEnabled()
-                ? co_await lotus::Component::InstancedRasterComponent::make_component(entity.get(), engine, *models_c)
-                : nullptr;
-        auto models_raytrace =
-            engine->config->renderer.RaytraceEnabled()
-                ? co_await lotus::Component::InstancedRaytraceComponent::make_component(entity.get(), engine, *models_c)
-                : nullptr;
-        auto coll =
-            co_await lotus::Component::StaticCollisionComponent::make_component(entity.get(), engine, collision_models);
-        auto land_comp =
-            co_await FFXI::LandscapeComponent::make_component(entity.get(), engine, std::move(weather_light_map));
-        scene->AddComponents(std::move(models_c), std::move(models_raster), std::move(models_raytrace), std::move(coll),
-                             std::move(land_comp));
+        auto models_c = co_await lotus::Component::InstancedModelsComponent::make_component(entity.get(), engine, models, instance_info, instance_offsets);
+        auto models_raster = engine->config->renderer.RasterizationEnabled()
+                                 ? co_await lotus::Component::InstancedRasterComponent::make_component(entity.get(), engine, *models_c)
+                                 : nullptr;
+        auto models_raytrace = engine->config->renderer.RaytraceEnabled()
+                                   ? co_await lotus::Component::InstancedRaytraceComponent::make_component(entity.get(), engine, *models_c)
+                                   : nullptr;
+        auto coll = co_await lotus::Component::StaticCollisionComponent::make_component(entity.get(), engine, collision_models);
+        auto land_comp = co_await FFXI::LandscapeComponent::make_component(entity.get(), engine, std::move(weather_light_map));
+        scene->AddComponents(std::move(models_c), std::move(models_raster), std::move(models_raytrace), std::move(coll), std::move(land_comp));
 
         for (const auto& task : texture_tasks)
         {

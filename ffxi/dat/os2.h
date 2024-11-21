@@ -1,11 +1,11 @@
 #pragma once
 
 #include "dat_chunk.h"
-#include <lotus/renderer/vulkan/vulkan_inc.h>
 #include <string>
 #include <vector>
 
 import glm;
+import vulkan_hpp;
 
 namespace FFXI
 {

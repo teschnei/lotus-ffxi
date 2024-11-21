@@ -9,10 +9,9 @@
 
 namespace FFXI
 {
-GeneratorComponent::GeneratorComponent(lotus::Entity* _entity, lotus::Engine* _engine, FFXI::Generator* _generator,
-                                       lotus::duration _duration, FFXI::SchedulerComponent* _parent)
-    : Component(_entity, _engine), generator(_generator), duration(_duration), parent(_parent),
-      start_time(engine->getSimulationTime())
+GeneratorComponent::GeneratorComponent(lotus::Entity* _entity, lotus::Engine* _engine, FFXI::Generator* _generator, lotus::duration _duration,
+                                       FFXI::SchedulerComponent* _parent)
+    : Component(_entity, _engine), generator(_generator), duration(_duration), parent(_parent), start_time(engine->getSimulationTime())
 {
 }
 
@@ -51,12 +50,11 @@ lotus::Task<> GeneratorComponent::init()
                 for (auto v = 0; v < segments; ++v)
                 {
                     D3M::Vertex vertex;
-                    vertex.pos = glm::vec3(std::cos((v * 2 * glm::pi<float>()) / segments) * radii[r],
-                                           std::sin((v * 2 * glm::pi<float>()) / segments) * radii[r], 0.0);
+                    vertex.pos =
+                        glm::vec3(std::cos((v * 2 * glm::pi<float>()) / segments) * radii[r], std::sin((v * 2 * glm::pi<float>()) / segments) * radii[r], 0.0);
                     vertex.normal = glm::vec3(0.0, 0.0, 1.0);
-                    vertex.color =
-                        glm::vec4{((colours[r] & 0x0000FF)) / 128.f, ((colours[r] & 0x00FF00) >> 8) / 128.f,
-                                  ((colours[r] & 0xFF0000) >> 16) / 128.f, ((colours[r] & 0xFF000000) >> 24) / 128.f};
+                    vertex.color = glm::vec4{((colours[r] & 0x0000FF)) / 128.f, ((colours[r] & 0x00FF00) >> 8) / 128.f, ((colours[r] & 0xFF0000) >> 16) / 128.f,
+                                             ((colours[r] & 0xFF000000) >> 24) / 128.f};
                     vertex.uv = glm::vec2(0.0);
                     ring_vertices.push_back(vertex);
                 }
@@ -91,9 +89,8 @@ lotus::Task<> GeneratorComponent::init()
         break;
     case Type::ModelRing:
     {
-        auto [new_model, model_task] =
-            lotus::Model::LoadModel(std::string(generator->name, 4) + "_" + id, FFXI::D3MLoader::LoadModelRing, engine,
-                                    std::move(ring_vertices), std::move(ring_indices));
+        auto [new_model, model_task] = lotus::Model::LoadModel(std::string(generator->name, 4) + "_" + id, FFXI::D3MLoader::LoadModelRing, engine,
+                                                               std::move(ring_vertices), std::move(ring_indices));
         model = new_model;
         if (model_task)
             co_await *model_task;
@@ -134,8 +131,7 @@ lotus::Task<> GeneratorComponent::tick(lotus::time_point time, lotus::duration d
         co_return;
     }
 
-    if (time > start_time + next_generation &&
-        (generations <= total_generations || (generator->header->flags5 & 0x10 && model)))
+    if (time > start_time + next_generation && (generations <= total_generations || (generator->header->flags5 & 0x10 && model)))
     {
         for (int occ = 0; occ < generator->header->occurences + 1; ++occ)
         {
@@ -148,16 +144,14 @@ lotus::Task<> GeneratorComponent::tick(lotus::time_point time, lotus::duration d
             {
                 if (model && model->meshes[0]->pipelines.size() > 2)
                 {
-                    auto e = co_await engine->game->scene->AddEntity<FFXIParticle>(entity->getSharedPtr(), generator,
-                                                                                   model, index);
+                    auto e = co_await engine->game->scene->AddEntity<FFXIParticle>(entity->getSharedPtr(), generator, model, index);
                 }
                 if (sound)
                 {
                 }
                 if (light)
                 {
-                    auto e = engine->game->scene->AddComponents(
-                        co_await FFXI::GeneratorLightComponent::make_component(entity, engine, generator));
+                    auto e = engine->game->scene->AddComponents(co_await FFXI::GeneratorLightComponent::make_component(entity, engine, generator));
                 }
             }
             index++;

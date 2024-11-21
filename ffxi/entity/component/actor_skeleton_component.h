@@ -14,8 +14,7 @@ class Generator;
 
 class ActorSkeletonComponent
     : public lotus::Component::Component<ActorSkeletonComponent,
-                                         lotus::Component::Before<lotus::Component::DeformedMeshComponent,
-                                                                  lotus::Component::DeformableRaytraceComponent>>
+                                         lotus::Component::Before<lotus::Component::DeformedMeshComponent, lotus::Component::DeformableRaytraceComponent>>
 {
 public:
     union LookData
@@ -36,12 +35,9 @@ public:
         uint16_t slots[9];
     };
 
-    explicit ActorSkeletonComponent(lotus::Entity*, lotus::Engine* engine,
-                                    lotus::Component::AnimationComponent& animation_component,
-                                    lotus::Component::DeformedMeshComponent& deformed_mesh,
-                                    lotus::Component::DeformableRaytraceComponent* raytrace,
-                                    std::shared_ptr<const ActorSkeletonStatic> skeleton,
-                                    std::variant<LookData, uint16_t> look,
+    explicit ActorSkeletonComponent(lotus::Entity*, lotus::Engine* engine, lotus::Component::AnimationComponent& animation_component,
+                                    lotus::Component::DeformedMeshComponent& deformed_mesh, lotus::Component::DeformableRaytraceComponent* raytrace,
+                                    std::shared_ptr<const ActorSkeletonStatic> skeleton, std::variant<LookData, uint16_t> look,
                                     std::unordered_map<std::string, FFXI::Scheduler*>&& scheduler_map,
                                     std::unordered_map<std::string, FFXI::Generator*>&& generator_map);
 

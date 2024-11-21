@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <lotus/types.h>
 #include <memory>
 #include <vector>

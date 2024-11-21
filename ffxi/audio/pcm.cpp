@@ -31,8 +31,7 @@ bool PCMInstance::hasEnded()
     return false;
 }
 
-PCM::PCM(std::ifstream&& file, uint32_t _samples, uint32_t block_size, uint32_t _loop_start, uint32_t _channels,
-         float _sample_rate)
+PCM::PCM(std::ifstream&& file, uint32_t _samples, uint32_t block_size, uint32_t _loop_start, uint32_t _channels, float _sample_rate)
     : samples(_samples), loop_start(_loop_start)
 {
     mChannels = _channels;

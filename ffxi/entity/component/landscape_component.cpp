@@ -5,8 +5,7 @@
 
 namespace FFXI
 {
-LandscapeComponent::LandscapeComponent(lotus::Entity* _entity, lotus::Engine* _engine,
-                                       std::map<std::string, std::map<uint32_t, LightTOD>>&& _weather_light_map)
+LandscapeComponent::LandscapeComponent(lotus::Entity* _entity, lotus::Engine* _engine, std::map<std::string, std::map<uint32_t, LightTOD>>&& _weather_light_map)
     : Component(_entity, _engine), weather_light_map(std::move(_weather_light_map))
 {
     light_id = engine->lights->AddLight({});
@@ -14,9 +13,7 @@ LandscapeComponent::LandscapeComponent(lotus::Entity* _entity, lotus::Engine* _e
 
 lotus::Task<> LandscapeComponent::tick(lotus::time_point time, lotus::duration delta)
 {
-    current_time =
-        std::chrono::duration_cast<FFXITime::milliseconds>((FFXITime::vana_time() % FFXITime::days(1))).count() /
-        60000.f;
+    current_time = std::chrono::duration_cast<FFXITime::milliseconds>((FFXITime::vana_time() % FFXITime::days(1))).count() / 60000.f;
     // current_time = 570;
 
     auto& weather_data = weather_light_map[current_weather];
@@ -32,12 +29,14 @@ lotus::Task<> LandscapeComponent::tick(lotus::time_point time, lotus::duration d
 
     float a = 1.0;
     if (time1 != time2)
+    {
         if (time2->first > time1->first)
             a = (current_time - time1->first) / (time2->first - time1->first);
         else if (current_time > time1->first)
             a = (current_time - time1->first) / ((1440 - time2->first) + time1->first);
         else
             a = ((1440 - time1->first) + current_time) / ((1440 - time2->first) + time1->first);
+    }
 
     auto& light = engine->lights->light;
     light.entity.specular_color = glm::vec4(1.f);
@@ -55,10 +54,8 @@ lotus::Task<> LandscapeComponent::tick(lotus::time_point time, lotus::duration d
     light.landscape.brightness = glm::mix(time1->second.brightness_landscape, time2->second.brightness_landscape, a);
     if (current_time > 360 && current_time < 1080)
     {
-        glm::vec4 sunlight_colour_entity =
-            glm::mix(time1->second.sunlight_diffuse_entity, time2->second.sunlight_diffuse_entity, a);
-        glm::vec4 sunlight_colour_landscape =
-            glm::mix(time1->second.sunlight_diffuse_landscape, time2->second.sunlight_diffuse_landscape, a);
+        glm::vec4 sunlight_colour_entity = glm::mix(time1->second.sunlight_diffuse_entity, time2->second.sunlight_diffuse_entity, a);
+        glm::vec4 sunlight_colour_landscape = glm::mix(time1->second.sunlight_diffuse_landscape, time2->second.sunlight_diffuse_landscape, a);
         light.entity.diffuse_color = sunlight_colour_entity;
         light.landscape.diffuse_color = sunlight_colour_landscape;
         // sun radius: 4.7, distance 1000
@@ -69,10 +66,8 @@ lotus::Task<> LandscapeComponent::tick(lotus::time_point time, lotus::duration d
     }
     else
     {
-        glm::vec4 moonlight_colour_entity =
-            glm::mix(time1->second.moonlight_diffuse_entity, time2->second.moonlight_diffuse_entity, a);
-        glm::vec4 moonlight_colour_landscape =
-            glm::mix(time1->second.moonlight_diffuse_landscape, time2->second.moonlight_diffuse_landscape, a);
+        glm::vec4 moonlight_colour_entity = glm::mix(time1->second.moonlight_diffuse_entity, time2->second.moonlight_diffuse_entity, a);
+        glm::vec4 moonlight_colour_landscape = glm::mix(time1->second.moonlight_diffuse_landscape, time2->second.moonlight_diffuse_landscape, a);
         light.entity.diffuse_color = moonlight_colour_entity;
         light.landscape.diffuse_color = moonlight_colour_landscape;
         // moon radius: 4.5, distance 1000

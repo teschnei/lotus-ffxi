@@ -23,8 +23,7 @@ private:
 class PCM : public SoLoud::AudioSource
 {
 public:
-    PCM(std::ifstream&& file, uint32_t samples, uint32_t block_size, uint32_t loop_start, uint32_t channels,
-        float sample_rate);
+    PCM(std::ifstream&& file, uint32_t samples, uint32_t block_size, uint32_t loop_start, uint32_t channels, float sample_rate);
     virtual SoLoud::AudioSourceInstance* createInstance();
 
     uint32_t samples{};

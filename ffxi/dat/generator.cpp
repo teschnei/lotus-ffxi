@@ -179,12 +179,11 @@ Generator::Generator(char* _name, uint8_t* _buffer, size_t _len) : DatChunk(_nam
                 for (auto v = 0; v < segments; ++v)
                 {
                     D3M::Vertex vertex;
-                    vertex.pos = glm::vec3(std::cos((v * 2 * glm::pi<float>()) / segments) * radii[r],
-                                           std::sin((v * 2 * glm::pi<float>()) / segments) * radii[r], 0.0);
+                    vertex.pos =
+                        glm::vec3(std::cos((v * 2 * glm::pi<float>()) / segments) * radii[r], std::sin((v * 2 * glm::pi<float>()) / segments) * radii[r], 0.0);
                     vertex.normal = glm::vec3(0.0, 0.0, 1.0);
-                    vertex.color =
-                        glm::vec4{((colours[r] & 0x0000FF)) / 255.0, ((colours[r] & 0x00FF00) >> 8) / 255.0,
-                                  ((colours[r] & 0xFF0000) >> 16) / 255.0, ((colours[r] & 0xFF000000) >> 24) / 128.0};
+                    vertex.color = glm::vec4{((colours[r] & 0x0000FF)) / 255.0, ((colours[r] & 0x00FF00) >> 8) / 255.0, ((colours[r] & 0xFF0000) >> 16) / 255.0,
+                                             ((colours[r] & 0xFF000000) >> 24) / 128.0};
                     vertex.uv = glm::vec2(0.0);
                     ring_vertices.push_back(vertex);
                 }

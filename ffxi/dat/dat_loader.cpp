@@ -16,8 +16,7 @@ DatLoader::DatLoader(std::filesystem::path install_path) : install_path(install_
     for (const auto& dir : std::filesystem::directory_iterator(install_path))
     {
         // a terrible hack that should probably get fixed in the standard
-        if (auto dir_ext = (dir.path() / "").parent_path().filename();
-            dir.is_directory() && dir_ext.string().starts_with("ROM"))
+        if (auto dir_ext = (dir.path() / "").parent_path().filename(); dir.is_directory() && dir_ext.string().starts_with("ROM"))
         {
             for (const auto& rom_file : std::filesystem::directory_iterator(dir))
             {

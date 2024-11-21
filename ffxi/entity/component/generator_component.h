@@ -13,8 +13,7 @@ class SchedulerComponent;
 class GeneratorComponent : public lotus::Component::Component<GeneratorComponent>
 {
 public:
-    explicit GeneratorComponent(lotus::Entity*, lotus::Engine* engine, FFXI::Generator* generator,
-                                lotus::duration duration, FFXI::SchedulerComponent* parent);
+    explicit GeneratorComponent(lotus::Entity*, lotus::Engine* engine, FFXI::Generator* generator, lotus::duration duration, FFXI::SchedulerComponent* parent);
 
     lotus::Task<> init();
     lotus::Task<> tick(lotus::time_point time, lotus::duration delta);

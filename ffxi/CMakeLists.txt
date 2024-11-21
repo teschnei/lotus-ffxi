@@ -17,7 +17,7 @@ add_executable(ffxi
 target_include_directories(ffxi PRIVATE "." )
 target_include_directories(ffxi PRIVATE "../external/stb" )
 
-target_link_libraries(ffxi lotus-engine GLMModule ${SDL2_LIBRARIES} ${Vulkan_LIBRARIES} $<$<PLATFORM_ID:Linux>:-ldl>)
+target_link_libraries(ffxi lotus-engine)
 
 if (MSVC)
     #these files never change, so they can be copied at generation time rather than build time

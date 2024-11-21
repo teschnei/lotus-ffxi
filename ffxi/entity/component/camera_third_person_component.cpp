@@ -5,11 +5,9 @@
 
 namespace FFXI
 {
-CameraThirdPersonComponent::CameraThirdPersonComponent(lotus::Entity* _entity, lotus::Engine* _engine,
-                                                       lotus::Component::CameraComponent& _camera,
+CameraThirdPersonComponent::CameraThirdPersonComponent(lotus::Entity* _entity, lotus::Engine* _engine, lotus::Component::CameraComponent& _camera,
                                                        ActorComponent& _target, bool right_click_face)
-    : Component(_entity, _engine), camera(_camera), target(_target),
-      right_click(right_click_face ? Look::LookBoth : Look::LookCamera)
+    : Component(_entity, _engine), camera(_camera), target(_target), right_click(right_click_face ? Look::LookBoth : Look::LookCamera)
 {
 }
 
@@ -19,9 +17,8 @@ lotus::Task<> CameraThirdPersonComponent::tick(lotus::time_point time, lotus::du
     // TODO: base this distance off a skeleton bind point
     glm::vec3 boom_source = target_pos + glm::vec3{0.f, -0.5f, 0.f};
 
-    auto new_distance =
-        co_await engine->renderer->raytrace_queryer->query(lotus::RaytraceQueryer::ObjectFlags::LevelCollision,
-                                                           boom_source, glm::vec3{1.f, 0.f, 0.f} * rot, 0.f, distance);
+    auto new_distance = co_await engine->renderer->raytrace_queryer->query(lotus::RaytraceQueryer::ObjectFlags::LevelCollision, boom_source,
+                                                                           glm::vec3{1.f, 0.f, 0.f} * rot, 0.f, distance);
     glm::vec3 boom{new_distance - 0.05f, 0.f, 0.f};
     camera.setPos((boom * rot) + boom_source);
     camera.setTarget(boom_source);

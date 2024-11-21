@@ -67,8 +67,7 @@ public:
     std::vector<CollisionEntry> mesh_entries;
     std::unordered_map<float, std::vector<CollisionEntry>> water_entries;
 
-    static lotus::Task<> LoadWaterModel(std::shared_ptr<lotus::Model>, lotus::Engine* engine,
-                                        std::pair<glm::vec3, glm::vec3> bb);
+    static lotus::Task<> LoadWaterModel(std::shared_ptr<lotus::Model>, lotus::Engine* engine, std::pair<glm::vec3, glm::vec3> bb);
     static lotus::Task<> LoadWaterTexture(std::shared_ptr<lotus::Texture>& texture, lotus::Engine* engine);
 
 private:
@@ -83,7 +82,7 @@ private:
 class CollisionLoader
 {
 public:
-    static lotus::Task<> LoadModel(std::shared_ptr<lotus::Model>, lotus::Engine* engine,
-                                   std::vector<CollisionMeshData>& meshes, std::vector<CollisionEntry>& entries);
+    static lotus::Task<> LoadModel(std::shared_ptr<lotus::Model>, lotus::Engine* engine, std::vector<CollisionMeshData>& meshes,
+                                   std::vector<CollisionEntry>& entries);
 };
 } // namespace FFXI

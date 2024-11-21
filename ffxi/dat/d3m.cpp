@@ -3,7 +3,6 @@
 #include <lotus/core.h>
 #include <lotus/renderer/vulkan/renderer.h>
 #include <numeric>
-#include <vulkan/vulkan_enums.hpp>
 
 namespace FFXI
 {
@@ -80,10 +79,9 @@ D3M::D3M(char* _name, uint8_t* _buffer, size_t _len) : DatChunk(_name, _buffer, 
     auto vertices = (DatVertexD3M*)(buffer + 0x1E);
     for (size_t i = 0; i < num_triangles * 3; ++i)
     {
-        glm::vec4 color{((vertices[i].color & 0xFF0000) >> 16) / 128.f, ((vertices[i].color & 0xFF00) >> 8) / 128.f,
-                        ((vertices[i].color & 0xFF)) / 128.f, ((vertices[i].color & 0xFF000000) >> 24) / 128.f};
-        vertex_buffer.push_back(
-            {.pos = vertices[i].pos, .normal = vertices[i].normal, .color = color, .uv = vertices[i].uv});
+        glm::vec4 color{((vertices[i].color & 0xFF0000) >> 16) / 128.f, ((vertices[i].color & 0xFF00) >> 8) / 128.f, ((vertices[i].color & 0xFF)) / 128.f,
+                        ((vertices[i].color & 0xFF000000) >> 24) / 128.f};
+        vertex_buffer.push_back({.pos = vertices[i].pos, .normal = vertices[i].normal, .color = color, .uv = vertices[i].uv});
     }
 }
 
@@ -100,21 +98,15 @@ D3A::D3A(char* _name, uint8_t* _buffer, size_t _len) : DatChunk(_name, _buffer, 
     {
         for (size_t j = 0; j < 6; ++j)
         {
-            glm::vec4 color{((rects[i].vertices[j].color & 0xFF0000) >> 16) / 128.f,
-                            ((rects[i].vertices[j].color & 0xFF00) >> 8) / 128.f,
-                            ((rects[i].vertices[j].color & 0xFF)) / 128.f,
-                            ((rects[i].vertices[j].color & 0xFF000000) >> 24) / 128.f};
-            vertex_buffer.push_back({.pos = rects[i].vertices[j].pos,
-                                     .normal = glm::vec3(0.f, 0.f, 1.f),
-                                     .color = color,
-                                     .uv = rects[i].vertices[j].uv});
+            glm::vec4 color{((rects[i].vertices[j].color & 0xFF0000) >> 16) / 128.f, ((rects[i].vertices[j].color & 0xFF00) >> 8) / 128.f,
+                            ((rects[i].vertices[j].color & 0xFF)) / 128.f, ((rects[i].vertices[j].color & 0xFF000000) >> 24) / 128.f};
+            vertex_buffer.push_back({.pos = rects[i].vertices[j].pos, .normal = glm::vec3(0.f, 0.f, 1.f), .color = color, .uv = rects[i].vertices[j].uv});
         }
     }
 }
 
-lotus::Task<> D3MLoader::LoadModelAABB(std::shared_ptr<lotus::Model> model, lotus::Engine* engine,
-                                       std::vector<D3M::Vertex>& vertices, std::vector<uint16_t>& indices,
-                                       std::shared_ptr<lotus::Texture> texture, uint16_t sprite_count)
+lotus::Task<> D3MLoader::LoadModelAABB(std::shared_ptr<lotus::Model> model, lotus::Engine* engine, std::vector<D3M::Vertex>& vertices,
+                                       std::vector<uint16_t>& indices, std::shared_ptr<lotus::Texture> texture, uint16_t sprite_count)
 {
     if (!pipeline_flag.test_and_set())
     {
@@ -126,10 +118,8 @@ lotus::Task<> D3MLoader::LoadModelAABB(std::shared_ptr<lotus::Model> model, lotu
     std::vector<uint8_t> vertices_uint8(vertices.size() * sizeof(D3M::Vertex));
     memcpy(vertices_uint8.data(), vertices.data(), vertices.size() * sizeof(D3M::Vertex));
 
-    vk::BufferUsageFlags vertex_usage_flags =
-        vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer;
-    vk::BufferUsageFlags index_usage_flags =
-        vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer;
+    vk::BufferUsageFlags vertex_usage_flags = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer;
+    vk::BufferUsageFlags index_usage_flags = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer;
     vk::BufferUsageFlags aabbs_usage_flags = vk::BufferUsageFlagBits::eTransferDst;
 
     if (engine->config->renderer.RaytraceEnabled())
@@ -147,19 +137,17 @@ lotus::Task<> D3MLoader::LoadModelAABB(std::shared_ptr<lotus::Model> model, lotu
 
     std::shared_ptr<lotus::Buffer> material_buffer = engine->renderer->gpu->memory_manager->GetBuffer(
         lotus::Material::getMaterialBufferSize(engine),
-        vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst |
-            vk::BufferUsageFlagBits::eShaderDeviceAddress,
+        vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eShaderDeviceAddress,
         vk::MemoryPropertyFlagBits::eDeviceLocal);
     if (!texture)
         texture = blank_texture;
     mesh->material = co_await lotus::Material::make_material(engine, material_buffer, 0, texture);
 
-    mesh->vertex_buffer = engine->renderer->gpu->memory_manager->GetBuffer(vertices_uint8.size(), vertex_usage_flags,
-                                                                           vk::MemoryPropertyFlagBits::eDeviceLocal);
-    mesh->index_buffer = engine->renderer->gpu->memory_manager->GetBuffer(
-        indices.size() * sizeof(uint16_t), index_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
-    mesh->aabbs_buffer = engine->renderer->gpu->memory_manager->GetBuffer(
-        sizeof(vk::AabbPositionsKHR), aabbs_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
+    mesh->vertex_buffer = engine->renderer->gpu->memory_manager->GetBuffer(vertices_uint8.size(), vertex_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
+    mesh->index_buffer =
+        engine->renderer->gpu->memory_manager->GetBuffer(indices.size() * sizeof(uint16_t), index_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
+    mesh->aabbs_buffer =
+        engine->renderer->gpu->memory_manager->GetBuffer(sizeof(vk::AabbPositionsKHR), aabbs_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
     mesh->setIndexCount(indices.size());
     mesh->setVertexCount(vertices.size());
     mesh->setMaxIndex(vertices.size() - 1);
@@ -185,9 +173,8 @@ lotus::Task<> D3MLoader::LoadModelAABB(std::shared_ptr<lotus::Model> model, lotu
     co_await model->InitWorkAABB(engine, std::move(vertices_uint8), std::move(indices), sizeof(D3M::Vertex), max_dist);
 }
 
-lotus::Task<> D3MLoader::LoadModelTriangle(std::shared_ptr<lotus::Model> model, lotus::Engine* engine,
-                                           std::vector<D3M::Vertex>& vertices, std::vector<uint16_t>& indices,
-                                           std::shared_ptr<lotus::Texture> texture, uint16_t sprite_count)
+lotus::Task<> D3MLoader::LoadModelTriangle(std::shared_ptr<lotus::Model> model, lotus::Engine* engine, std::vector<D3M::Vertex>& vertices,
+                                           std::vector<uint16_t>& indices, std::shared_ptr<lotus::Texture> texture, uint16_t sprite_count)
 {
     if (!pipeline_flag.test_and_set())
     {
@@ -201,10 +188,8 @@ lotus::Task<> D3MLoader::LoadModelTriangle(std::shared_ptr<lotus::Model> model, 
     std::vector<uint8_t> indices_uint8(indices.size() * sizeof(uint16_t));
     memcpy(indices_uint8.data(), indices.data(), indices.size() * sizeof(uint16_t));
 
-    vk::BufferUsageFlags vertex_usage_flags =
-        vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer;
-    vk::BufferUsageFlags index_usage_flags =
-        vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer;
+    vk::BufferUsageFlags vertex_usage_flags = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer;
+    vk::BufferUsageFlags index_usage_flags = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer;
 
     if (engine->config->renderer.RaytraceEnabled())
     {
@@ -219,17 +204,15 @@ lotus::Task<> D3MLoader::LoadModelTriangle(std::shared_ptr<lotus::Model> model, 
 
     std::shared_ptr<lotus::Buffer> material_buffer = engine->renderer->gpu->memory_manager->GetBuffer(
         lotus::Material::getMaterialBufferSize(engine),
-        vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst |
-            vk::BufferUsageFlagBits::eShaderDeviceAddress,
+        vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eShaderDeviceAddress,
         vk::MemoryPropertyFlagBits::eDeviceLocal);
     if (!texture)
         texture = blank_texture;
     mesh->material = co_await lotus::Material::make_material(engine, material_buffer, 0, texture);
 
-    mesh->vertex_buffer = engine->renderer->gpu->memory_manager->GetBuffer(vertices_uint8.size(), vertex_usage_flags,
-                                                                           vk::MemoryPropertyFlagBits::eDeviceLocal);
-    mesh->index_buffer = engine->renderer->gpu->memory_manager->GetBuffer(
-        indices.size() * sizeof(uint16_t), index_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
+    mesh->vertex_buffer = engine->renderer->gpu->memory_manager->GetBuffer(vertices_uint8.size(), vertex_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
+    mesh->index_buffer =
+        engine->renderer->gpu->memory_manager->GetBuffer(indices.size() * sizeof(uint16_t), index_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
     mesh->setIndexCount(indices.size());
     mesh->setVertexCount(vertices.size());
     mesh->setMaxIndex(vertices.size() - 1);
@@ -249,8 +232,8 @@ lotus::Task<> D3MLoader::LoadModelTriangle(std::shared_ptr<lotus::Model> model, 
     co_await model->InitWork(engine, std::move(vertices_vector), std::move(indices_vector), sizeof(D3M::Vertex));
 }
 
-lotus::Task<> D3MLoader::LoadModelRing(std::shared_ptr<lotus::Model> model, lotus::Engine* engine,
-                                       std::vector<D3M::Vertex>&& vertices, std::vector<uint16_t>&& indices)
+lotus::Task<> D3MLoader::LoadModelRing(std::shared_ptr<lotus::Model> model, lotus::Engine* engine, std::vector<D3M::Vertex>&& vertices,
+                                       std::vector<uint16_t>&& indices)
 {
     co_await LoadModelTriangle(model, engine, vertices, indices, blank_texture, 1);
 }
@@ -262,8 +245,7 @@ lotus::Task<> D3MLoader::LoadD3M(std::shared_ptr<lotus::Model> model, lotus::Eng
 
     // co_await LoadModelAABB(model, engine, d3m->vertex_buffer, index_buffer,
     // lotus::Texture::getTexture(d3m->texture_name));
-    co_await LoadModelTriangle(model, engine, d3m->vertex_buffer, index_buffer,
-                               lotus::Texture::getTexture(d3m->texture_name), 1);
+    co_await LoadModelTriangle(model, engine, d3m->vertex_buffer, index_buffer, lotus::Texture::getTexture(d3m->texture_name), 1);
 }
 
 lotus::Task<> D3MLoader::LoadD3A(std::shared_ptr<lotus::Model> model, lotus::Engine* engine, D3A* d3a)
@@ -274,8 +256,7 @@ lotus::Task<> D3MLoader::LoadD3A(std::shared_ptr<lotus::Model> model, lotus::Eng
 
     // co_await LoadModelAABB(model, engine, d3a->vertex_buffer, index_buffer,
     // lotus::Texture::getTexture(d3a->texture_name));
-    co_await LoadModelTriangle(model, engine, d3a->vertex_buffer, index_buffer,
-                               lotus::Texture::getTexture(d3a->texture_name), d3a->num_quads);
+    co_await LoadModelTriangle(model, engine, d3a->vertex_buffer, index_buffer, lotus::Texture::getTexture(d3a->texture_name), d3a->num_quads);
 }
 
 lotus::Task<> D3MLoader::InitPipeline(lotus::Engine* engine)
@@ -334,8 +315,8 @@ lotus::Task<> D3MLoader::InitPipeline(lotus::Engine* engine)
     depth_stencil.stencilTestEnable = false;
 
     vk::PipelineColorBlendAttachmentState color_blend_attachment;
-    color_blend_attachment.colorWriteMask = vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG |
-                                            vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA;
+    color_blend_attachment.colorWriteMask =
+        vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA;
     color_blend_attachment.blendEnable = false;
     color_blend_attachment.alphaBlendOp = vk::BlendOp::eAdd;
     color_blend_attachment.colorBlendOp = vk::BlendOp::eAdd;
@@ -377,8 +358,8 @@ lotus::Task<> D3MLoader::InitPipeline(lotus::Engine* engine)
     color_blending.blendConstants[3] = 0.0f;
 
     std::vector<vk::DynamicState> dynamic_states = {vk::DynamicState::eScissor, vk::DynamicState::eViewport};
-    vk::PipelineDynamicStateCreateInfo dynamic_state_ci{
-        .dynamicStateCount = static_cast<uint32_t>(dynamic_states.size()), .pDynamicStates = dynamic_states.data()};
+    vk::PipelineDynamicStateCreateInfo dynamic_state_ci{.dynamicStateCount = static_cast<uint32_t>(dynamic_states.size()),
+                                                        .pDynamicStates = dynamic_states.data()};
 
     vk::GraphicsPipelineCreateInfo pipeline_info;
     pipeline_info.pInputAssemblyState = &input_assembly;
@@ -410,8 +391,7 @@ lotus::Task<> D3MLoader::InitPipeline(lotus::Engine* engine)
     blank_texture = co_await lotus::Texture::LoadTexture("d3m_blank", BlankTextureLoader::LoadTexture, engine);
 }
 
-lotus::Task<> D3MLoader::BlankTextureLoader::LoadTexture(std::shared_ptr<lotus::Texture>& texture,
-                                                         lotus::Engine* engine)
+lotus::Task<> D3MLoader::BlankTextureLoader::LoadTexture(std::shared_ptr<lotus::Texture>& texture, lotus::Engine* engine)
 {
     texture->setWidth(1);
     texture->setHeight(1);
@@ -419,8 +399,7 @@ lotus::Task<> D3MLoader::BlankTextureLoader::LoadTexture(std::shared_ptr<lotus::
 
     texture->image = engine->renderer->gpu->memory_manager->GetImage(
         texture->getWidth(), texture->getHeight(), vk::Format::eR8G8B8A8Unorm, vk::ImageTiling::eOptimal,
-        vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
-        vk::MemoryPropertyFlagBits::eDeviceLocal);
+        vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal);
 
     vk::ImageViewCreateInfo image_view_info;
     image_view_info.image = texture->image->image;

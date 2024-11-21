@@ -11,8 +11,7 @@ class OS2;
 class FFXIActorLoader
 {
 public:
-    static lotus::Task<> LoadModel(std::shared_ptr<lotus::Model>, lotus::Engine* engine,
-                                   std::span<FFXI::OS2* const> os2s);
+    static lotus::Task<> LoadModel(std::shared_ptr<lotus::Model>, lotus::Engine* engine, std::span<FFXI::OS2* const> os2s);
 
 private:
     static void InitPipeline(lotus::Engine*);

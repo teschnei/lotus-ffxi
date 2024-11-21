@@ -39,8 +39,7 @@ private:
     SchedulerResources& operator=(const SchedulerResources&) = delete;
     SchedulerResources& operator=(SchedulerResources&&) = default;
 
-    void ParseDir(FFXI::DatChunk*, std::vector<lotus::Task<std::shared_ptr<lotus::Texture>>>& texture_tasks,
-                  std::vector<lotus::Task<>>& model_tasks);
+    void ParseDir(FFXI::DatChunk*, std::vector<lotus::Task<std::shared_ptr<lotus::Texture>>>& texture_tasks, std::vector<lotus::Task<>>& model_tasks);
 
     std::vector<std::shared_ptr<lotus::Model>> generator_models;
     std::unordered_map<std::string, FFXI::Keyframe*> keyframes;

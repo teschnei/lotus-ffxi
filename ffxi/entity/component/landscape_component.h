@@ -29,8 +29,7 @@ public:
         float skybox_altitudes[8];
         glm::vec4 skybox_colors[8];
     };
-    explicit LandscapeComponent(lotus::Entity*, lotus::Engine* engine,
-                                std::map<std::string, std::map<uint32_t, LightTOD>>&& weather_map);
+    explicit LandscapeComponent(lotus::Entity*, lotus::Engine* engine, std::map<std::string, std::map<uint32_t, LightTOD>>&& weather_map);
 
     lotus::Task<> tick(lotus::time_point time, lotus::duration delta);
 

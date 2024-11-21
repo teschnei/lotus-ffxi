@@ -7,12 +7,10 @@
 namespace FFXI
 {
 class ClassicThirdPersonInputComponent
-    : public lotus::Component::Component<ClassicThirdPersonInputComponent,
-                                         lotus::Component::Before<ActorComponent, lotus::Component::AnimationComponent>>
+    : public lotus::Component::Component<ClassicThirdPersonInputComponent, lotus::Component::Before<ActorComponent, lotus::Component::AnimationComponent>>
 {
 public:
-    explicit ClassicThirdPersonInputComponent(lotus::Entity*, lotus::Engine* engine, ActorComponent& actor,
-                                              lotus::Component::AnimationComponent& animation,
+    explicit ClassicThirdPersonInputComponent(lotus::Entity*, lotus::Engine* engine, ActorComponent& actor, lotus::Component::AnimationComponent& animation,
                                               lotus::Component::CameraComponent& camera);
 
     lotus::Task<> tick(lotus::time_point time, lotus::duration delta);

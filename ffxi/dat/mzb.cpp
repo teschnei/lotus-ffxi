@@ -232,8 +232,7 @@ QuadTree MZB::parseQuadTree(uint8_t* buffer, uint32_t offset)
 
     for (int i = 0; i < 6; ++i)
     {
-        uint32_t child_offset = *(uint32_t*)(quad_base + sizeof(glm::vec3) * 8 + sizeof(uint32_t) + sizeof(uint32_t) +
-                                             sizeof(uint32_t) * i);
+        uint32_t child_offset = *(uint32_t*)(quad_base + sizeof(glm::vec3) * 8 + sizeof(uint32_t) + sizeof(uint32_t) + sizeof(uint32_t) * i);
         if (child_offset != 0)
         {
             quadtree.children.push_back(parseQuadTree(buffer, child_offset));
@@ -325,8 +324,7 @@ void MZB::parseGridMesh(uint8_t* buffer, int x, int y, uint32_t vis_entry_offset
     }
 }
 
-lotus::Task<> MZB::LoadWaterModel(std::shared_ptr<lotus::Model> model, lotus::Engine* engine,
-                                  std::pair<glm::vec3, glm::vec3> bb)
+lotus::Task<> MZB::LoadWaterModel(std::shared_ptr<lotus::Model> model, lotus::Engine* engine, std::pair<glm::vec3, glm::vec3> bb)
 {
     model->rendered = false;
     auto mesh = std::make_unique<lotus::Mesh>();
@@ -344,8 +342,7 @@ lotus::Task<> MZB::LoadWaterModel(std::shared_ptr<lotus::Model> model, lotus::En
 
     std::shared_ptr<lotus::Buffer> material_buffer = engine->renderer->gpu->memory_manager->GetBuffer(
         lotus::Material::getMaterialBufferSize(engine),
-        vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst |
-            vk::BufferUsageFlagBits::eShaderDeviceAddress,
+        vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eShaderDeviceAddress,
         vk::MemoryPropertyFlagBits::eDeviceLocal);
     std::shared_ptr<lotus::Texture> texture = co_await lotus::Texture::LoadTexture("water", LoadWaterTexture, engine);
     mesh->material = co_await lotus::Material::make_material(engine, material_buffer, 0, texture);
@@ -357,21 +354,18 @@ lotus::Task<> MZB::LoadWaterModel(std::shared_ptr<lotus::Model> model, lotus::En
         glm::vec2 uv;
     };
 
-    std::vector<WaterVertex> vertices = {
-        {bb.first, {0.0, -1.0, 0.0}, {bb.first.x / 5, bb.first.z / 5}},
-        {{bb.first.x, bb.first.y, bb.second.z}, {0.0, -1.0, 0.0}, {bb.first.x / 5, bb.second.z / 5}},
-        {{bb.second.x, bb.first.y, bb.first.z}, {0.0, -1.0, 0.0}, {bb.second.x / 5, bb.first.z / 5}},
-        {bb.second, {0.0, -1.0, 0.0}, {bb.second.x / 5, bb.second.z / 5}}};
+    std::vector<WaterVertex> vertices = {{bb.first, {0.0, -1.0, 0.0}, {bb.first.x / 5, bb.first.z / 5}},
+                                         {{bb.first.x, bb.first.y, bb.second.z}, {0.0, -1.0, 0.0}, {bb.first.x / 5, bb.second.z / 5}},
+                                         {{bb.second.x, bb.first.y, bb.first.z}, {0.0, -1.0, 0.0}, {bb.second.x / 5, bb.first.z / 5}},
+                                         {bb.second, {0.0, -1.0, 0.0}, {bb.second.x / 5, bb.second.z / 5}}};
 
     std::vector<uint16_t> indices = {2, 1, 0, 2, 1, 3};
 
     auto vertex_buffer_size = vertices.size() * sizeof(WaterVertex);
     auto index_buffer_size = indices.size() * sizeof(uint16_t);
 
-    mesh->vertex_buffer = engine->renderer->gpu->memory_manager->GetBuffer(vertex_buffer_size, vertex_usage_flags,
-                                                                           vk::MemoryPropertyFlagBits::eDeviceLocal);
-    mesh->index_buffer = engine->renderer->gpu->memory_manager->GetBuffer(index_buffer_size, index_usage_flags,
-                                                                          vk::MemoryPropertyFlagBits::eDeviceLocal);
+    mesh->vertex_buffer = engine->renderer->gpu->memory_manager->GetBuffer(vertex_buffer_size, vertex_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
+    mesh->index_buffer = engine->renderer->gpu->memory_manager->GetBuffer(index_buffer_size, index_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
     mesh->setMaxIndex(3);
     mesh->setVertexCount(vertices.size());
     mesh->setIndexCount(indices.size());
@@ -402,8 +396,7 @@ lotus::Task<> MZB::LoadWaterTexture(std::shared_ptr<lotus::Texture>& texture, lo
     {
         if (auto path = f.path(); f.is_regular_file() && path.extension() == ".png")
         {
-            auto p =
-                stbi_load((const char*)path.u8string().c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+            auto p = stbi_load((const char*)path.u8string().c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
             if (!p)
             {
                 throw std::runtime_error("failed to load texture image!");
@@ -429,8 +422,7 @@ lotus::Task<> MZB::LoadWaterTexture(std::shared_ptr<lotus::Texture>& texture, lo
 
     texture->image = engine->renderer->gpu->memory_manager->GetImage(
         texture->getWidth(), texture->getHeight(), vk::Format::eR8G8B8A8Unorm, vk::ImageTiling::eOptimal,
-        vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled,
-        vk::MemoryPropertyFlagBits::eDeviceLocal, texture_datas.size());
+        vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal, texture_datas.size());
 
     vk::ImageViewCreateInfo image_view_info;
     image_view_info.image = texture->image->image;
@@ -463,8 +455,7 @@ lotus::Task<> MZB::LoadWaterTexture(std::shared_ptr<lotus::Texture>& texture, lo
     co_await texture->Init(engine, std::move(texture_datas));
 }
 
-lotus::WorkerTask<> CollisionInitWork(lotus::Engine* engine, std::shared_ptr<lotus::Model> model,
-                                      std::vector<FFXI::CollisionMeshData> mesh_data,
+lotus::WorkerTask<> CollisionInitWork(lotus::Engine* engine, std::shared_ptr<lotus::Model> model, std::vector<FFXI::CollisionMeshData> mesh_data,
                                       std::vector<FFXI::CollisionEntry> entries, uint32_t vertex_stride)
 {
     std::vector<vk::DeviceSize> vertex_offsets;
@@ -473,8 +464,7 @@ lotus::WorkerTask<> CollisionInitWork(lotus::Engine* engine, std::shared_ptr<lot
     lotus::CollisionMesh* mesh = static_cast<lotus::CollisionMesh*>(model->meshes[0].get());
 
     auto staging_buffer = engine->renderer->gpu->memory_manager->GetBuffer(
-        mesh->vertex_buffer->getSize() + mesh->index_buffer->getSize() + mesh->transform_buffer->getSize(),
-        vk::BufferUsageFlagBits::eTransferSrc,
+        mesh->vertex_buffer->getSize() + mesh->index_buffer->getSize() + mesh->transform_buffer->getSize(), vk::BufferUsageFlagBits::eTransferSrc,
         vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
     uint8_t* staging_map = static_cast<uint8_t*>(staging_buffer->map(0, VK_WHOLE_SIZE, {}));
@@ -487,8 +477,7 @@ lotus::WorkerTask<> CollisionInitWork(lotus::Engine* engine, std::shared_ptr<lot
         memcpy(staging_map + staging_vertex_offset, data.vertices.data(), data.vertices.size());
         vertex_offsets.push_back(staging_vertex_offset);
         staging_vertex_offset += data.vertices.size();
-        memcpy(staging_map + mesh->vertex_buffer->getSize() + staging_index_offset, data.indices.data(),
-               data.indices.size() * sizeof(uint16_t));
+        memcpy(staging_map + mesh->vertex_buffer->getSize() + staging_index_offset, data.indices.data(), data.indices.size() * sizeof(uint16_t));
         index_offsets.push_back(staging_index_offset);
         staging_index_offset += data.indices.size() * sizeof(uint16_t);
     }
@@ -504,8 +493,7 @@ lotus::WorkerTask<> CollisionInitWork(lotus::Engine* engine, std::shared_ptr<lot
         for (const auto& entry : entries)
         {
             glm::mat3x4 transform = entry.transform;
-            memcpy(staging_map + mesh->vertex_buffer->getSize() + mesh->index_buffer->getSize() + transform_offset,
-                   &transform, sizeof(float) * 12);
+            memcpy(staging_map + mesh->vertex_buffer->getSize() + mesh->index_buffer->getSize() + transform_offset, &transform, sizeof(float) * 12);
 
             FFXI::CollisionMeshData& data = mesh_data[entry.mesh_entry];
 
@@ -514,22 +502,18 @@ lotus::WorkerTask<> CollisionInitWork(lotus::Engine* engine, std::shared_ptr<lot
                  .geometry = {.triangles =
                                   vk::AccelerationStructureGeometryTrianglesDataKHR{
                                       .vertexFormat = vk::Format::eR32G32B32Sfloat,
-                                      .vertexData = engine->renderer->gpu->device->getBufferAddress(
-                                          {.buffer = mesh->vertex_buffer->buffer}),
+                                      .vertexData = engine->renderer->gpu->device->getBufferAddress({.buffer = mesh->vertex_buffer->buffer}),
                                       .vertexStride = vertex_stride,
                                       .maxVertex = data.max_index,
                                       .indexType = vk::IndexType::eUint16,
-                                      .indexData = engine->renderer->gpu->device->getBufferAddress(
-                                          {.buffer = mesh->index_buffer->buffer}),
-                                      .transformData = engine->renderer->gpu->device->getBufferAddress(
-                                          {.buffer = mesh->transform_buffer->buffer})}},
+                                      .indexData = engine->renderer->gpu->device->getBufferAddress({.buffer = mesh->index_buffer->buffer}),
+                                      .transformData = engine->renderer->gpu->device->getBufferAddress({.buffer = mesh->transform_buffer->buffer})}},
                  .flags = vk::GeometryFlagBitsKHR::eOpaque});
 
-            raytrace_offset_info.push_back(
-                {.primitiveCount = static_cast<uint32_t>(data.indices.size() / 3),
-                 .primitiveOffset = static_cast<uint32_t>(index_offsets[entry.mesh_entry]),
-                 .firstVertex = static_cast<uint32_t>(vertex_offsets[entry.mesh_entry] / vertex_stride),
-                 .transformOffset = static_cast<uint32_t>(transform_offset)});
+            raytrace_offset_info.push_back({.primitiveCount = static_cast<uint32_t>(data.indices.size() / 3),
+                                            .primitiveOffset = static_cast<uint32_t>(index_offsets[entry.mesh_entry]),
+                                            .firstVertex = static_cast<uint32_t>(vertex_offsets[entry.mesh_entry] / vertex_stride),
+                                            .transformOffset = static_cast<uint32_t>(transform_offset)});
 
             max_primitives.emplace_back(static_cast<uint32_t>(data.indices.size() / 3));
 
@@ -571,14 +555,14 @@ lotus::WorkerTask<> CollisionInitWork(lotus::Engine* engine, std::shared_ptr<lot
         vk::MemoryBarrier2KHR barrier{.srcStageMask = vk::PipelineStageFlagBits2::eTransfer,
                                       .srcAccessMask = vk::AccessFlagBits2::eTransferWrite,
                                       .dstStageMask = vk::PipelineStageFlagBits2::eAccelerationStructureBuildKHR,
-                                      .dstAccessMask = vk::AccessFlagBits2::eAccelerationStructureReadKHR |
-                                                       vk::AccessFlagBits2::eAccelerationStructureWriteKHR};
+                                      .dstAccessMask =
+                                          vk::AccessFlagBits2::eAccelerationStructureReadKHR | vk::AccessFlagBits2::eAccelerationStructureWriteKHR};
 
         command_buffer->pipelineBarrier2KHR({.memoryBarrierCount = 1, .pMemoryBarriers = &barrier});
 
         model->bottom_level_as = std::make_unique<lotus::BottomLevelAccelerationStructure>(
-            engine->renderer.get(), *command_buffer, std::move(raytrace_geometry), std::move(raytrace_offset_info),
-            std::move(max_primitives), false, true, lotus::BottomLevelAccelerationStructure::Performance::FastTrace);
+            engine->renderer.get(), *command_buffer, std::move(raytrace_geometry), std::move(raytrace_offset_info), std::move(max_primitives), false, true,
+            lotus::BottomLevelAccelerationStructure::Performance::FastTrace);
     }
 
     command_buffer->end();
@@ -587,8 +571,8 @@ lotus::WorkerTask<> CollisionInitWork(lotus::Engine* engine, std::shared_ptr<lot
     co_return;
 }
 
-lotus::Task<> CollisionLoader::LoadModel(std::shared_ptr<lotus::Model> model, lotus::Engine* engine,
-                                         std::vector<CollisionMeshData>& meshes, std::vector<CollisionEntry>& entries)
+lotus::Task<> CollisionLoader::LoadModel(std::shared_ptr<lotus::Model> model, lotus::Engine* engine, std::vector<CollisionMeshData>& meshes,
+                                         std::vector<CollisionEntry>& entries)
 {
     model->rendered = false;
     auto mesh = std::make_unique<lotus::CollisionMesh>();
@@ -603,8 +587,7 @@ lotus::Task<> CollisionLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
                               vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
         index_usage_flags |= vk::BufferUsageFlagBits::eShaderDeviceAddress | vk::BufferUsageFlagBits::eStorageBuffer |
                              vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
-        transform_usage_flags |= vk::BufferUsageFlagBits::eShaderDeviceAddress |
-                                 vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
+        transform_usage_flags |= vk::BufferUsageFlagBits::eShaderDeviceAddress | vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
     }
 
     auto vertex_buffer_size = 0;
@@ -617,12 +600,10 @@ lotus::Task<> CollisionLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
         index_buffer_size += mesh.indices.size() * 2;
     }
 
-    mesh->vertex_buffer = engine->renderer->gpu->memory_manager->GetBuffer(vertex_buffer_size, vertex_usage_flags,
-                                                                           vk::MemoryPropertyFlagBits::eDeviceLocal);
-    mesh->index_buffer = engine->renderer->gpu->memory_manager->GetBuffer(index_buffer_size, index_usage_flags,
-                                                                          vk::MemoryPropertyFlagBits::eDeviceLocal);
-    mesh->transform_buffer = engine->renderer->gpu->memory_manager->GetAlignedBuffer(
-        transformation_buffer_size, 16, transform_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
+    mesh->vertex_buffer = engine->renderer->gpu->memory_manager->GetBuffer(vertex_buffer_size, vertex_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
+    mesh->index_buffer = engine->renderer->gpu->memory_manager->GetBuffer(index_buffer_size, index_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
+    mesh->transform_buffer = engine->renderer->gpu->memory_manager->GetAlignedBuffer(transformation_buffer_size, 16, transform_usage_flags,
+                                                                                     vk::MemoryPropertyFlagBits::eDeviceLocal);
 
     model->meshes.push_back(std::move(mesh));
     model->lifetime = lotus::Lifetime::Long;

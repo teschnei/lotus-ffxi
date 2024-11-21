@@ -14,8 +14,7 @@
 #include <lotus/renderer/animation.h>
 #include <ranges>
 
-lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, Actor::InitComponents>>
-Actor::Init(lotus::Engine* engine, lotus::Scene* scene, uint16_t modelid)
+lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, Actor::InitComponents>> Actor::Init(lotus::Engine* engine, lotus::Scene* scene, uint16_t modelid)
 {
     auto actor = std::make_shared<lotus::Entity>();
     size_t dat_index = 0;
@@ -29,15 +28,14 @@ Actor::Init(lotus::Engine* engine, lotus::Scene* scene, uint16_t modelid)
         dat_index = modelid + 1300;
     auto skeleton = co_await FFXI::ActorSkeletonStatic::getSkeleton(engine, dat_index);
 
-    std::vector<std::reference_wrapper<const FFXI::Dat>> dats = {
-        static_cast<FFXIGame*>(engine->game)->dat_loader->GetDat(dat_index)};
+    std::vector<std::reference_wrapper<const FFXI::Dat>> dats = {static_cast<FFXIGame*>(engine->game)->dat_loader->GetDat(dat_index)};
 
     auto components = co_await Actor::Load(actor, engine, scene, skeleton, modelid, dats);
     co_return std::make_pair(actor, components);
 }
 
-lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, Actor::InitPCComponents>>
-Actor::Init(lotus::Engine* engine, lotus::Scene* scene, FFXI::ActorSkeletonComponent::LookData look)
+lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, Actor::InitPCComponents>> Actor::Init(lotus::Engine* engine, lotus::Scene* scene,
+                                                                                            FFXI::ActorSkeletonComponent::LookData look)
 {
     auto path = static_cast<FFXIConfig*>(engine->config.get())->ffxi.ffxi_install_path;
     auto actor = std::make_shared<lotus::Entity>();
@@ -46,24 +44,15 @@ Actor::Init(lotus::Engine* engine, lotus::Scene* scene, FFXI::ActorSkeletonCompo
     auto skeleton = co_await FFXI::ActorSkeletonStatic::getSkeleton(engine, skeleton_dats);
 
     std::vector<std::reference_wrapper<const FFXI::Dat>> dats = {
-        static_cast<FFXIGame*>(engine->game)
-            ->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.face - 1, look.look.race)),
-        static_cast<FFXIGame*>(engine->game)
-            ->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.head, look.look.race)),
-        static_cast<FFXIGame*>(engine->game)
-            ->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.body, look.look.race)),
-        static_cast<FFXIGame*>(engine->game)
-            ->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.hands, look.look.race)),
-        static_cast<FFXIGame*>(engine->game)
-            ->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.legs, look.look.race)),
-        static_cast<FFXIGame*>(engine->game)
-            ->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.feet, look.look.race)),
-        static_cast<FFXIGame*>(engine->game)
-            ->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.weapon, look.look.race)),
-        static_cast<FFXIGame*>(engine->game)
-            ->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.weapon_sub, look.look.race)),
-        static_cast<FFXIGame*>(engine->game)
-            ->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.weapon_range, look.look.race))};
+        static_cast<FFXIGame*>(engine->game)->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.face - 1, look.look.race)),
+        static_cast<FFXIGame*>(engine->game)->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.head, look.look.race)),
+        static_cast<FFXIGame*>(engine->game)->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.body, look.look.race)),
+        static_cast<FFXIGame*>(engine->game)->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.hands, look.look.race)),
+        static_cast<FFXIGame*>(engine->game)->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.legs, look.look.race)),
+        static_cast<FFXIGame*>(engine->game)->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.feet, look.look.race)),
+        static_cast<FFXIGame*>(engine->game)->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.weapon, look.look.race)),
+        static_cast<FFXIGame*>(engine->game)->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.weapon_sub, look.look.race)),
+        static_cast<FFXIGame*>(engine->game)->dat_loader->GetDat(Actor::GetPCModelDatID(look.look.weapon_range, look.look.race))};
 
     auto components = co_await Actor::Load(actor, engine, scene, skeleton, look, dats);
 
@@ -71,11 +60,10 @@ Actor::Init(lotus::Engine* engine, lotus::Scene* scene, FFXI::ActorSkeletonCompo
     co_return std::make_pair(actor, components);
 }
 
-lotus::WorkerTask<Actor::InitComponents>
-Actor::Load(std::shared_ptr<lotus::Entity> actor, lotus::Engine* engine, lotus::Scene* scene,
-            std::shared_ptr<const FFXI::ActorSkeletonStatic> static_skeleton,
-            std::variant<FFXI::ActorSkeletonComponent::LookData, uint16_t> look,
-            std::vector<std::reference_wrapper<const FFXI::Dat>> dats)
+lotus::WorkerTask<Actor::InitComponents> Actor::Load(std::shared_ptr<lotus::Entity> actor, lotus::Engine* engine, lotus::Scene* scene,
+                                                     std::shared_ptr<const FFXI::ActorSkeletonStatic> static_skeleton,
+                                                     std::variant<FFXI::ActorSkeletonComponent::LookData, uint16_t> look,
+                                                     std::vector<std::reference_wrapper<const FFXI::Dat>> dats)
 {
     std::unique_ptr<lotus::Skeleton> skel = std::make_unique<lotus::Skeleton>(static_skeleton->getBoneData());
     std::vector<std::vector<FFXI::OS2*>> os2s;
@@ -94,8 +82,7 @@ Actor::Load(std::shared_ptr<lotus::Entity> actor, lotus::Engine* engine, lotus::
             {
                 if (dxt3->width > 0)
                 {
-                    texture_tasks.push_back(
-                        lotus::Texture::LoadTexture(dxt3->name, FFXI::DXT3Loader::LoadTexture, engine, dxt3));
+                    texture_tasks.push_back(lotus::Texture::LoadTexture(dxt3->name, FFXI::DXT3Loader::LoadTexture, engine, dxt3));
                 }
             }
             else if (auto os2 = dynamic_cast<FFXI::OS2*>(chunk.get()))
@@ -124,8 +111,7 @@ Actor::Load(std::shared_ptr<lotus::Entity> actor, lotus::Engine* engine, lotus::
 
     for (const auto& os2 : os2s)
     {
-        auto [model, model_task] = lotus::Model::LoadModel(std::string("iroha_test") + os2.front()->name,
-                                                           FFXIActorLoader::LoadModel, engine, os2);
+        auto [model, model_task] = lotus::Model::LoadModel(std::string("iroha_test") + os2.front()->name, FFXIActorLoader::LoadModel, engine, os2);
         models.push_back(model);
         if (model_task)
             model_tasks.push_back(std::move(*model_task));
@@ -144,20 +130,16 @@ Actor::Load(std::shared_ptr<lotus::Entity> actor, lotus::Engine* engine, lotus::
     auto a = co_await lotus::Component::AnimationComponent::make_component(actor.get(), engine, std::move(skel));
     auto p = co_await lotus::Component::RenderBaseComponent::make_component(actor.get(), engine);
     auto d = co_await lotus::Component::DeformedMeshComponent::make_component(actor.get(), engine, *p, *a, models);
-    auto r = engine->config->renderer.RasterizationEnabled()
-                 ? co_await lotus::Component::DeformableRasterComponent::make_component(actor.get(), engine, *d, *p)
-                 : nullptr;
-    auto rt = engine->config->renderer.RaytraceEnabled()
-                  ? co_await lotus::Component::DeformableRaytraceComponent::make_component(actor.get(), engine, *d, *p)
-                  : nullptr;
+    auto r = engine->config->renderer.RasterizationEnabled() ? co_await lotus::Component::DeformableRasterComponent::make_component(actor.get(), engine, *d, *p)
+                                                             : nullptr;
+    auto rt = engine->config->renderer.RaytraceEnabled() ? co_await lotus::Component::DeformableRaytraceComponent::make_component(actor.get(), engine, *d, *p)
+                                                         : nullptr;
     auto ac = co_await FFXI::ActorComponent::make_component(actor.get(), engine, *p, *a);
-    auto sc =
-        co_await FFXI::ActorSkeletonComponent::make_component(actor.get(), engine, *a, *d, rt.get(), static_skeleton,
-                                                              look, std::move(scheduler_map), std::move(generator_map));
+    auto sc = co_await FFXI::ActorSkeletonComponent::make_component(actor.get(), engine, *a, *d, rt.get(), static_skeleton, look, std::move(scheduler_map),
+                                                                    std::move(generator_map));
 
     a->playAnimation("idl");
-    co_return scene->AddComponents(std::move(a), std::move(p), std::move(d), std::move(r), std::move(rt), std::move(ac),
-                                   std::move(sc));
+    co_return scene->AddComponents(std::move(a), std::move(p), std::move(d), std::move(r), std::move(rt), std::move(ac), std::move(sc));
 }
 
 /*

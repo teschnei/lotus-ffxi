@@ -5,10 +5,10 @@
 #include <cstdint>
 #include <latch>
 #include <lotus/renderer/model.h>
-#include <lotus/renderer/vulkan/vulkan_inc.h>
 #include <vector>
 
 import glm;
+import vulkan_hpp;
 
 namespace FFXI
 {

@@ -12,10 +12,8 @@ ThirdPersonFFXIVCamera::Init(lotus::Engine* engine, lotus::Scene* scene, FFXI::A
 {
     auto sp = std::make_shared<lotus::Entity>();
     auto cam_c = co_await lotus::Component::CameraComponent::make_component(sp.get(), engine);
-    auto dur =
-        co_await FFXI::CameraThirdPersonComponent::make_component(sp.get(), engine, *cam_c, *actor_component, true);
-    auto input = co_await FFXI::ModernThirdPersonInputComponent::make_component(sp.get(), engine, *actor_component,
-                                                                                *animation_component);
+    auto dur = co_await FFXI::CameraThirdPersonComponent::make_component(sp.get(), engine, *cam_c, *actor_component, true);
+    auto input = co_await FFXI::ModernThirdPersonInputComponent::make_component(sp.get(), engine, *actor_component, *animation_component);
     auto cc = engine->config->renderer.render_mode == lotus::Config::Renderer::RenderMode::Rasterization
                   ? co_await lotus::Component::CameraCascadesComponent::make_component(sp.get(), engine, *cam_c)
                   : nullptr;

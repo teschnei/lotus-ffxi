@@ -9,17 +9,13 @@
 
 namespace FFXI
 {
-ActorSkeletonComponent::ActorSkeletonComponent(lotus::Entity* _entity, lotus::Engine* _engine,
-                                               lotus::Component::AnimationComponent& _animation,
-                                               lotus::Component::DeformedMeshComponent& _deformed,
-                                               lotus::Component::DeformableRaytraceComponent* _raytrace,
-                                               std::shared_ptr<const ActorSkeletonStatic> _skeleton,
-                                               std::variant<LookData, uint16_t> _look,
+ActorSkeletonComponent::ActorSkeletonComponent(lotus::Entity* _entity, lotus::Engine* _engine, lotus::Component::AnimationComponent& _animation,
+                                               lotus::Component::DeformedMeshComponent& _deformed, lotus::Component::DeformableRaytraceComponent* _raytrace,
+                                               std::shared_ptr<const ActorSkeletonStatic> _skeleton, std::variant<LookData, uint16_t> _look,
                                                std::unordered_map<std::string, FFXI::Scheduler*>&& _scheduler_map,
                                                std::unordered_map<std::string, FFXI::Generator*>&& _generator_map)
-    : Component(_entity, _engine), animation_component(_animation), deformed_component(_deformed),
-      raytrace_component(_raytrace), skeleton(_skeleton), look(_look), type(SkeletonType::None),
-      scheduler_map(std::move(_scheduler_map)), generator_map(std::move(_generator_map))
+    : Component(_entity, _engine), animation_component(_animation), deformed_component(_deformed), raytrace_component(_raytrace), skeleton(_skeleton),
+      look(_look), type(SkeletonType::None), scheduler_map(std::move(_scheduler_map)), generator_map(std::move(_generator_map))
 {
     if (std::holds_alternative<LookData>(look))
         type = SkeletonType::PC;
@@ -73,8 +69,7 @@ void ActorSkeletonComponent::updateEquipLook(uint16_t modelid)
 lotus::Task<> ActorSkeletonComponent::updateEquipLookTask(uint16_t modelid)
 {
     auto& pclook = std::get<LookData>(look);
-    const auto& dat =
-        static_cast<FFXIGame*>(engine->game)->dat_loader->GetDat(Actor::GetPCModelDatID(modelid, pclook.look.race));
+    const auto& dat = static_cast<FFXIGame*>(engine->game)->dat_loader->GetDat(Actor::GetPCModelDatID(modelid, pclook.look.race));
 
     std::vector<FFXI::OS2*> os2s;
     std::vector<lotus::Task<std::shared_ptr<lotus::Texture>>> texture_tasks;
@@ -86,8 +81,7 @@ lotus::Task<> ActorSkeletonComponent::updateEquipLookTask(uint16_t modelid)
         {
             if (dxt3->width > 0)
             {
-                texture_tasks.push_back(
-                    lotus::Texture::LoadTexture(dxt3->name, FFXI::DXT3Loader::LoadTexture, engine, dxt3));
+                texture_tasks.push_back(lotus::Texture::LoadTexture(dxt3->name, FFXI::DXT3Loader::LoadTexture, engine, dxt3));
             }
         }
         else if (auto os2 = dynamic_cast<FFXI::OS2*>(chunk.get()))
@@ -99,8 +93,7 @@ lotus::Task<> ActorSkeletonComponent::updateEquipLookTask(uint16_t modelid)
         }
     }
 
-    auto [model, model_task] = lotus::Model::LoadModel(std::string("iroha_test") + std::string(os2s.front()->name, 4) +
-                                                           std::to_string(modelid),
+    auto [model, model_task] = lotus::Model::LoadModel(std::string("iroha_test") + std::string(os2s.front()->name, 4) + std::to_string(modelid),
                                                        FFXIActorLoader::LoadModel, engine, os2s);
 
     auto init_task = deformed_component.initModel(model);

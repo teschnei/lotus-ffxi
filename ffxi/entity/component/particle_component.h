@@ -12,15 +12,12 @@ namespace FFXI
 class Generator;
 class Keyframe;
 class ParticleComponent
-    : public lotus::Component::Component<
-          ParticleComponent,
-          lotus::Component::Before<lotus::Component::ParticleComponent, lotus::Component::RenderBaseComponent>>
+    : public lotus::Component::Component<ParticleComponent,
+                                         lotus::Component::Before<lotus::Component::ParticleComponent, lotus::Component::RenderBaseComponent>>
 {
 public:
-    explicit ParticleComponent(lotus::Entity*, lotus::Engine* engine,
-                               lotus::Component::ParticleComponent& engine_particle,
-                               lotus::Component::RenderBaseComponent& base, std::weak_ptr<lotus::Entity> actor,
-                               FFXI::Generator* generator, size_t index);
+    explicit ParticleComponent(lotus::Entity*, lotus::Engine* engine, lotus::Component::ParticleComponent& engine_particle,
+                               lotus::Component::RenderBaseComponent& base, std::weak_ptr<lotus::Entity> actor, FFXI::Generator* generator, size_t index);
     ~ParticleComponent();
 
     lotus::Task<> init();

@@ -41,16 +41,14 @@ protected:
     std::unordered_map<std::string, FFXI::Scheduler*> scheduler_map;
     std::unordered_map<std::string, FFXI::Generator*> generator_map;
     std::unordered_map<std::string, std::unique_ptr<lotus::Animation>> animations;
-    std::array<std::unordered_map<std::string, std::unique_ptr<lotus::Animation>>, battle_animation_size>
-        battle_animations;
+    std::array<std::unordered_map<std::string, std::unique_ptr<lotus::Animation>>, battle_animation_size> battle_animations;
     std::array<std::unordered_map<std::string, std::unique_ptr<lotus::Animation>>, dw_animation_size> dw_animations_l;
     std::array<std::unordered_map<std::string, std::unique_ptr<lotus::Animation>>, dw_animation_size> dw_animations_r;
     std::array<FFXI::SK2::GeneratorPoint, FFXI::SK2::GeneratorPointMax> generator_points{};
     std::unordered_map<std::string, std::unique_ptr<lotus::Animation>> loadAnimationDat(lotus::Engine*, size_t id);
     inline static std::unordered_map<size_t, std::weak_ptr<ActorSkeletonStatic>> skeleton_map;
-    static lotus::WorkerTask<std::shared_ptr<ActorSkeletonStatic>>
-    loadSkeleton(lotus::Engine*, std::span<size_t> skeleton_ids, std::span<size_t> motions = {},
-                 std::span<size_t> dw_motions_l = {}, std::span<size_t> dw_motions_r = {});
+    static lotus::WorkerTask<std::shared_ptr<ActorSkeletonStatic>> loadSkeleton(lotus::Engine*, std::span<size_t> skeleton_ids, std::span<size_t> motions = {},
+                                                                                std::span<size_t> dw_motions_l = {}, std::span<size_t> dw_motions_r = {});
     ActorSkeletonStatic();
 };
 } // namespace FFXI

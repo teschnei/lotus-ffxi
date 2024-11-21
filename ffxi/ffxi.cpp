@@ -40,8 +40,7 @@
 
 FFXIGame::FFXIGame(const lotus::Settings& settings)
     : lotus::Game(settings, std::make_unique<FFXIConfig>()),
-      dat_loader(
-          std::make_unique<FFXI::DatLoader>(static_cast<FFXIConfig*>(engine->config.get())->ffxi.ffxi_install_path)),
+      dat_loader(std::make_unique<FFXI::DatLoader>(static_cast<FFXIConfig*>(engine->config.get())->ffxi.ffxi_install_path)),
       audio(std::make_unique<FFXI::Audio>(engine.get()))
 {
 }
@@ -95,16 +94,15 @@ lotus::WorkerTask<> FFXIGame::load_scene()
     // audio->setMusic(114, 0);
     // iroha 3111 (arciela 3074)
     // auto [player, player_components] = co_await loading_scene->AddEntity<Actor>(3111);
-    auto [player, player_components] = co_await loading_scene->AddEntity<Actor>(
-        FFXI::ActorSkeletonComponent::LookData{.look = {.race = 2,
-                                                        .face = 15,
-                                                        .head = 0x1000 + 64,
-                                                        .body = 0x2000 + 64,
-                                                        .hands = 0x3000 + 64,
-                                                        .legs = 0x4000 + 64,
-                                                        .feet = 0x5000 + 64,
-                                                        .weapon = 0x6000 + 240,
-                                                        .weapon_sub = 0x7000 + 140}});
+    auto [player, player_components] = co_await loading_scene->AddEntity<Actor>(FFXI::ActorSkeletonComponent::LookData{.look = {.race = 2,
+                                                                                                                                .face = 15,
+                                                                                                                                .head = 0x1000 + 64,
+                                                                                                                                .body = 0x2000 + 64,
+                                                                                                                                .hands = 0x3000 + 64,
+                                                                                                                                .legs = 0x4000 + 64,
+                                                                                                                                .feet = 0x5000 + 64,
+                                                                                                                                .weapon = 0x6000 + 240,
+                                                                                                                                .weapon_sub = 0x7000 + 140}});
     auto ac = std::get<FFXI::ActorComponent*>(player_components);
     // ac->setPos((glm::vec3(-681.f, -12.f, 161.f)), false);
     // ac->setPos((glm::vec3(419, -53.f, -103.f)), false); //eldieme entrance
@@ -120,9 +118,8 @@ lotus::WorkerTask<> FFXIGame::load_scene()
     loading_scene->AddComponents(std::move(equip), std::move(particle_tester));
 
     engine->set_camera(std::get<lotus::Component::CameraComponent*>(camera_components));
-    engine->camera->setPerspective(
-        glm::radians(70.f),
-        engine->renderer->swapchain->extent.width / (float)engine->renderer->swapchain->extent.height, 0.01f, 1000.f);
+    engine->camera->setPerspective(glm::radians(70.f), engine->renderer->swapchain->extent.width / (float)engine->renderer->swapchain->extent.height, 0.01f,
+                                   1000.f);
 
     co_await update_scene(std::move(loading_scene));
 }
