@@ -4,3 +4,4 @@
 [submodule "lotus-engine"]
 	path = lotus-engine
 	url = git@github.com:teschnei/lotus-engine.git
+	branch = master
