@@ -1,7 +1,8 @@
 #include "landscape_component.h"
 
 #include "vana_time.h"
-#include <lotus/core.h>
+#include <coroutine>
+import lotus;
 
 namespace FFXI
 {

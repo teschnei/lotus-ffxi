@@ -1,7 +1,7 @@
 #pragma once
 
 #include <filesystem>
-#include <lotus/config.h>
+import lotus;
 
 class FFXIConfig : public lotus::Config
 {

@@ -2,7 +2,7 @@
 
 #include "dat_chunk.h"
 #include <array>
-#include <lotus/renderer/skeleton.h>
+import lotus;
 #include <vector>
 
 import glm;

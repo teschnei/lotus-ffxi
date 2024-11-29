@@ -1,8 +1,10 @@
 #pragma once
 
-#include <lotus/renderer/model.h>
-#include <lotus/renderer/texture.h>
+#include <memory>
 #include <unordered_map>
+#include <vector>
+
+import lotus;
 
 class FFXIGame;
 namespace FFXI

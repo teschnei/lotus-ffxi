@@ -1,8 +1,8 @@
 #pragma once
 #include "actor_component.h"
-#include <lotus/audio.h>
-#include <lotus/entity/component/component.h>
-#include <lotus/renderer/model.h>
+#include <optional>
+
+import lotus;
 
 class SchedulerResources;
 

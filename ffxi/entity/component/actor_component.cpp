@@ -2,10 +2,11 @@
 
 #include "dat/generator.h"
 #include "dat/scheduler.h"
-#include <lotus/core.h>
-#include <lotus/input.h>
+#include <chrono>
+#include <coroutine>
 
 import glm;
+import lotus;
 
 namespace FFXI
 {

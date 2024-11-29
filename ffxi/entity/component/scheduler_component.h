@@ -1,6 +1,6 @@
 #pragma once
 #include "actor_skeleton_component.h"
-#include <lotus/entity/component/component.h>
+import lotus;
 
 class SchedulerResources;
 

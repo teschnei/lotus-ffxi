@@ -3,12 +3,12 @@
 #include "dat/generator.h"
 #include "entity/component/actor_skeleton_component.h"
 #include "entity/component/generator_component.h"
-#include <lotus/core.h>
-#include <lotus/entity/component/particle_component.h>
-#include <lotus/game.h>
-#include <lotus/scene.h>
+#include <chrono>
+#include <cmath>
+#include <coroutine>
 
 import glm;
+import lotus;
 
 namespace FFXI
 {

@@ -3,8 +3,8 @@
 #include "config.h"
 #include "dat/dat_loader.h"
 #include "system_dat.h"
-#include <lotus/core.h>
-#include <lotus/game.h>
+import lotus;
+import lotus;
 
 namespace FFXI
 {

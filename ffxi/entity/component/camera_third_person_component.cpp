@@ -1,7 +1,8 @@
 #include "camera_third_person_component.h"
-#include <lotus/core.h>
-#include <lotus/input.h>
-#include <lotus/renderer/vulkan/renderer.h>
+
+#include <algorithm>
+#include <coroutine>
+import lotus;
 
 namespace FFXI
 {

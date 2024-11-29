@@ -1,8 +1,8 @@
 #pragma once
 #include "dat/sk2.h"
-#include <lotus/entity/component/animation_component.h>
-#include <lotus/entity/component/component.h>
-#include <lotus/entity/component/render_base_component.h>
+import lotus;
+import lotus;
+import lotus;
 #include <memory>
 #include <span>
 

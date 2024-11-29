@@ -1,6 +1,8 @@
 #include "landscape_entity.h"
 
 #include <charconv>
+#include <coroutine>
+#include <cstring>
 
 #include "component/landscape_component.h"
 #include "dat/d3m.h"
@@ -12,10 +14,10 @@
 #include "entity/component/generator_component.h"
 #include "ffxi.h"
 #include "vana_time.h"
-#include <lotus/entity/component/instanced_models_component.h>
-#include <lotus/entity/component/instanced_raster_component.h>
-#include <lotus/entity/component/instanced_raytrace_component.h>
-#include <lotus/entity/component/static_collision_component.h>
+import lotus;
+import lotus;
+import lotus;
+import lotus;
 
 import glm;
 

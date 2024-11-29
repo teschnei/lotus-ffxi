@@ -2,12 +2,14 @@
 
 #include "ffxi.h"
 
+import vulkan_hpp;
+
 int main(int argc, char* argv[])
 {
 
     lotus::Settings settings;
-    settings.app_name = "core-test";
-    settings.app_version = VK_MAKE_VERSION(1, 0, 0);
+    settings.app_name = "lotus-ffxi";
+    settings.app_version = vk::makeApiVersion(0, 1, 0, 0);
     FFXIGame game{settings};
 
     game.run();

@@ -1,11 +1,12 @@
 #include "scheduler_component.h"
 
-#include <lotus/core.h>
-
 #include "dat/scheduler.h"
 #include "entity/component/generator_component.h"
 #include "ffxi.h"
 #include "scheduler_resources.h"
+#include <coroutine>
+
+import lotus;
 
 namespace FFXI
 {

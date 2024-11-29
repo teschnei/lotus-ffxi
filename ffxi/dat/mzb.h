@@ -1,12 +1,12 @@
 #pragma once
 #include "dat_chunk.h"
 #include <cstdint>
-#include <lotus/entity/component/camera_component.h>
-#include <lotus/renderer/model.h>
 #include <optional>
+#include <unordered_map>
 #include <vector>
 
 import glm;
+import lotus;
 
 namespace FFXI
 {

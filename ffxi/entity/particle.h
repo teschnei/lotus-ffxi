@@ -1,12 +1,6 @@
 #pragma once
 #include "dat/mzb.h"
-#include <lotus/entity/entity.h>
-#include <lotus/renderer/mesh.h>
-
-namespace lotus
-{
-class Scene;
-}
+import lotus;
 
 namespace FFXI
 {

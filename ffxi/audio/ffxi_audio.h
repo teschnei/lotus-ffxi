@@ -2,18 +2,14 @@
 
 #include <array>
 #include <filesystem>
-#include <lotus/audio.h>
 #include <optional>
 #include <unordered_map>
+
+import lotus;
 
 namespace SoLoud
 {
 class AudioSource;
-}
-
-namespace lotus
-{
-class Engine;
 }
 
 namespace FFXI

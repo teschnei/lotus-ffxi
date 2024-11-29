@@ -1,10 +1,8 @@
 #include "equipment_test_component.h"
 
-#include <lotus/core.h>
-#include <lotus/entity/entity.h>
-#include <lotus/input.h>
-
 #include "entity/actor.h"
+#include <coroutine>
+import lotus;
 
 namespace FFXI
 {

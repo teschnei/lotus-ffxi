@@ -1,7 +1,7 @@
 #pragma once
 
-#include <lotus/renderer/model.h>
-#include <lotus/renderer/texture.h>
+import lotus;
+import lotus;
 #include <memory>
 #include <unordered_map>
 #include <vector>

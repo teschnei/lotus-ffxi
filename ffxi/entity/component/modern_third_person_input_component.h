@@ -1,8 +1,8 @@
 #pragma once
 #include "actor_component.h"
-#include <lotus/entity/component/animation_component.h>
-#include <lotus/entity/component/component.h>
+#include <lotus/renderer/sdl_inc.h>
 #include <memory>
+import lotus;
 
 namespace FFXI
 {

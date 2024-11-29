@@ -1,7 +1,8 @@
 #pragma once
 
 #include "dat_chunk.h"
-#include <lotus/renderer/texture.h>
+import lotus;
+import vulkan_hpp;
 
 namespace FFXI
 {

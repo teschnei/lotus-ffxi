@@ -5,7 +5,8 @@
 #include "dat/os2.h"
 #include "entity/loader/actor_loader.h"
 #include "ffxi.h"
-#include <lotus/core.h>
+#include <coroutine>
+import lotus;
 
 namespace FFXI
 {

@@ -1,7 +1,7 @@
 #pragma once
 #include "dat_chunk.h"
 #include <filesystem>
-#include <lotus/types.h>
+import lotus;
 #include <memory>
 #include <string>
 

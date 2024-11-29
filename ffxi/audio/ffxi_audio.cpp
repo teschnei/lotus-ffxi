@@ -3,7 +3,7 @@
 #include <format>
 #include <fstream>
 
-#include <lotus/core.h>
+import lotus;
 
 #include "adpcm.h"
 #include "adpcmstream.h"

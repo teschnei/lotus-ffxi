@@ -11,8 +11,10 @@
 #include "dat/sk2.h"
 #include "entity/loader/actor_loader.h"
 #include "ffxi.h"
-#include <lotus/renderer/animation.h>
+#include <coroutine>
 #include <ranges>
+
+import lotus;
 
 lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, Actor::InitComponents>> Actor::Init(lotus::Engine* engine, lotus::Scene* scene, uint16_t modelid)
 {

@@ -5,8 +5,9 @@
 #include "dat/scheduler.h"
 #include "dat/sk2.h"
 #include "ffxi.h"
-#include <lotus/core.h>
+#include <coroutine>
 #include <numeric>
+import lotus;
 
 namespace FFXI
 {

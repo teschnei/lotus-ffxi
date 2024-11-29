@@ -1,9 +1,11 @@
 #pragma once
 
+#include "util.h"
 #include <cassert>
-#include <lotus/types.h>
 #include <memory>
 #include <vector>
+
+import lotus;
 
 namespace FFXI
 {

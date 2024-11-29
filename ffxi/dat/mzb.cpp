@@ -2,11 +2,13 @@
 
 #include "key_tables.h"
 #include "stb.h"
+#include <algorithm>
+#include <coroutine>
+#include <cstring>
 #include <filesystem>
-#include <lotus/core.h>
-#include <lotus/entity/component/camera_component.h>
-#include <lotus/entity/component/static_collision_component.h>
-#include <lotus/renderer/vulkan/renderer.h>
+
+import lotus;
+import vulkan_hpp;
 
 namespace FFXI
 {
@@ -404,7 +406,7 @@ lotus::Task<> MZB::LoadWaterTexture(std::shared_ptr<lotus::Texture>& texture, lo
             pixels.push_back({p, &stbi_image_free});
         }
     }
-    VkDeviceSize imageSize = static_cast<uint64_t>(texWidth) * static_cast<uint64_t>(texHeight) * 4;
+    vk::DeviceSize imageSize = static_cast<uint64_t>(texWidth) * static_cast<uint64_t>(texHeight) * 4;
 
     texture->setWidth(texWidth);
     texture->setHeight(texHeight);
@@ -467,7 +469,7 @@ lotus::WorkerTask<> CollisionInitWork(lotus::Engine* engine, std::shared_ptr<lot
         mesh->vertex_buffer->getSize() + mesh->index_buffer->getSize() + mesh->transform_buffer->getSize(), vk::BufferUsageFlagBits::eTransferSrc,
         vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent);
 
-    uint8_t* staging_map = static_cast<uint8_t*>(staging_buffer->map(0, VK_WHOLE_SIZE, {}));
+    uint8_t* staging_map = static_cast<uint8_t*>(staging_buffer->map(0, vk::WholeSize, {}));
 
     vk::DeviceSize staging_vertex_offset = 0;
     vk::DeviceSize staging_index_offset = 0;

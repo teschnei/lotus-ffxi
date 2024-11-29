@@ -1,8 +1,10 @@
 #include "d3m.h"
 
-#include <lotus/core.h>
-#include <lotus/renderer/vulkan/renderer.h>
+#include <coroutine>
+#include <cstring>
 #include <numeric>
+
+import lotus;
 
 namespace FFXI
 {

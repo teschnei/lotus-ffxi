@@ -1,11 +1,12 @@
 #pragma once
 #include "stb.h"
-#include <lotus/core.h>
-#include <lotus/renderer/mesh.h>
-#include <lotus/renderer/texture.h>
-#include <lotus/renderer/vulkan/renderer.h>
+#include <coroutine>
+#include <cstdint>
+#include <vector>
 
 import glm;
+import lotus;
+import vulkan_hpp;
 
 class TestTextureLoader
 {
@@ -14,7 +15,7 @@ public:
     {
         int texWidth, texHeight, texChannels;
         stbi_uc* pixels = stbi_load("textures/texture.png", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
-        VkDeviceSize imageSize = static_cast<uint64_t>(texWidth) * static_cast<uint64_t>(texHeight) * 4;
+        vk::DeviceSize imageSize = static_cast<uint64_t>(texWidth) * static_cast<uint64_t>(texHeight) * 4;
 
         texture->setWidth(texWidth);
         texture->setHeight(texHeight);

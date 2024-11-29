@@ -1,9 +1,9 @@
 #pragma once
-#include <lotus/entity/component/component.h>
-#include <lotus/light_manager.h>
+#include <map>
 #include <memory>
 
 import glm;
+import lotus;
 
 namespace FFXI
 {

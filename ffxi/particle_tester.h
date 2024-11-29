@@ -2,14 +2,10 @@
 
 #include "dat/dat.h"
 #include "scheduler_resources.h"
-#include <lotus/entity/component/component.h>
-#include <lotus/renderer/model.h>
+#include <lotus/renderer/sdl_inc.h>
 #include <memory>
 
-namespace lotus
-{
-class Engine;
-}
+import lotus;
 
 namespace FFXI
 {

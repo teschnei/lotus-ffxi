@@ -5,7 +5,9 @@
 #include "entity/particle.h"
 #include "ffxi.h"
 #include "generator_light_component.h"
-#include <lotus/core.h>
+#include <cmath>
+#include <coroutine>
+import lotus;
 
 namespace FFXI
 {

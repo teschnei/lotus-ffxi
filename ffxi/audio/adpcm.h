@@ -1,10 +1,11 @@
 #pragma once
 #include <array>
+#include <cstdint>
 #include <fstream>
 #include <vector>
 #define SOLOUD_NO_ASSERTS
-#include <lotus/types.h>
 #include <soloud.h>
+import lotus;
 
 class ADPCM;
 

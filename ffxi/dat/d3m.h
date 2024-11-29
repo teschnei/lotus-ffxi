@@ -3,9 +3,10 @@
 #include "dat_chunk.h"
 #include <atomic>
 #include <latch>
-#include <lotus/renderer/model.h>
 
 import glm;
+import lotus;
+import vulkan_hpp;
 
 namespace FFXI
 {

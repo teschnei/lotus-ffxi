@@ -7,6 +7,7 @@
 #include "dat/dxt3.h"
 #include "dat/generator.h"
 #include "dat/scheduler.h"
+#include <coroutine>
 
 SystemDat::SystemDat(FFXIGame* _game, _private_tag) : game(_game) {}
 

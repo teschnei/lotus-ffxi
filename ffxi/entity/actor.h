@@ -4,17 +4,8 @@
 #include "dat/generator.h"
 #include "dat/scheduler.h"
 #include "dat/sk2.h"
-#include <lotus/entity/component/animation_component.h>
-#include <lotus/entity/component/deformable_raster_component.h>
-#include <lotus/entity/component/deformable_raytrace_component.h>
-#include <lotus/entity/component/render_base_component.h>
-#include <lotus/entity/entity.h>
-#include <lotus/task.h>
 
-namespace lotus
-{
-class Scene;
-}
+import lotus;
 
 namespace FFXI
 {

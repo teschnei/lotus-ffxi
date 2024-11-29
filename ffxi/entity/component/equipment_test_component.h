@@ -1,13 +1,9 @@
 #pragma once
 #include "actor_skeleton_component.h"
-#include <lotus/entity/component/component.h>
+#include <lotus/renderer/sdl_inc.h>
 #include <optional>
 
-namespace lotus
-{
-class Entity;
-class Engine;
-} // namespace lotus
+import lotus;
 
 namespace FFXI
 {

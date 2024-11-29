@@ -4,7 +4,7 @@
 #include <atomic>
 #include <cstdint>
 #include <latch>
-#include <lotus/renderer/model.h>
+import lotus;
 #include <vector>
 
 import glm;

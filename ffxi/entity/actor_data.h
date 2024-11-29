@@ -1,7 +1,8 @@
 #pragma once
 #include <array>
-#include <lotus/types.h>
+#include <cstdint>
 #include <map>
+import lotus;
 
 namespace ActorData
 {

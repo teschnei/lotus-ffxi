@@ -1,8 +1,10 @@
 #include "actor_loader.h"
 
 #include "dat/os2.h"
-#include <lotus/core.h>
-#include <lotus/renderer/vulkan/renderer.h>
+#include <algorithm>
+#include <coroutine>
+#include <cstring>
+import lotus;
 
 std::vector<vk::VertexInputBindingDescription> getBindingDescriptions()
 {

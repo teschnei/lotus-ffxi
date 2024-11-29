@@ -2,9 +2,8 @@
 
 #include "component/camera_third_person_component.h"
 #include "component/classic_third_person_input_component.h"
-#include <lotus/core.h>
-#include <lotus/entity/component/camera_cascades_component.h>
-#include <lotus/scene.h>
+#include <coroutine>
+import lotus;
 
 lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, std::tuple<lotus::Component::CameraComponent*>>>
 ThirdPersonFFXICamera::Init(lotus::Engine* engine, lotus::Scene* scene, FFXI::ActorComponent* actor_component,

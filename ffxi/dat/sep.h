@@ -1,7 +1,7 @@
 #pragma once
 
 #include "dat_chunk.h"
-#include <lotus/audio.h>
+import lotus;
 #include <optional>
 
 namespace FFXI

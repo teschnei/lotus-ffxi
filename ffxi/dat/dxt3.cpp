@@ -1,6 +1,10 @@
 #include "dxt3.h"
-#include <lotus/core.h>
-#include <lotus/renderer/vulkan/renderer.h>
+#include <coroutine>
+#include <cstdint>
+#include <cstring>
+import glm;
+import lotus;
+import vulkan_hpp;
 
 namespace FFXI
 {
@@ -90,7 +94,7 @@ lotus::Task<> DXT3Loader::LoadTexture(std::shared_ptr<lotus::Texture> texture, l
     uint32_t stride = 4;
     if (dxt3->format == vk::Format::eBc2SrgbBlock)
         stride = 1;
-    VkDeviceSize imageSize = static_cast<uint64_t>(dxt3->width) * static_cast<uint64_t>(dxt3->height) * stride;
+    vk::DeviceSize imageSize = static_cast<uint64_t>(dxt3->width) * static_cast<uint64_t>(dxt3->height) * stride;
 
     texture->setWidth(dxt3->width);
     texture->setHeight(dxt3->height);

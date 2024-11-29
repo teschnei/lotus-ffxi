@@ -2,17 +2,10 @@
 #include "actor_data.h"
 #include "dat/sk2.h"
 #include <array>
-#include <lotus/renderer/animation.h>
-#include <lotus/renderer/skeleton.h>
-#include <lotus/task.h>
-#include <lotus/worker_task.h>
 #include <span>
 #include <unordered_map>
 
-namespace lotus
-{
-class Engine;
-}
+import lotus;
 
 namespace FFXI
 {

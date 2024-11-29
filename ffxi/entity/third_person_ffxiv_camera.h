@@ -1,14 +1,7 @@
 #pragma once
 
 #include "component/actor_component.h"
-#include <lotus/entity/component/animation_component.h>
-#include <lotus/entity/entity.h>
-#include <lotus/renderer/vulkan/renderer.h>
-
-namespace lotus
-{
-class Scene;
-}
+import lotus;
 
 class ThirdPersonFFXIVCamera
 {

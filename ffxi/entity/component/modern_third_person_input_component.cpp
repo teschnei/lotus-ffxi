@@ -1,10 +1,9 @@
 #include "modern_third_person_input_component.h"
 
-#include <lotus/core.h>
-#include <lotus/input.h>
-#include <lotus/renderer/vulkan/renderer.h>
-
+#include <chrono>
+#include <coroutine>
 import glm;
+import lotus;
 
 namespace FFXI
 {
@@ -31,7 +30,7 @@ lotus::Task<> ModernThirdPersonInputComponent::tick(lotus::time_point time, lotu
         auto pos = actor.getPos();
         auto width = 0.3f;
 
-        auto new_pos = pos + (glm::length(offset)) * glm::normalize(offset);
+        auto new_pos = pos + (glm::length(offset))*glm::normalize(offset);
         auto step_task = engine->renderer->raytrace_queryer->query(lotus::RaytraceQueryer::ObjectFlags::LevelCollision, pos + step_height,
                                                                    glm::normalize(offset), 0.f, glm::length(offset) + width);
         auto pos_task = engine->renderer->raytrace_queryer->query(lotus::RaytraceQueryer::ObjectFlags::LevelCollision, new_pos + step_height,

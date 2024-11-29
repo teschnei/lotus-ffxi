@@ -8,24 +8,7 @@
 #include "particle_tester.h"
 #include "test_loader.h"
 
-#include <lotus/scene.h>
-#include <lotus/ui/element.h>
-#include <lotus/ui/ui.h>
-
-#include <lotus/entity/component/deformable_raster_component.h>
-#include <lotus/entity/component/deformable_raytrace_component.h>
-
-#include <lotus/entity/component/instanced_raster_component.h>
-#include <lotus/entity/component/instanced_raytrace_component.h>
-#include <lotus/entity/component/static_collision_component.h>
-
-#include <lotus/entity/component/particle_component.h>
-#include <lotus/entity/component/particle_raster_component.h>
-#include <lotus/entity/component/particle_raytrace_component.h>
-
 #include "entity/component/camera_third_person_component.h"
-#include <lotus/entity/component/camera_cascades_component.h>
-#include <lotus/entity/component/camera_component.h>
 
 #include "entity/component/actor_component.h"
 #include "entity/component/equipment_test_component.h"
@@ -36,7 +19,10 @@
 #include "entity/component/particle_component.h"
 #include "entity/component/scheduler_component.h"
 
+#include <coroutine>
 #include <iostream>
+
+import lotus;
 
 FFXIGame::FFXIGame(const lotus::Settings& settings)
     : lotus::Game(settings, std::make_unique<FFXIConfig>()),
