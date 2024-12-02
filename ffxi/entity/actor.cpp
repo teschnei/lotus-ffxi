@@ -12,7 +12,6 @@
 #include "entity/loader/actor_loader.h"
 #include "ffxi.h"
 #include <coroutine>
-#include <ranges>
 
 import lotus;
 

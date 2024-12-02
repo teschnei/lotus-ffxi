@@ -133,21 +133,6 @@ lotus::Task<> FFXIActorLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
                 indices_uint8.resize(mesh_indices.size() * sizeof(uint16_t));
                 memcpy(indices_uint8.data(), mesh_indices.data(), indices_uint8.size());
 
-                vk::BufferUsageFlags vertex_usage_flags =
-                    vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eStorageBuffer;
-                vk::BufferUsageFlags index_usage_flags = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer;
-
-                if (engine->config->renderer.RaytraceEnabled())
-                {
-                    vertex_usage_flags |= vk::BufferUsageFlagBits::eShaderDeviceAddress | vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
-                    index_usage_flags |= vk::BufferUsageFlagBits::eStorageBuffer | vk::BufferUsageFlagBits::eShaderDeviceAddress |
-                                         vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
-                }
-
-                mesh->vertex_buffer =
-                    engine->renderer->gpu->memory_manager->GetBuffer(vertices_uint8.size(), vertex_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
-                mesh->index_buffer =
-                    engine->renderer->gpu->memory_manager->GetBuffer(indices_uint8.size(), index_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
                 mesh->setIndexCount(mesh_indices.size());
                 mesh->setVertexCount(os2_vertices.size());
                 mesh->setMaxIndex(*std::ranges::max_element(mesh_indices));

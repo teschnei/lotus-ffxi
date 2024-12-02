@@ -32,12 +32,6 @@ struct CollisionMeshData
     glm::vec3 bound_max{};
 };
 
-struct CollisionEntry
-{
-    glm::mat4 transform;
-    uint32_t mesh_entry;
-};
-
 class QuadTree
 {
 public:
@@ -64,8 +58,8 @@ public:
     std::vector<SMZBBlock100> vecMZB;
     std::optional<QuadTree> quadtree;
     std::vector<CollisionMeshData> meshes;
-    std::vector<CollisionEntry> mesh_entries;
-    std::unordered_map<float, std::vector<CollisionEntry>> water_entries;
+    std::vector<lotus::Model::TransformEntry> mesh_entries;
+    std::unordered_map<float, std::vector<lotus::Model::TransformEntry>> water_entries;
 
     static lotus::Task<> LoadWaterModel(std::shared_ptr<lotus::Model>, lotus::Engine* engine, std::pair<glm::vec3, glm::vec3> bb);
     static lotus::Task<> LoadWaterTexture(std::shared_ptr<lotus::Texture>& texture, lotus::Engine* engine);
@@ -83,6 +77,6 @@ class CollisionLoader
 {
 public:
     static lotus::Task<> LoadModel(std::shared_ptr<lotus::Model>, lotus::Engine* engine, std::vector<CollisionMeshData>& meshes,
-                                   std::vector<CollisionEntry>& entries);
+                                   std::vector<lotus::Model::TransformEntry>& entries);
 };
 } // namespace FFXI

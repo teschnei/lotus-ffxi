@@ -120,20 +120,6 @@ lotus::Task<> D3MLoader::LoadModelAABB(std::shared_ptr<lotus::Model> model, lotu
     std::vector<uint8_t> vertices_uint8(vertices.size() * sizeof(D3M::Vertex));
     memcpy(vertices_uint8.data(), vertices.data(), vertices.size() * sizeof(D3M::Vertex));
 
-    vk::BufferUsageFlags vertex_usage_flags = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer;
-    vk::BufferUsageFlags index_usage_flags = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer;
-    vk::BufferUsageFlags aabbs_usage_flags = vk::BufferUsageFlagBits::eTransferDst;
-
-    if (engine->config->renderer.RaytraceEnabled())
-    {
-        vertex_usage_flags |= vk::BufferUsageFlagBits::eStorageBuffer | vk::BufferUsageFlagBits::eShaderDeviceAddress |
-                              vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
-        index_usage_flags |= vk::BufferUsageFlagBits::eStorageBuffer | vk::BufferUsageFlagBits::eShaderDeviceAddress |
-                             vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
-        aabbs_usage_flags |= vk::BufferUsageFlagBits::eStorageBuffer | vk::BufferUsageFlagBits::eShaderDeviceAddress |
-                             vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
-    }
-
     auto mesh = std::make_unique<lotus::Mesh>();
     mesh->has_transparency = true;
 
@@ -145,11 +131,6 @@ lotus::Task<> D3MLoader::LoadModelAABB(std::shared_ptr<lotus::Model> model, lotu
         texture = blank_texture;
     mesh->material = co_await lotus::Material::make_material(engine, material_buffer, 0, texture);
 
-    mesh->vertex_buffer = engine->renderer->gpu->memory_manager->GetBuffer(vertices_uint8.size(), vertex_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
-    mesh->index_buffer =
-        engine->renderer->gpu->memory_manager->GetBuffer(indices.size() * sizeof(uint16_t), index_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
-    mesh->aabbs_buffer =
-        engine->renderer->gpu->memory_manager->GetBuffer(sizeof(vk::AabbPositionsKHR), aabbs_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
     mesh->setIndexCount(indices.size());
     mesh->setVertexCount(vertices.size());
     mesh->setMaxIndex(vertices.size() - 1);
@@ -190,17 +171,6 @@ lotus::Task<> D3MLoader::LoadModelTriangle(std::shared_ptr<lotus::Model> model, 
     std::vector<uint8_t> indices_uint8(indices.size() * sizeof(uint16_t));
     memcpy(indices_uint8.data(), indices.data(), indices.size() * sizeof(uint16_t));
 
-    vk::BufferUsageFlags vertex_usage_flags = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eVertexBuffer;
-    vk::BufferUsageFlags index_usage_flags = vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eIndexBuffer;
-
-    if (engine->config->renderer.RaytraceEnabled())
-    {
-        vertex_usage_flags |= vk::BufferUsageFlagBits::eStorageBuffer | vk::BufferUsageFlagBits::eShaderDeviceAddress |
-                              vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
-        index_usage_flags |= vk::BufferUsageFlagBits::eStorageBuffer | vk::BufferUsageFlagBits::eShaderDeviceAddress |
-                             vk::BufferUsageFlagBits::eAccelerationStructureBuildInputReadOnlyKHR;
-    }
-
     auto mesh = std::make_unique<lotus::Mesh>();
     mesh->has_transparency = true;
 
@@ -212,9 +182,6 @@ lotus::Task<> D3MLoader::LoadModelTriangle(std::shared_ptr<lotus::Model> model, 
         texture = blank_texture;
     mesh->material = co_await lotus::Material::make_material(engine, material_buffer, 0, texture);
 
-    mesh->vertex_buffer = engine->renderer->gpu->memory_manager->GetBuffer(vertices_uint8.size(), vertex_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
-    mesh->index_buffer =
-        engine->renderer->gpu->memory_manager->GetBuffer(indices.size() * sizeof(uint16_t), index_usage_flags, vk::MemoryPropertyFlagBits::eDeviceLocal);
     mesh->setIndexCount(indices.size());
     mesh->setVertexCount(vertices.size());
     mesh->setMaxIndex(vertices.size() - 1);
