@@ -104,8 +104,8 @@ lotus::WorkerTask<> FFXIGame::load_scene()
     loading_scene->AddComponents(std::move(equip), std::move(particle_tester));
 
     engine->set_camera(std::get<lotus::Component::CameraComponent*>(camera_components));
-    engine->camera->setPerspective(glm::radians(70.f), engine->renderer->swapchain->extent.width / (float)engine->renderer->swapchain->extent.height, 0.01f,
-                                   1000.f);
+    vk::Extent2D extent = engine->renderer->getExtent();
+    engine->camera->setPerspective(glm::radians(70.f), extent.width / (float)extent.height, 0.01f, 1000.f);
 
     co_await update_scene(std::move(loading_scene));
 }

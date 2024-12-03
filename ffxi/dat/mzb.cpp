@@ -359,21 +359,13 @@ lotus::Task<> MZB::LoadWaterModel(std::shared_ptr<lotus::Model> model, lotus::En
     mesh->setVertexCount(vertices.size());
     mesh->setIndexCount(indices.size());
 
-    std::vector<uint8_t> vertices_uint8;
-    vertices_uint8.resize(vertices.size() * sizeof(WaterVertex));
-    memcpy(vertices_uint8.data(), vertices.data(), vertices_uint8.size());
-
-    std::vector<uint8_t> indices_uint8;
-    indices_uint8.resize(indices.size() * sizeof(uint16_t));
-    memcpy(indices_uint8.data(), indices.data(), indices_uint8.size());
-
     model->meshes.push_back(std::move(mesh));
     model->lifetime = lotus::Lifetime::Long;
 
-    std::vector<std::vector<uint8_t>> vertices_vector = {std::move(vertices_uint8)};
-    std::vector<std::vector<uint8_t>> indices_vector = {std::move(indices_uint8)};
+    std::vector<std::span<const std::byte>> vertices_vector = {std::as_bytes(std::span{vertices})};
+    std::vector<std::span<const std::byte>> indices_vector = {std::as_bytes(std::span{indices})};
 
-    co_await model->InitWork(engine, std::move(vertices_vector), std::move(indices_vector), sizeof(WaterVertex));
+    co_await model->InitWork(engine, vertices_vector, indices_vector, sizeof(WaterVertex));
 }
 
 lotus::Task<> MZB::LoadWaterTexture(std::shared_ptr<lotus::Texture>& texture, lotus::Engine* engine)
@@ -449,16 +441,13 @@ lotus::Task<> CollisionLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
 {
     model->rendered = false;
 
-    std::vector<std::vector<uint8_t>> vertices;
-    std::vector<std::vector<uint8_t>> indices;
+    std::vector<std::span<const std::byte>> vertices;
+    std::vector<std::span<const std::byte>> indices;
 
     for (const auto& collision_mesh : collision_meshes)
     {
-        vertices.push_back(collision_mesh.vertices);
-        std::vector<uint8_t> index_buffer;
-        index_buffer.resize(collision_mesh.indices.size() * 2);
-        memcpy(index_buffer.data(), collision_mesh.indices.data(), index_buffer.size());
-        indices.push_back(std::move(index_buffer));
+        vertices.push_back(std::as_bytes(std::span{collision_mesh.vertices}));
+        indices.push_back(std::as_bytes(std::span{collision_mesh.indices}));
         auto mesh = std::make_unique<lotus::Mesh>();
         mesh->setIndexCount(static_cast<int>(collision_mesh.indices.size()));
         mesh->setMaxIndex(*std::ranges::max_element(collision_mesh.indices));
@@ -467,6 +456,6 @@ lotus::Task<> CollisionLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
 
     model->lifetime = lotus::Lifetime::Long;
 
-    co_await model->InitWork(engine, std::move(vertices), std::move(indices), sizeof(float) * 3, std::move(entries));
+    co_await model->InitWork(engine, vertices, indices, sizeof(float) * 3, std::move(entries));
 }
 } // namespace FFXI

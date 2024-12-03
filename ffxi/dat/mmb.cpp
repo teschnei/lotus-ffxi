@@ -418,8 +418,8 @@ lotus::Task<> MMBLoader::LoadModel(std::shared_ptr<lotus::Model> model, lotus::E
     pipeline_latch.wait();
     model->light_offset = 1;
     model->is_static = true;
-    std::vector<std::vector<uint8_t>> vertices;
-    std::vector<std::vector<uint8_t>> indices;
+    std::vector<std::span<const std::byte>> vertices;
+    std::vector<std::span<const std::byte>> indices;
     std::map<lotus::Mesh*, lotus::WorkerTask<std::shared_ptr<lotus::Material>>> material_map;
     std::shared_ptr<lotus::Buffer> material_buffer;
     if (mmb->meshes.size() > 0)
@@ -448,18 +448,10 @@ lotus::Task<> MMBLoader::LoadModel(std::shared_ptr<lotus::Model> model, lotus::E
         mesh->pipelines.push_back(mesh->has_transparency ? pipeline_shadowmap_blend : pipeline_shadowmap);
         mesh->blending = mmb_mesh.blending;
 
-        std::vector<uint8_t> vertices_uint8;
-        vertices_uint8.resize(mmb_mesh.vertices.size() * sizeof(FFXI::MMB::Vertex));
-        memcpy(vertices_uint8.data(), mmb_mesh.vertices.data(), vertices_uint8.size());
-
-        std::vector<uint8_t> indices_uint8;
-        indices_uint8.resize(mmb_mesh.indices.size() * sizeof(uint16_t));
-        memcpy(indices_uint8.data(), mmb_mesh.indices.data(), indices_uint8.size());
-
         mesh->setMaxIndex(*std::ranges::max_element(mmb_mesh.indices));
 
-        vertices.push_back(std::move(vertices_uint8));
-        indices.push_back(std::move(indices_uint8));
+        vertices.push_back(std::as_bytes(std::span{mmb_mesh.vertices}));
+        indices.push_back(std::as_bytes(std::span{mmb_mesh.indices}));
 
         model->meshes.push_back(std::move(mesh));
     }
@@ -468,7 +460,7 @@ lotus::Task<> MMBLoader::LoadModel(std::shared_ptr<lotus::Model> model, lotus::E
         mesh->material = co_await task;
     }
     model->lifetime = lotus::Lifetime::Long;
-    co_await model->InitWork(engine, std::move(vertices), std::move(indices), sizeof(MMB::Vertex));
+    co_await model->InitWork(engine, vertices, indices, sizeof(MMB::Vertex));
 }
 
 void MMBLoader::InitPipeline(lotus::Engine* engine)

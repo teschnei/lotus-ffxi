@@ -59,8 +59,10 @@ lotus::Task<> FFXIActorLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
     }
     pipeline_latch.wait();
     model->light_offset = 0;
-    std::vector<std::vector<uint8_t>> vertices;
-    std::vector<std::vector<uint8_t>> indices;
+    std::vector<std::vector<FFXI::OS2::WeightingVertex>> vertices;
+    std::vector<std::vector<uint16_t>> indices;
+    std::vector<std::span<const std::byte>> vertex_bytes;
+    std::vector<std::span<const std::byte>> index_bytes;
     std::map<lotus::Mesh*, lotus::WorkerTask<std::shared_ptr<lotus::Material>>> material_map;
 
     for (const auto& os2 : os2s)
@@ -78,9 +80,7 @@ lotus::Task<> FFXIActorLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
                 mesh->has_transparency = true;
 
                 std::vector<FFXI::OS2::WeightingVertex> os2_vertices;
-                std::vector<uint8_t> vertices_uint8;
                 std::vector<uint16_t> mesh_indices;
-                std::vector<uint8_t> indices_uint8;
                 std::shared_ptr<lotus::Texture> texture = lotus::Texture::getTexture(os2_mesh.tex_name);
                 if (!texture)
                     texture = lotus::Texture::getTexture("default");
@@ -128,10 +128,6 @@ lotus::Task<> FFXIActorLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
                         mesh_indices.push_back((uint16_t)mesh_indices.size());
                     }
                 }
-                vertices_uint8.resize(os2_vertices.size() * sizeof(FFXI::OS2::WeightingVertex));
-                memcpy(vertices_uint8.data(), os2_vertices.data(), vertices_uint8.size());
-                indices_uint8.resize(mesh_indices.size() * sizeof(uint16_t));
-                memcpy(indices_uint8.data(), mesh_indices.data(), indices_uint8.size());
 
                 mesh->setIndexCount(mesh_indices.size());
                 mesh->setVertexCount(os2_vertices.size());
@@ -141,8 +137,12 @@ lotus::Task<> FFXIActorLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
                 mesh->pipelines.push_back(pipeline);
                 mesh->pipelines.push_back(pipeline_shadowmap);
 
-                vertices.push_back(std::move(vertices_uint8));
-                indices.push_back(std::move(indices_uint8));
+                vertices.push_back(std::move(os2_vertices));
+                indices.push_back(std::move(mesh_indices));
+
+                vertex_bytes.push_back(std::as_bytes(std::span{vertices.back()}));
+                index_bytes.push_back(std::as_bytes(std::span{indices.back()}));
+
                 model->meshes.push_back(std::move(mesh));
             }
         }
@@ -155,7 +155,7 @@ lotus::Task<> FFXIActorLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
         mesh->material = co_await task;
     }
 
-    co_await model->InitWork(engine, std::move(vertices), std::move(indices), sizeof(FFXI::OS2::WeightingVertex));
+    co_await model->InitWork(engine, vertex_bytes, index_bytes, sizeof(FFXI::OS2::WeightingVertex));
 }
 
 void FFXIActorLoader::InitPipeline(lotus::Engine* engine)

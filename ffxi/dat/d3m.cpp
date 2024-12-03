@@ -166,10 +166,6 @@ lotus::Task<> D3MLoader::LoadModelTriangle(std::shared_ptr<lotus::Model> model, 
     }
     pipeline_latch.wait();
     model->lifetime = lotus::Lifetime::Short;
-    std::vector<uint8_t> vertices_uint8(vertices.size() * sizeof(D3M::Vertex));
-    memcpy(vertices_uint8.data(), vertices.data(), vertices.size() * sizeof(D3M::Vertex));
-    std::vector<uint8_t> indices_uint8(indices.size() * sizeof(uint16_t));
-    memcpy(indices_uint8.data(), indices.data(), indices.size() * sizeof(uint16_t));
 
     auto mesh = std::make_unique<lotus::Mesh>();
     mesh->has_transparency = true;
@@ -195,10 +191,10 @@ lotus::Task<> D3MLoader::LoadModelTriangle(std::shared_ptr<lotus::Model> model, 
 
     model->meshes.push_back(std::move(mesh));
 
-    std::vector<std::vector<uint8_t>> vertices_vector{std::move(vertices_uint8)};
-    std::vector<std::vector<uint8_t>> indices_vector{std::move(indices_uint8)};
+    std::vector<std::span<const std::byte>> vertices_vector{std::as_bytes(std::span{vertices})};
+    std::vector<std::span<const std::byte>> indices_vector{std::as_bytes(std::span{indices})};
 
-    co_await model->InitWork(engine, std::move(vertices_vector), std::move(indices_vector), sizeof(D3M::Vertex));
+    co_await model->InitWork(engine, vertices_vector, indices_vector, sizeof(D3M::Vertex));
 }
 
 lotus::Task<> D3MLoader::LoadModelRing(std::shared_ptr<lotus::Model> model, lotus::Engine* engine, std::vector<D3M::Vertex>&& vertices,
