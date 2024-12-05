@@ -1,5 +1,5 @@
-target_sources(ffxi
-    PRIVATE
-    actor_loader.cpp
-    actor_loader.h
-    )
+target_sources(ffxi PUBLIC
+    FILE_SET CXX_MODULES
+    FILES
+    actor_loader.cppm
+)

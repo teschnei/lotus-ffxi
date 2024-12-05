@@ -1,31 +1,20 @@
-target_sources(ffxi
+target_sources(ffxi PUBLIC
+    FILE_SET CXX_MODULES
+    FILES
+    cib.cppm
+    d3m.cppm
+    dat.cppm
+    dat_loader.cppm
+    dxt3.cppm
+    generator.cppm
+    key_tables.cppm
+    mmb.cppm
+    mo2.cppm
+    mzb.cppm
+    os2.cppm
+    sep.cppm
+    scheduler.cppm
+    sk2.cppm
     PRIVATE
-    cib.cpp
-    cib.h
-    d3m.cpp
-    d3m.h
     dat.cpp
-    dat.h
-    dat_chunk.h
-    dat_loader.cpp
-    dat_loader.h
-    dxt3.cpp
-    dxt3.h
-    generator.cpp
-    generator.h
-    key_tables.h
-    mmb.cpp
-    mmb.h
-    mo2.cpp
-    mo2.h
-    mzb.cpp
-    mzb.h
-    os2.cpp
-    os2.h
-    sep.cpp
-    sep.h
-    scheduler.cpp
-    scheduler.h
-    sk2.cpp
-    sk2.h
-    )
+)

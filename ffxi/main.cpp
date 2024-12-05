@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 
-#include "ffxi.h"
-
+import ffxi;
+import lotus;
 import vulkan_hpp;
 
 int main(int argc, char* argv[])

@@ -1,25 +1,30 @@
-#include "landscape_entity.h"
+module;
 
 #include <charconv>
+#include <chrono>
 #include <coroutine>
 #include <cstring>
+#include <map>
+#include <memory>
+#include <unordered_map>
+#include <vector>
 
-#include "component/landscape_component.h"
-#include "dat/d3m.h"
-#include "dat/dat.h"
-#include "dat/dxt3.h"
-#include "dat/generator.h"
-#include "dat/mmb.h"
-#include "dat/mzb.h"
-#include "entity/component/generator_component.h"
-#include "ffxi.h"
-#include "vana_time.h"
-import lotus;
-import lotus;
-import lotus;
-import lotus;
+module ffxi;
 
+import :entity.landscape;
+
+import :dat.d3m;
+import :dat.dxt3;
+import :dat.generator;
+import :dat.mmb;
+import :dat.mzb;
+import :entity.component.generator;
+import :entity.component.landscape;
+import :game;
+import :vana_time;
 import glm;
+import lotus;
+import vulkan_hpp;
 
 lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, std::tuple<>>> FFXILandscapeEntity::Init(lotus::Engine* engine, lotus::Scene* scene, size_t zoneid)
 {

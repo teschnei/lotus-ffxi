@@ -1,19 +1,19 @@
-target_sources(ffxi
+target_sources(ffxi PUBLIC
+    FILE_SET CXX_MODULES
+    FILES
+    actor.cppm
+    actor_data.cppm
+    actor_skeleton_static.cppm
+    camera_third_person_classic.cppm
+    camera_third_person_modern.cppm
+    landscape_entity.cppm
+    particle.cppm
     PRIVATE
     actor.cpp
-    actor.h
-    actor_data.h
     actor_skeleton_static.cpp
-    actor_skeleton_static.h
     landscape_entity.cpp
-    landscape_entity.h
     particle.cpp
-    particle.h
-    third_person_ffxi_camera.cpp
-    third_person_ffxi_camera.h
-    third_person_ffxiv_camera.cpp
-    third_person_ffxiv_camera.h
-    )
+)
 
 add_subdirectory(component)
 add_subdirectory(loader)

@@ -1,12 +1,24 @@
-#include "actor_skeleton_static.h"
-#include "dat/cib.h"
-#include "dat/generator.h"
-#include "dat/mo2.h"
-#include "dat/scheduler.h"
-#include "dat/sk2.h"
-#include "ffxi.h"
+module;
+
+#include "util.h"
+#include <chrono>
 #include <coroutine>
+#include <map>
+#include <memory>
 #include <numeric>
+#include <span>
+#include <unordered_map>
+
+module ffxi;
+
+import :entity.actor_skeleton_static;
+
+import :dat.cib;
+import :dat.generator;
+import :dat.mo2;
+import :dat.scheduler;
+import :dat.sk2;
+import :game;
 import lotus;
 
 namespace FFXI

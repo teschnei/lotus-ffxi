@@ -1,13 +1,17 @@
-#include "scheduler_resources.h"
+module;
 
-#include "ffxi.h"
-
-#include "dat/d3m.h"
-#include "dat/dat.h"
-#include "dat/dxt3.h"
-#include "dat/generator.h"
-#include "dat/scheduler.h"
 #include <coroutine>
+#include <memory>
+#include <string>
+
+module ffxi;
+
+import :dat.d3m;
+import :dat.dxt3;
+import :dat.generator;
+import :dat.scheduler;
+import :scheduler_resources;
+import lotus;
 
 SchedulerResources::SchedulerResources(FFXIGame* _game, _private_tag) : game(_game) {}
 

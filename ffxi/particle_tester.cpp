@@ -1,17 +1,18 @@
-#include "particle_tester.h"
+module;
 
-#include "ffxi.h"
-
-#include "dat/d3m.h"
-#include "dat/dxt3.h"
-#include "dat/generator.h"
-#include "dat/scheduler.h"
-#include "entity/actor.h"
-#include "entity/component/actor_skeleton_component.h"
-#include "entity/component/scheduler_component.h"
+#include <SDL2/SDL.h>
+#include <chrono>
 #include <coroutine>
 
+module ffxi;
+
+import :test.particle_tester;
+
+import :dat.scheduler;
+import :entity.component.actor_skeleton;
+import :entity.component.scheduler;
 import glm;
+import lotus;
 import vulkan_hpp;
 
 ParticleTester::ParticleTester(lotus::Entity* _entity, lotus::Engine* _engine, FFXI::ActorSkeletonComponent& _actor)

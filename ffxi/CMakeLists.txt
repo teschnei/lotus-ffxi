@@ -1,23 +1,29 @@
 add_executable(ffxi
     main.cpp
-    config.cpp
-    config.h
-    ffxi.h
-    ffxi.cpp
+)
+target_sources(ffxi PUBLIC
+    FILE_SET CXX_MODULES
+    FILES
+    config.cppm
+    ffxi.cppm
+    game.cppm
+    particle_tester.cppm
+    scheduler_resources.cppm
+    system_dat.cppm
+    test_loader.cppm
+    vana_time.cppm
+    PRIVATE
+    game.cpp
     particle_tester.cpp
-    particle_tester.h
     scheduler_resources.cpp
-    scheduler_resources.h
     stb.cpp
-    stb.h
-    system_dat.h
     system_dat.cpp
-    vana_time.h
-    )
+)
+
 target_include_directories(ffxi PRIVATE "." )
 target_include_directories(ffxi PRIVATE "../external/stb" )
-
-target_link_libraries(ffxi lotus-engine)
+target_compile_features(ffxi PUBLIC cxx_std_23)
+target_link_libraries(ffxi PUBLIC lotus-engine)
 
 if (MSVC)
     #these files never change, so they can be copied at generation time rather than build time

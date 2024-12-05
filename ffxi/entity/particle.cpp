@@ -1,8 +1,15 @@
-#include "particle.h"
+module;
 
-#include "component/particle_component.h"
 #include <coroutine>
 #include <map>
+#include <memory>
+#include <utility>
+
+module ffxi;
+
+import :entity.particle;
+
+import :entity.component.particle;
 import lotus;
 
 lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, std::tuple<>>> FFXIParticle::Init(lotus::Engine* engine, lotus::Scene* scene,

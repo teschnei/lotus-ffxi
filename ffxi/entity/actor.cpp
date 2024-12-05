@@ -1,18 +1,24 @@
-#include "actor.h"
-#include "actor_data.h"
+module;
 
-#include "actor_skeleton_static.h"
-#include "dat/cib.h"
-#include "dat/dat.h"
-#include "dat/dat_loader.h"
-#include "dat/dxt3.h"
-#include "dat/mo2.h"
-#include "dat/os2.h"
-#include "dat/sk2.h"
-#include "entity/loader/actor_loader.h"
-#include "ffxi.h"
 #include <coroutine>
+#include <memory>
+#include <unordered_map>
+#include <vector>
 
+module ffxi;
+
+import :entity.actor;
+
+import :dat.cib;
+import :dat.dxt3;
+import :dat.generator;
+import :dat.mo2;
+import :dat.os2;
+import :dat.scheduler;
+import :dat.sk2;
+import :entity.actor_skeleton_static;
+import :entity.loader.actor;
+import :game;
 import lotus;
 
 lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, Actor::InitComponents>> Actor::Init(lotus::Engine* engine, lotus::Scene* scene, uint16_t modelid)
@@ -38,7 +44,6 @@ lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, Actor::InitComponents>> Ac
 lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, Actor::InitPCComponents>> Actor::Init(lotus::Engine* engine, lotus::Scene* scene,
                                                                                             FFXI::ActorSkeletonComponent::LookData look)
 {
-    auto path = static_cast<FFXIConfig*>(engine->config.get())->ffxi.ffxi_install_path;
     auto actor = std::make_shared<lotus::Entity>();
     // actor->look = look;
     auto skeleton_dats = ActorData::PCSkeletonIDs[look.look.race - 1];

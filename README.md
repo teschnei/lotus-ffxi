@@ -9,10 +9,11 @@ The repo uses submodules, so don't forget --recursive when cloning.  If you did 
 
 # Build Requirements
 * (Windows) Visual Studio 2022
-* (Linux) GCC13
+* (Linux) GCC14, Clang18
 * Vulkan SDK 1.3.216 or higher
 * SDL2 (included in Vulkan SDK on Windows)
 * glm (included in Vulkan SDK on Windows)
+* Note: I have no idea what version specifically is needed anymore for compilers.  C++ modules support evolves quickly.  At the time of this writing, I use Clang18
 
 # Build
     mkdir build

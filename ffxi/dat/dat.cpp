@@ -1,20 +1,30 @@
-#include "dat.h"
-#include "cib.h"
-#include "d3m.h"
-#include "dxt3.h"
-#include "generator.h"
-#include "mmb.h"
-#include "mo2.h"
-#include "mzb.h"
-#include "os2.h"
-#include "scheduler.h"
-#include "sep.h"
-#include "sk2.h"
+module;
+
+#include <filesystem>
 #include <fstream>
+#include <memory>
+#include <string>
+#include <vector>
+
+module ffxi;
+
+import :dat;
+
+import :dat.cib;
+import :dat.d3m;
+import :dat.dxt3;
+import :dat.generator;
+import :dat.mmb;
+import :dat.mo2;
+import :dat.mzb;
+import :dat.os2;
+import :dat.scheduler;
+import :dat.sep;
+import :dat.sk2;
+import lotus;
 
 namespace FFXI
 {
-
 #pragma pack(push, 1)
 typedef struct
 {
