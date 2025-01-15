@@ -25,12 +25,9 @@ public:
     struct Vertex
     {
         glm::vec3 pos;
-        float _pad;
         glm::vec3 normal;
-        float _pad2;
         glm::vec4 color;
         glm::vec2 uv;
-        glm::vec2 _pad3;
     };
     D3M(char* name, uint8_t* buffer, size_t len);
 
@@ -295,18 +292,17 @@ lotus::Task<> D3MLoader::LoadD3A(std::shared_ptr<lotus::Model> model, lotus::Eng
 
 lotus::Task<> D3MLoader::InitPipeline(lotus::Engine* engine)
 {
-    auto vertex_module = engine->renderer->getShader("shaders/d3m_gbuffer_vert.spv");
-    auto fragment_module = engine->renderer->getShader("shaders/particle_blend.spv");
+    auto shader_module = engine->renderer->getShader("shaders/d3m.spv");
 
     vk::PipelineShaderStageCreateInfo vert_shader_stage_info;
     vert_shader_stage_info.stage = vk::ShaderStageFlagBits::eVertex;
-    vert_shader_stage_info.module = *vertex_module;
-    vert_shader_stage_info.pName = "main";
+    vert_shader_stage_info.module = *shader_module;
+    vert_shader_stage_info.pName = "Vertex";
 
     vk::PipelineShaderStageCreateInfo frag_shader_stage_info;
     frag_shader_stage_info.stage = vk::ShaderStageFlagBits::eFragment;
-    frag_shader_stage_info.module = *fragment_module;
-    frag_shader_stage_info.pName = "main";
+    frag_shader_stage_info.module = *shader_module;
+    frag_shader_stage_info.pName = "FragmentBlend";
 
     std::array<vk::PipelineShaderStageCreateInfo, 2> shaderStages = {vert_shader_stage_info, frag_shader_stage_info};
 
@@ -410,9 +406,7 @@ lotus::Task<> D3MLoader::InitPipeline(lotus::Engine* engine)
 
     pipeline_blend = engine->renderer->createParticlePipeline(pipeline_info);
 
-    auto fragment_module_add = engine->renderer->getShader("shaders/particle_add.spv");
-    frag_shader_stage_info.module = *fragment_module_add;
-    shaderStages[1] = frag_shader_stage_info;
+    frag_shader_stage_info.pName = "FragmentAdd";
 
     color_blend_attachment_states_subpass1[0].blendEnable = false;
     color_blend_attachment_states_subpass1[1].blendEnable = false;

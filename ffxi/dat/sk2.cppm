@@ -20,16 +20,14 @@ public:
 #pragma pack(push, 2)
     struct Bone
     {
-        uint8_t parent_index;
-        uint8_t _pad;
+        uint16_t parent_index;
         glm::quat rot;
         glm::vec3 trans;
     };
 
     struct GeneratorPoint
     {
-        uint8_t bone_index;
-        uint8_t _pad;
+        uint16_t bone_index;
         float unknown[3];
         glm::vec3 offset;
     };

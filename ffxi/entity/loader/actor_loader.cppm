@@ -15,6 +15,7 @@ module ffxi:entity.loader.actor;
 import :dat.os2;
 import :entity.actor;
 import lotus;
+import glm;
 import vulkan_hpp;
 
 class FFXIActorLoader
@@ -108,8 +109,10 @@ lotus::Task<> FFXIActorLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
                 std::shared_ptr<lotus::Texture> texture = lotus::Texture::getTexture(os2_mesh.tex_name);
                 if (!texture)
                     texture = lotus::Texture::getTexture("default");
-                material_map.insert(std::make_pair(mesh.get(), lotus::Material::make_material(engine, material_buffer, material_buffer_offset, texture, 0,
-                                                                                              os2_mesh.specular_exponent, os2_mesh.specular_intensity)));
+                float roughness = os2_mesh.specular_exponent / 128;
+                float ior = os2_mesh.specular_intensity == 0 ? 0 : os2_mesh.specular_intensity + 1;
+                material_map.insert(std::make_pair(
+                    mesh.get(), lotus::Material::make_material(engine, material_buffer, material_buffer_offset, texture, 0, glm::vec2(roughness), ior)));
                 material_buffer_offset += lotus::Material::getMaterialBufferSize(engine);
 
                 int passes = os2->mirror ? 2 : 1;
@@ -184,18 +187,17 @@ lotus::Task<> FFXIActorLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
 
 void FFXIActorLoader::InitPipeline(lotus::Engine* engine)
 {
-    auto vertex_module = engine->renderer->getShader("shaders/ffxiactor_gbuffer_vert.spv");
-    auto fragment_module = engine->renderer->getShader("shaders/blend.spv");
+    auto shader_module = engine->renderer->getShader("shaders/sk2.spv");
 
     vk::PipelineShaderStageCreateInfo vert_shader_stage_info;
     vert_shader_stage_info.stage = vk::ShaderStageFlagBits::eVertex;
-    vert_shader_stage_info.module = *vertex_module;
-    vert_shader_stage_info.pName = "main";
+    vert_shader_stage_info.module = *shader_module;
+    vert_shader_stage_info.pName = "Vertex";
 
     vk::PipelineShaderStageCreateInfo frag_shader_stage_info;
     frag_shader_stage_info.stage = vk::ShaderStageFlagBits::eFragment;
-    frag_shader_stage_info.module = *fragment_module;
-    frag_shader_stage_info.pName = "main";
+    frag_shader_stage_info.module = *shader_module;
+    frag_shader_stage_info.pName = "Fragment";
 
     std::array<vk::PipelineShaderStageCreateInfo, 2> shaderStages = {vert_shader_stage_info, frag_shader_stage_info};
 
@@ -298,10 +300,11 @@ void FFXIActorLoader::InitPipeline(lotus::Engine* engine)
 
     pipeline = engine->renderer->createGraphicsPipeline(pipeline_info);
 
+    /*
     color_blending.attachmentCount = 0;
 
-    vertex_module = engine->renderer->getShader("shaders/ffxiactor_shadow_vert.spv");
-    fragment_module = engine->renderer->getShader("shaders/shadow_frag.spv");
+    auto vertex_module = engine->renderer->getShader("shaders/ffxiactor_shadow_vert.spv");
+    auto fragment_module = engine->renderer->getShader("shaders/shadow_frag.spv");
 
     vert_shader_stage_info.module = *vertex_module;
     frag_shader_stage_info.module = *fragment_module;
@@ -318,4 +321,5 @@ void FFXIActorLoader::InitPipeline(lotus::Engine* engine)
     dynamic_state_ci.dynamicStateCount = static_cast<uint32_t>(dynamic_states.size());
     dynamic_state_ci.pDynamicStates = dynamic_states.data();
     pipeline_shadowmap = engine->renderer->createShadowmapPipeline(pipeline_info);
+    */
 }

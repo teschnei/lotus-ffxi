@@ -29,12 +29,9 @@ public:
     struct Vertex
     {
         glm::vec3 pos;
-        float _pad;
         glm::vec3 normal;
-        float _pad2;
         glm::vec4 color;
         glm::vec2 tex_coord;
-        glm::vec2 _pad3;
     };
     struct Mesh
     {
@@ -523,18 +520,17 @@ lotus::Task<> MMBLoader::LoadModel(std::shared_ptr<lotus::Model> model, lotus::E
 
 void MMBLoader::InitPipeline(lotus::Engine* engine)
 {
-    auto vertex_module = engine->renderer->getShader("shaders/mmb_gbuffer_vert.spv");
-    auto fragment_module = engine->renderer->getShader("shaders/gbuffer_frag.spv");
+    auto shader_module = engine->renderer->getShader("shaders/mmb.spv");
 
     vk::PipelineShaderStageCreateInfo vert_shader_stage_info;
     vert_shader_stage_info.stage = vk::ShaderStageFlagBits::eVertex;
-    vert_shader_stage_info.module = *vertex_module;
-    vert_shader_stage_info.pName = "main";
+    vert_shader_stage_info.module = *shader_module;
+    vert_shader_stage_info.pName = "Vertex";
 
     vk::PipelineShaderStageCreateInfo frag_shader_stage_info;
     frag_shader_stage_info.stage = vk::ShaderStageFlagBits::eFragment;
-    frag_shader_stage_info.module = *fragment_module;
-    frag_shader_stage_info.pName = "main";
+    frag_shader_stage_info.module = *shader_module;
+    frag_shader_stage_info.pName = "FragmentOpaque";
 
     std::array<vk::PipelineShaderStageCreateInfo, 2> shaderStages = {vert_shader_stage_info, frag_shader_stage_info};
 
@@ -617,18 +613,15 @@ void MMBLoader::InitPipeline(lotus::Engine* engine)
 
     pipeline = engine->renderer->createGraphicsPipeline(pipeline_info);
 
-    fragment_module = engine->renderer->getShader("shaders/blend.spv");
-
-    frag_shader_stage_info.module = *fragment_module;
-
-    shaderStages[1] = frag_shader_stage_info;
+    frag_shader_stage_info.pName = "FragmentBlend";
 
     pipeline_blend = engine->renderer->createGraphicsPipeline(pipeline_info);
 
     color_blending.attachmentCount = 0;
 
-    vertex_module = engine->renderer->getShader("shaders/mmb_shadow_vert.spv");
-    fragment_module = engine->renderer->getShader("shaders/shadow_frag.spv");
+    /*
+    auto vertex_module = engine->renderer->getShader("shaders/mmb_shadow_vert.spv");
+    auto fragment_module = engine->renderer->getShader("shaders/shadow_frag.spv");
 
     vert_shader_stage_info.module = *vertex_module;
     frag_shader_stage_info.module = *fragment_module;
@@ -649,5 +642,6 @@ void MMBLoader::InitPipeline(lotus::Engine* engine)
     pipeline_info.stageCount = 1;
     pipeline_info.pStages = &vert_shader_stage_info;
     pipeline_shadowmap = engine->renderer->createShadowmapPipeline(pipeline_info);
+    */
 }
 } // namespace FFXI
