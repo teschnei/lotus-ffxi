@@ -42,7 +42,7 @@ void ClosestHit(inout lotus::RayPayload payload, BuiltInTriangleIntersectionAttr
     float2 uv = v0.uv * barycentrics.x + v1.uv * barycentrics.y + v2.uv * barycentrics.z;
 
     lotus::Material material = *(lotus::Material*)mesh.material;
-    float3 texture_color = textures[NonUniformResourceIndex(material.texture_index)].Sample(uv).xyz;
+    float3 texture_color = textures[NonUniformResourceIndex(material.texture_index)].SampleLevel(uv, 0).xyz;
 
     float3 transformed_v0 = mul(float3x3(ObjectToWorld3x4()), v0.pos);
     float3 transformed_v1 = mul(float3x3(ObjectToWorld3x4()), v1.pos);
@@ -133,7 +133,7 @@ void AnyHit(inout lotus::RayPayload payload, BuiltInTriangleIntersectionAttribut
     float2 uv = v0.uv * barycentrics.x + v1.uv * barycentrics.y + v2.uv * barycentrics.z;
 
     lotus::Material material = *(lotus::Material*)mesh.material;
-    float alpha = textures[NonUniformResourceIndex(material.texture_index)].Sample(uv).a;
+    float alpha = textures[NonUniformResourceIndex(material.texture_index)].SampleLevel(uv, 0).a;
     if (alpha < 1.f/32.f)
         IgnoreHit();
 }

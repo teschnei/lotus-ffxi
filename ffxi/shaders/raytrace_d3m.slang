@@ -45,7 +45,7 @@ void ClosestHitCommon(inout lotus::RayPayload payload, float2 barycentrics)
     uv += mesh.uv_offset;
 
     lotus::Material material = *(lotus::Material*)mesh.material;
-    float4 texture_colour = textures[NonUniformResourceIndex(material.texture_index)].Sample(uv);
+    float4 texture_colour = textures[NonUniformResourceIndex(material.texture_index)].SampleLevel(uv, 0);
 
     float3 colour = primitive_colour.rgb * mesh.colour.rgb * texture_colour.rgb * 4;
     float a = primitive_colour.a * mesh.colour.a * texture_colour.a * 2;
@@ -93,7 +93,7 @@ void AnyHitCommon(inout lotus::RayPayload payload, float2 barycentrics)
     uv += mesh.uv_offset;
 
     lotus::Material material = *(lotus::Material*)mesh.material;
-    float4 texture_colour = textures[NonUniformResourceIndex(material.texture_index)].Sample(uv);
+    float4 texture_colour = textures[NonUniformResourceIndex(material.texture_index)].SampleLevel(uv, 0);
 
     float3 colour = primitive_colour.rgb * mesh.colour.rgb * texture_colour.rgb * 4;
     float a = primitive_colour.a * mesh.colour.a * texture_colour.a * 2;
