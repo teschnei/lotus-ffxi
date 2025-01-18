@@ -15,7 +15,7 @@ void ClosestHitCommon(inout lotus::RayPayload payload, float2 barycentrics)
     if (RayTCurrent() > lights[0].light.entity.max_fog)
     {
         payload.diffuse = float3(M_PI);
-        payload.BRDF = lights[0].light.entity.fog_color.rgb / M_PI;
+        payload.bsdf = pbr::BSDFSample(lights[0].light.entity.fog_color.rgb / M_PI, 1, float3(0));
         payload.depth = 10;
         payload.distance = RayTCurrent();
         return;

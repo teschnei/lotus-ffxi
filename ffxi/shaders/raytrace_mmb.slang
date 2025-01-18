@@ -18,7 +18,7 @@ void ClosestHit(inout lotus::RayPayload payload, BuiltInTriangleIntersectionAttr
     if (distance > lights[0].light.landscape.max_fog)
     {
         payload.diffuse = float3(M_PI);
-        payload.BRDF = lights[0].light.landscape.fog_color.rgb / M_PI;
+        payload.bsdf = pbr::BSDFSample(lights[0].light.landscape.fog_color.rgb / M_PI, 1, float3(0));
         payload.depth = 10;
         return;
     }
@@ -68,17 +68,9 @@ void ClosestHit(inout lotus::RayPayload payload, BuiltInTriangleIntersectionAttr
         diffuse += lotus::TraceLight(lights[0].light_info, trace_origin, normalized_normal, u);
     }
 
-    float3 tangent, bitangent;
-    float pdf;
-    pbr::createCoordinateSystem(normalized_normal, tangent, bitangent);
-    float3 sample = pbr::SampleCosineHemisphere(float2(lotus.rand::rnd(payload.seed), lotus.rand::rnd(payload.seed)));
-    payload.direction = normalize(sample.x * tangent + sample.y * bitangent + sample.z * normalized_normal);
     payload.origin = trace_origin.xyz;
     payload.prev_pos = trace_origin.xyz;
 
-    //const float p = cos_theta / M_PI;
-
-    float cos_theta = dot(payload.direction, normalized_normal);
     float3 albedo = texture_color.rgb * primitive_colour;
 
     //if (distance > lights[0].light.landscape.min_fog && distance < lights[0].light.landscape.max_fog)
@@ -87,11 +79,12 @@ void ClosestHit(inout lotus::RayPayload payload, BuiltInTriangleIntersectionAttr
         //diffuse = mix(diffuse, float3(M_PI), (distance - light.light.landscape.min_fog) / (light.light.landscape.max_fog - light.light.landscape.min_fog));
     }
 
-    float3 BRDF = albedo / M_PI;
-    payload.BRDF = BRDF;
     payload.diffuse = diffuse;
-    payload.weight = M_PI;
     payload.normal = normalized_normal;
+
+    var bxdf = pbr::DiffuseBxDF(albedo);
+    var bsdf = pbr::BSDF<pbr::DiffuseBxDF>(bxdf, normalized_normal);
+    payload.bsdf = bsdf.Sample_f(-WorldRayDirection(), lotus.rand::rnd(payload.seed), float2(lotus.rand::rnd(payload.seed), lotus.rand::rnd(payload.seed)));
 
     /*
     if (material.ior > 0)

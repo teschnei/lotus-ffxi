@@ -615,6 +615,8 @@ void MMBLoader::InitPipeline(lotus::Engine* engine)
 
     frag_shader_stage_info.pName = "FragmentBlend";
 
+    shaderStages[1] = frag_shader_stage_info;
+
     pipeline_blend = engine->renderer->createGraphicsPipeline(pipeline_info);
 
     color_blending.attachmentCount = 0;
