@@ -110,7 +110,9 @@ lotus::Task<> FFXIActorLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
                 if (!texture)
                     texture = lotus::Texture::getTexture("default");
                 float roughness = os2_mesh.specular_exponent / 128;
-                float ior = os2_mesh.specular_intensity == 0 ? 0 : os2_mesh.specular_intensity + 1;
+                // TODO: figure out a mapping from specular_exponent and specular_intensity to ior
+                //  observed values: intensity 1 + exponent 40, intensity 4 + exponent 32
+                float ior = os2_mesh.specular_intensity == 0 ? 0 : os2_mesh.specular_intensity;
                 material_map.insert(std::make_pair(
                     mesh.get(), lotus::Material::make_material(engine, material_buffer, material_buffer_offset, texture, 0, glm::vec2(roughness), ior)));
                 material_buffer_offset += lotus::Material::getMaterialBufferSize(engine);

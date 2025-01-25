@@ -87,6 +87,7 @@ lotus::WorkerTask<> FFXIGame::load_scene()
                                                                                                                                 .feet = 0x5000 + 64,
                                                                                                                                 .weapon = 0x6000 + 240,
                                                                                                                                 .weapon_sub = 0x7000 + 140}});
+    // fighter's lorica: ROM/93/46.DAT
     auto ac = std::get<FFXI::ActorComponent*>(player_components);
     // ac->setPos((glm::vec3(-681.f, -12.f, 161.f)), false);
     // ac->setPos((glm::vec3(419, -53.f, -103.f)), false); //eldieme entrance

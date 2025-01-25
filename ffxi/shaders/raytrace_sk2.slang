@@ -12,12 +12,15 @@ struct SK2Vertex
 [shader("closesthit")]
 void ClosestHit(inout lotus::RayPayload payload, BuiltInTriangleIntersectionAttributes attribs)
 {
+    payload.id = lotus::GetMeshID();
     float distance = payload.distance + RayTCurrent();
     payload.distance = distance;
     if (distance > lights[0].light.entity.max_fog)
     {
-        payload.diffuse = float3(M_PI);
-        payload.bsdf = pbr::BSDFSample(lights[0].light.entity.fog_color.rgb / M_PI, 1, float3(0));
+        if (payload.depth == 0)
+        {
+            payload.bxdf = pbr::ConstantBxDF(lights[0].light.entity.fog_color.rgb, 1).Serialize();
+        }
         payload.depth = 10;
         return;
     }
@@ -36,13 +39,18 @@ void ClosestHit(inout lotus::RayPayload payload, BuiltInTriangleIntersectionAttr
     float3 normal = v0.norm * barycentrics.x + v1.norm * barycentrics.y + v2.norm * barycentrics.z;
     float3 transformed_normal = mul(float3x3(ObjectToWorld3x4()), normal);
     float3 normalized_normal = normalize(transformed_normal);
+    // SK2 are double sided
+    if (dot(-WorldRayDirection(), normalized_normal) < 0)
+    {
+        normalized_normal = -normalized_normal;
+    }
 
     float dot_product = dot(-lights[0].light.diffuse_dir, normalized_normal);
 
     float2 uv = v0.uv * barycentrics.x + v1.uv * barycentrics.y + v2.uv * barycentrics.z;
 
     lotus::Material material = *(lotus::Material*)mesh.material;
-    float3 texture_color = textures[NonUniformResourceIndex(material.texture_index)].SampleLevel(uv, 0).xyz;
+    float4 texture_color = textures[NonUniformResourceIndex(material.texture_index)].SampleLevel(uv, 0);
 
     float3 transformed_v0 = mul(float3x3(ObjectToWorld3x4()), v0.pos);
     float3 transformed_v1 = mul(float3x3(ObjectToWorld3x4()), v1.pos);
@@ -55,29 +63,21 @@ void ClosestHit(inout lotus::RayPayload payload, BuiltInTriangleIntersectionAttr
     if ((dot(cross_vec, normalized_normal)) < 0)
         cross_vec = -cross_vec;
 
-    float3 trace_origin = WorldRayOrigin() + WorldRayDirection() * RayTCurrent() + cross_vec * 0.001;
-    float3 diffuse = float3(0);//light.light.entity.ambient_color.rgb * light.light.entity.brightness;
+    float3 albedo = texture_color.rgb;
 
-    for (int i = 0; i < lights[0].light.light_count; i++)
-    {
-        float2 u = float2(lotus.rand::rnd(payload.seed), lotus.rand::rnd(payload.seed));
-        diffuse += lotus::TraceLight(lights[0].light_info, trace_origin, normalized_normal, u);
-    }
+    payload.normal = normalized_normal;
+    payload.face_normal = cross_vec;
+    payload.intersection = WorldRayOrigin() + WorldRayDirection() * RayTCurrent();
+    payload.albedo = albedo;
 
-    payload.origin = trace_origin.xyz;
     if (payload.depth == 0)
     {
         SK2Vertex* prev_vertices = (SK2Vertex*)mesh.vertex_prev_buffer;
-        SK2Vertex v0 = prev_vertices[indices.x];
-        SK2Vertex v1 = prev_vertices[indices.y];
-        SK2Vertex v2 = prev_vertices[indices.z];
-        float3 pos = v0.pos * barycentrics.x + v1.pos * barycentrics.y + v2.pos * barycentrics.z;
-        payload.prev_pos = (mul(mesh.model_prev, float4(pos, 1.0))).xyz;
+        float3 prev_vertex_pos = prev_vertices[indices.x].pos * barycentrics.x +
+                                 prev_vertices[indices.y].pos * barycentrics.y +
+                                 prev_vertices[indices.z].pos * barycentrics.z;
+        payload.prev_pos = (mul(mesh.model_prev, float4(prev_vertex_pos, 1.0))).xyz;
     }
-
-    //const float p = cos_theta / M_PI;
-
-    float3 albedo = texture_color.rgb;
 
     //if (distance > lights[0].light.entity.min_fog && distance < lights[0].light.entity.max_fog)
     {
@@ -85,29 +85,19 @@ void ClosestHit(inout lotus::RayPayload payload, BuiltInTriangleIntersectionAttr
         //diffuse = mix(diffuse, float3(M_PI), (distance - light.light.entity.min_fog) / (light.light.entity.max_fog - light.light.entity.min_fog));
     }
 
-    payload.diffuse = diffuse;
-    payload.normal = normalized_normal;
-
-    var bxdf = pbr::DiffuseBxDF(albedo);
-    var bsdf = pbr::BSDF<pbr::DiffuseBxDF>(bxdf, normalized_normal);
-    payload.bsdf = bsdf.Sample_f(-WorldRayDirection(), lotus.rand::rnd(payload.seed), float2(lotus.rand::rnd(payload.seed), lotus.rand::rnd(payload.seed)));
-    /*
-    if (material.ior > 0)
+    if (material.ior > 0 && texture_color.a > 0)
     {
-        //TESTING
-        //transform wo relative to surface normal
-        float3 wo = float3(dot(-gl_WorldRayDirectionEXT, tangent), dot(-gl_WorldRayDirectionEXT, bitangent), dot(-gl_WorldRayDirectionEXT, normalized_normal));
-
-        BSDFSample brdf = sampleBRDF(payload.seed, wo, float3(material.ior + 1), -texture_color.rgb, sqrt(material.roughness));
-        float3 wi_world = float3(brdf.wi.x * tangent + brdf.wi.y * bitangent + brdf.wi.z * normalized_normal);
-        payload.BRDF = brdf.f;
-        payload.weight = brdf.pdf_inv * abs(dot(wi_world, normalized_normal));
-        payload.diffuse = float3(0);
-        payload.direction = wi_world;
-        if (brdf.pdf_inv == 0)
-            payload.depth = 10;
+        //apply the texture's "shininess" (inverse roughness)
+        float2 base_shininess = float2(1); // TODO: material.roughness
+        float2 roughness = 1.0 - ((base_shininess) * texture_color.a);
+        var diffuse_bxdf = pbr::DiffuseBxDF(albedo);
+        var dielectric_bxdf = pbr::DielectricBxDF(1.5, sqrt(roughness));
+        payload.bxdf = pbr::DielectricDiffuseBxDF(dielectric_bxdf, diffuse_bxdf).Serialize();
     }
-    */
+    else
+    {
+        payload.bxdf = pbr::DiffuseBxDF(albedo).Serialize();
+    }
 }
 
 [shader("anyhit")]
