@@ -1,6 +1,6 @@
 module;
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 #include <chrono>
 #include <coroutine>
 
@@ -66,9 +66,9 @@ lotus::Task<> ParticleTester::tick(lotus::time_point time, lotus::duration delta
 
 bool ParticleTester::handleInput(lotus::Input* input, const SDL_Event& event)
 {
-    if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
+    if (event.type == SDL_EVENT_KEY_DOWN && event.key.repeat == 0)
     {
-        switch (event.key.keysym.scancode)
+        switch (event.key.scancode)
         {
         case SDL_SCANCODE_R:
             add = true;

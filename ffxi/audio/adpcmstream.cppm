@@ -5,9 +5,8 @@ module;
 #include <cstdint>
 #include <cstring>
 #include <fstream>
+#include <memory>
 #include <vector>
-#define SOLOUD_NO_ASSERTS
-#include <soloud.h>
 
 module ffxi:audio.adpcmstream;
 
@@ -15,12 +14,12 @@ import lotus;
 
 class ADPCMStream;
 
-class ADPCMStreamInstance : public SoLoud::AudioSourceInstance
+class ADPCMStreamInstance : public lotus::AudioInstance
 {
 public:
     ADPCMStreamInstance(ADPCMStream*);
-    virtual unsigned int getAudio(float* buffer, unsigned int samples, unsigned int buffer_size);
-    virtual bool hasEnded();
+    virtual unsigned int getAudio(float* buffer, unsigned int samples) override;
+    virtual bool hasEnded() override;
 
 private:
     std::vector<float> data;
@@ -28,11 +27,11 @@ private:
     ADPCMStream* adpcm;
 };
 
-class ADPCMStream : public SoLoud::AudioSource
+class ADPCMStream : public lotus::AudioSource
 {
 public:
     ADPCMStream(std::ifstream&& file, uint32_t _blocks, uint32_t _block_size, uint32_t _loop_start, uint32_t _channels, float _sample_rate);
-    virtual SoLoud::AudioSourceInstance* createInstance();
+    virtual std::unique_ptr<lotus::AudioInstance> CreateInstance() override;
 
     uint32_t samples{};
     uint32_t loop_start{};
@@ -49,51 +48,32 @@ public:
     void resetLoop();
 };
 
-ADPCMStreamInstance::ADPCMStreamInstance(ADPCMStream* adpcm) : adpcm(adpcm)
-{
-    data = adpcm->getNextBlock();
-    mFlags |= PROTECTED;
-}
+ADPCMStreamInstance::ADPCMStreamInstance(ADPCMStream* adpcm) : lotus::AudioInstance(adpcm), adpcm(adpcm) { data = adpcm->getNextBlock(); }
 
-unsigned int ADPCMStreamInstance::getAudio(float* buffer, unsigned int samples, unsigned int buffer_size)
+unsigned int ADPCMStreamInstance::getAudio(float* buffer, unsigned int samples)
 {
     if (!adpcm)
         return 0;
 
     unsigned int written = 0;
-    while (written < samples)
-    {
-        if (offset == adpcm->block_size && adpcm->file.eof())
-        {
-            adpcm->resetLoop();
-        }
-        if ((samples - written) + offset > adpcm->block_size)
-        {
-            for (uint32_t i = 0; i < mChannels; ++i)
-            {
-                memcpy(buffer + i * buffer_size + written + offset, data.data() + adpcm->block_size * i + offset, sizeof(float) * (adpcm->block_size - offset));
-            }
-            data = adpcm->getNextBlock();
-            written += (adpcm->block_size - offset);
-            offset = 0;
-        }
-        else
-        {
-            for (uint32_t i = 0; i < mChannels; ++i)
-            {
-                memcpy(buffer + i * buffer_size + written + offset, data.data() + adpcm->block_size * i + offset, sizeof(float) * (samples - written));
-            }
-            offset += (samples - written);
-            written += (samples - written);
-        }
-    }
 
-    if (written < samples)
+    if (offset == adpcm->block_size && adpcm->file.eof())
     {
-        memset(buffer + written, 0, sizeof(float) * (samples - written));
+        adpcm->resetLoop();
     }
-
-    return written;
+    if (samples + offset > adpcm->block_size * channels)
+    {
+        memcpy(buffer, data.data() + offset, sizeof(float) * (data.size() - offset));
+        data = adpcm->getNextBlock();
+        offset = 0;
+        return data.size() - offset;
+    }
+    else
+    {
+        memcpy(buffer, data.data() + offset, sizeof(float) * samples);
+        offset += samples;
+        return samples;
+    }
 }
 
 bool ADPCMStreamInstance::hasEnded()
@@ -103,33 +83,27 @@ bool ADPCMStreamInstance::hasEnded()
 }
 
 ADPCMStream::ADPCMStream(std::ifstream&& _file, uint32_t _blocks, uint32_t _block_size, uint32_t _loop_start, uint32_t _channels, float _sample_rate)
-    : samples(_blocks * _block_size), loop_start(_loop_start), block_size(_block_size)
+    : lotus::AudioSource(_channels, _sample_rate), samples(_blocks * _block_size), loop_start(_loop_start), block_size(_block_size)
 {
     file = std::move(_file);
     data_begin = file.tellg();
-
-    mChannels = _channels;
-    mFlags = SHOULD_LOOP | SINGLE_INSTANCE;
-    mBaseSamplerate = _sample_rate;
-
-    decoder_state.resize(mChannels * 2);
+    decoder_state.resize(channels * 2);
 }
 
-SoLoud::AudioSourceInstance* ADPCMStream::createInstance() { return new ADPCMStreamInstance(this); }
+std::unique_ptr<lotus::AudioInstance> ADPCMStream::CreateInstance() { return std::make_unique<ADPCMStreamInstance>(this); }
 
 std::vector<float> ADPCMStream::getNextBlock()
 {
     std::vector<std::byte> block;
-    block.resize((1 + block_size / 2) * mChannels);
-    file.read((char*)block.data(), (1 + block_size / 2) * mChannels);
-    std::vector<float> output{};
-    output.reserve(mChannels * block_size);
+    block.resize((1 + block_size / 2) * channels);
+    file.read((char*)block.data(), (1 + block_size / 2) * channels);
+    std::vector<float> output(channels * block_size);
     std::byte* compressed_block_start = block.data();
     if (current_block == loop_start)
     {
         decoder_state_loop_start = decoder_state;
     }
-    for (size_t channel = 0; channel < mChannels; channel++)
+    for (size_t channel = 0; channel < channels; channel++)
     {
         int base_index = channel * (1 + block_size / 2);
         int scale = 0x0C - std::to_integer<int>((compressed_block_start[base_index] & std::byte{0b1111}));
@@ -148,7 +122,7 @@ std::vector<float> ADPCMStream::getNextBlock()
                     value += (decoder_state[channel * 2] * filter0[index] + decoder_state[channel * 2 + 1] * filter1[index]) / 256;
                     decoder_state[channel * 2 + 1] = decoder_state[channel * 2];
                     decoder_state[channel * 2] = value > 0x7FFF ? 0x7FFF : value < -0x8000 ? -0x8000 : value;
-                    output.push_back(int16_t(decoder_state[channel * 2]) / float(0x8000));
+                    output[((sample * 2) + nibble) * channels + channel] = (int16_t(decoder_state[channel * 2]) / float(0x8000));
                 }
             }
         }
@@ -160,7 +134,7 @@ std::vector<float> ADPCMStream::getNextBlock()
 void ADPCMStream::resetLoop()
 {
     file.clear();
-    file.seekg((int)data_begin + loop_start * (1 + block_size / 2) * mChannels);
+    file.seekg((int)data_begin + loop_start * (1 + block_size / 2) * channels);
     decoder_state = decoder_state_loop_start;
     current_block = loop_start;
 }

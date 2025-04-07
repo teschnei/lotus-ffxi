@@ -31,14 +31,14 @@ lotus::Task<> EquipmentTestComponent::tick(lotus::time_point time, lotus::durati
 
 bool EquipmentTestComponent::handleInput(lotus::Input* input, const SDL_Event& event)
 {
-    if (event.type == SDL_KEYUP && event.key.repeat == 0)
+    if (event.type == SDL_EVENT_KEY_UP && event.key.repeat == 0)
     {
-        if (event.key.keysym.scancode == SDL_SCANCODE_G)
+        if (event.key.scancode == SDL_SCANCODE_G)
         {
             new_modelid = 0x2000 + 64;
             return true;
         }
-        if (event.key.keysym.scancode == SDL_SCANCODE_H)
+        if (event.key.scancode == SDL_SCANCODE_H)
         {
             new_modelid = 0x2000;
             return true;

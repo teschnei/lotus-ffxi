@@ -32,7 +32,7 @@ protected:
     FFXI::SchedulerComponent* parent{};
     lotus::time_point start_time;
     std::shared_ptr<lotus::Model> model;
-    std::optional<lotus::AudioEngine::AudioInstance> sound;
+    std::unique_ptr<lotus::AudioInstance> sound;
     glm::vec3 base_pos{};
     bool light{false};
     uint64_t generations{0};

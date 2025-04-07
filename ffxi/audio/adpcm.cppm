@@ -5,9 +5,8 @@ module;
 #include <cstdint>
 #include <cstring>
 #include <fstream>
+#include <memory>
 #include <vector>
-#define SOLOUD_NO_ASSERTS
-#include <soloud.h>
 
 module ffxi:audio.adpcm;
 
@@ -15,11 +14,11 @@ import lotus;
 
 class ADPCM;
 
-class ADPCMInstance : public SoLoud::AudioSourceInstance
+class ADPCMInstance : public lotus::AudioInstance
 {
 public:
     ADPCMInstance(ADPCM*);
-    virtual unsigned int getAudio(float* buffer, unsigned int samples, unsigned int buffer_size);
+    virtual unsigned int getAudio(float* buffer, unsigned int samples);
     virtual bool hasEnded();
 
 private:
@@ -27,11 +26,11 @@ private:
     ADPCM* adpcm;
 };
 
-class ADPCM : public SoLoud::AudioSource
+class ADPCM : public lotus::AudioSource
 {
 public:
     ADPCM(std::ifstream&& file, uint32_t _blocks, uint32_t _block_size, uint32_t _loop_start, uint32_t _channels, float _sample_rate);
-    virtual SoLoud::AudioSourceInstance* createInstance();
+    virtual std::unique_ptr<lotus::AudioInstance> CreateInstance() override;
 
     uint32_t samples{};
     uint32_t loop_start{};
@@ -41,9 +40,9 @@ public:
     std::vector<std::vector<float>> data;
 };
 
-ADPCMInstance::ADPCMInstance(ADPCM* adpcm) : adpcm(adpcm) {}
+ADPCMInstance::ADPCMInstance(ADPCM* adpcm) : lotus::AudioInstance(adpcm), adpcm(adpcm) {}
 
-unsigned int ADPCMInstance::getAudio(float* buffer, unsigned int samples, unsigned int buffer_size)
+unsigned int ADPCMInstance::getAudio(float* buffer, unsigned int samples)
 {
     if (!adpcm)
         return 0;
@@ -57,7 +56,7 @@ unsigned int ADPCMInstance::getAudio(float* buffer, unsigned int samples, unsign
 
     offset += write_size;
 
-    if (offset >= adpcm->samples && (mFlags & AudioSourceInstance::LOOPING))
+    if (offset >= adpcm->samples && (flags & Flags::Looping))
     {
         offset = adpcm->loop_start * adpcm->block_size;
     }
@@ -67,33 +66,30 @@ unsigned int ADPCMInstance::getAudio(float* buffer, unsigned int samples, unsign
 
 bool ADPCMInstance::hasEnded()
 {
-    if (!(mFlags & AudioSourceInstance::LOOPING) && offset >= adpcm->samples)
+    if (!(flags & Flags::Looping) && offset >= adpcm->samples)
         return true;
     return false;
 }
 
 ADPCM::ADPCM(std::ifstream&& file, uint32_t _blocks, uint32_t _block_size, uint32_t _loop_start, uint32_t _channels, float _sample_rate)
-    : samples(_blocks * _block_size), loop_start(_loop_start), block_size(_block_size)
+    : lotus::AudioSource(_channels, _sample_rate), samples(_blocks * _block_size), loop_start(_loop_start), block_size(_block_size)
 {
-    mChannels = _channels;
-    mBaseSamplerate = _sample_rate;
-
     std::vector<int> decoder_state;
-    decoder_state.resize(mChannels * 2);
+    decoder_state.resize(channels * 2);
 
-    data.resize(mChannels);
+    data.resize(channels);
     for (auto& channel_data : data)
     {
         channel_data.reserve(samples);
     }
 
     std::vector<std::byte> block;
-    block.resize((1 + block_size / 2) * mChannels);
+    block.resize((1 + block_size / 2) * channels);
     while (file.good())
     {
-        file.read((char*)block.data(), (1 + block_size / 2) * mChannels);
+        file.read((char*)block.data(), (1 + block_size / 2) * channels);
         std::byte* compressed_block_start = block.data();
-        for (size_t channel = 0; channel < mChannels; channel++)
+        for (size_t channel = 0; channel < channels; channel++)
         {
             int base_index = channel * (1 + block_size / 2);
             int scale = 0x0C - std::to_integer<int>((compressed_block_start[base_index] & std::byte{0b1111}));
@@ -120,4 +116,4 @@ ADPCM::ADPCM(std::ifstream&& file, uint32_t _blocks, uint32_t _block_size, uint3
     }
 }
 
-SoLoud::AudioSourceInstance* ADPCM::createInstance() { return new ADPCMInstance(this); }
+std::unique_ptr<lotus::AudioInstance> ADPCM::CreateInstance() { return std::make_unique<ADPCMInstance>(this); }

@@ -37,7 +37,7 @@ lotus::Task<> ModernThirdPersonInputComponent::tick(lotus::time_point time, lotu
         auto pos = actor.getPos();
         auto width = 0.3f;
 
-        auto new_pos = pos + (glm::length(offset))*glm::normalize(offset);
+        auto new_pos = pos + (glm::length(offset)) * glm::normalize(offset);
         auto step_task = engine->renderer->raytrace_queryer->query(lotus::RaytraceQueryer::ObjectFlags::LevelCollision, pos + step_height,
                                                                    glm::normalize(offset), 0.f, glm::length(offset) + width);
         auto pos_task = engine->renderer->raytrace_queryer->query(lotus::RaytraceQueryer::ObjectFlags::LevelCollision, new_pos + step_height,
@@ -95,9 +95,9 @@ lotus::Task<> ModernThirdPersonInputComponent::tick(lotus::time_point time, lotu
 
 bool ModernThirdPersonInputComponent::handleInput(lotus::Input* input, const SDL_Event& event)
 {
-    if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
+    if (event.type == SDL_EVENT_KEY_DOWN && event.key.repeat == 0)
     {
-        switch (event.key.keysym.scancode)
+        switch (event.key.scancode)
         {
         case SDL_SCANCODE_W:
             if (moving.x == 0)
@@ -127,9 +127,9 @@ bool ModernThirdPersonInputComponent::handleInput(lotus::Input* input, const SDL
             break;
         }
     }
-    else if (event.type == SDL_KEYUP && event.key.repeat == 0)
+    else if (event.type == SDL_EVENT_KEY_UP && event.key.repeat == 0)
     {
-        switch (event.key.keysym.scancode)
+        switch (event.key.scancode)
         {
         case SDL_SCANCODE_W:
             if (moving.x == 0)

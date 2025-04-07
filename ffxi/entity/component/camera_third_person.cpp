@@ -37,7 +37,7 @@ lotus::Task<> CameraThirdPersonComponent::tick(lotus::time_point time, lotus::du
 
 bool CameraThirdPersonComponent::handleInput(lotus::Input* input, const SDL_Event& event)
 {
-    if (event.type == SDL_MOUSEMOTION)
+    if (event.type == SDL_EVENT_MOUSE_MOTION)
     {
         if (look == Look::LookCamera)
         {
@@ -53,31 +53,31 @@ bool CameraThirdPersonComponent::handleInput(lotus::Input* input, const SDL_Even
             return true;
         }
     }
-    else if (event.type == SDL_MOUSEBUTTONDOWN)
+    else if (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
     {
         if (event.button.button == SDL_BUTTON_RIGHT || event.button.button == SDL_BUTTON_LEFT)
         {
             auto window = input->GetWindow();
-            SDL_ShowCursor(SDL_FALSE);
-            SDL_SetWindowGrab(window, SDL_TRUE);
-            SDL_SetRelativeMouseMode(SDL_TRUE);
+            SDL_HideCursor();
+            SDL_SetWindowMouseGrab(window, true);
+            SDL_SetWindowRelativeMouseMode(window, true);
             look = event.button.button == SDL_BUTTON_LEFT ? Look::LookCamera : right_click;
             look_pos = {event.button.x, event.button.y};
         }
     }
-    else if (event.type == SDL_MOUSEBUTTONUP)
+    else if (event.type == SDL_EVENT_MOUSE_BUTTON_UP)
     {
         if (event.button.button == SDL_BUTTON_RIGHT || event.button.button == SDL_BUTTON_LEFT)
         {
             auto window = input->GetWindow();
-            SDL_ShowCursor(SDL_TRUE);
-            SDL_SetWindowGrab(window, SDL_FALSE);
-            SDL_SetRelativeMouseMode(SDL_FALSE);
+            SDL_ShowCursor();
+            SDL_SetWindowMouseGrab(window, false);
+            SDL_SetWindowRelativeMouseMode(window, false);
             look = Look::NoLook;
             SDL_WarpMouseInWindow(window, look_pos.x, look_pos.y);
         }
     }
-    else if (event.type == SDL_MOUSEWHEEL)
+    else if (event.type == SDL_EVENT_MOUSE_WHEEL)
     {
         if (event.wheel.y != 0)
         {

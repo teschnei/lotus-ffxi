@@ -4,10 +4,7 @@ module;
 #include <filesystem>
 #include <format>
 #include <fstream>
-#include <optional>
 #include <unordered_map>
-#define SOLOUD_NO_ASSERTS
-#include <soloud.h>
 
 export module ffxi:audio;
 
@@ -23,18 +20,18 @@ export class Audio
 {
 public:
     Audio(lotus::Engine* _engine);
-    std::optional<lotus::AudioEngine::AudioInstance> playSound(uint32_t id);
+    std::unique_ptr<lotus::AudioInstance> playSound(uint32_t id);
     void setMusic(uint32_t id, uint8_t type);
 
 private:
-    std::unique_ptr<SoLoud::AudioSource> loadSound(uint32_t id);
-    std::unique_ptr<SoLoud::AudioSource> loadMusic(uint32_t id);
-    std::unique_ptr<SoLoud::AudioSource> loadAudioSource(std::filesystem::path);
+    std::unique_ptr<lotus::AudioSource> loadSound(uint32_t id);
+    std::unique_ptr<lotus::AudioSource> loadMusic(uint32_t id);
+    std::unique_ptr<lotus::AudioSource> loadAudioSource(std::filesystem::path);
 
     std::array<std::filesystem::path, 16> sound_paths;
-    std::array<std::unique_ptr<SoLoud::AudioSource>, 5> bgm;
-    std::unordered_map<uint32_t, std::unique_ptr<SoLoud::AudioSource>> sounds;
-    std::optional<lotus::AudioEngine::AudioInstance> bgm_instance;
+    std::array<std::unique_ptr<lotus::AudioSource>, 5> bgm;
+    std::unordered_map<uint32_t, std::unique_ptr<lotus::AudioSource>> sounds;
+    std::unique_ptr<lotus::AudioInstance> bgm_instance;
     lotus::Engine* engine;
 };
 } // namespace FFXI
@@ -91,7 +88,7 @@ FFXI::Audio::Audio(lotus::Engine* _engine) : engine(_engine)
     }
 }
 
-std::optional<lotus::AudioEngine::AudioInstance> FFXI::Audio::playSound(uint32_t id)
+std::unique_ptr<lotus::AudioInstance> FFXI::Audio::playSound(uint32_t id)
 {
     if (!sounds.contains(id))
     {
@@ -115,11 +112,11 @@ void FFXI::Audio::setMusic(uint32_t id, uint8_t type)
 
         // TODO: check if this is the current music to play
         // (day/night/battle/party/mount)
-        bgm_instance = engine->audio->playBGM(*bgm[type]);
+        bgm_instance = engine->audio->playMusic(*bgm[type]);
     }
 }
 
-std::unique_ptr<SoLoud::AudioSource> FFXI::Audio::loadSound(uint32_t id)
+std::unique_ptr<lotus::AudioSource> FFXI::Audio::loadSound(uint32_t id)
 {
     for (const auto& path : sound_paths)
     {
@@ -131,7 +128,7 @@ std::unique_ptr<SoLoud::AudioSource> FFXI::Audio::loadSound(uint32_t id)
     throw std::runtime_error(std::format("sound not found: {}", id));
 }
 
-std::unique_ptr<SoLoud::AudioSource> FFXI::Audio::loadMusic(uint32_t id)
+std::unique_ptr<lotus::AudioSource> FFXI::Audio::loadMusic(uint32_t id)
 {
     for (const auto& path : sound_paths)
     {
@@ -143,7 +140,7 @@ std::unique_ptr<SoLoud::AudioSource> FFXI::Audio::loadMusic(uint32_t id)
     throw std::runtime_error(std::format("music not found: {}", id));
 }
 
-std::unique_ptr<SoLoud::AudioSource> FFXI::Audio::loadAudioSource(std::filesystem::path path)
+std::unique_ptr<lotus::AudioSource> FFXI::Audio::loadAudioSource(std::filesystem::path path)
 {
     auto file = std::ifstream{path, std::ios::binary};
 

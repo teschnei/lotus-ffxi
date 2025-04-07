@@ -76,9 +76,9 @@ lotus::Task<> ClassicThirdPersonInputComponent::tick(lotus::time_point time, lot
 
 bool ClassicThirdPersonInputComponent::handleInput(lotus::Input* input, const SDL_Event& event)
 {
-    if (event.type == SDL_KEYDOWN && event.key.repeat == 0)
+    if (event.type == SDL_EVENT_KEY_DOWN && event.key.repeat == 0)
     {
-        switch (event.key.keysym.scancode)
+        switch (event.key.scancode)
         {
         case SDL_SCANCODE_W:
             if (moving.x == 0)
@@ -108,9 +108,9 @@ bool ClassicThirdPersonInputComponent::handleInput(lotus::Input* input, const SD
             break;
         }
     }
-    else if (event.type == SDL_KEYUP && event.key.repeat == 0)
+    else if (event.type == SDL_EVENT_KEY_UP && event.key.repeat == 0)
     {
-        switch (event.key.keysym.scancode)
+        switch (event.key.scancode)
         {
         case SDL_SCANCODE_W:
             if (moving.x == 0)
