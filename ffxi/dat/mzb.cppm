@@ -16,7 +16,7 @@ import :dat;
 import :dat.key_tables;
 import glm;
 import lotus;
-import vulkan_hpp;
+import vulkan;
 
 namespace FFXI
 {
@@ -409,10 +409,7 @@ lotus::Task<> MZB::LoadWaterModel(std::shared_ptr<lotus::Model> model, lotus::En
     model->rendered = false;
     auto mesh = std::make_unique<lotus::Mesh>();
 
-    std::shared_ptr<lotus::Buffer> material_buffer = engine->renderer->gpu->memory_manager->GetBuffer(
-        lotus::Material::getMaterialBufferSize(engine),
-        vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eShaderDeviceAddress,
-        vk::MemoryPropertyFlagBits::eDeviceLocal);
+    auto material_buffer = lotus::Material::getNewMaterialBuffer(engine, 1);
     std::shared_ptr<lotus::Texture> texture = co_await lotus::Texture::LoadTexture("water", LoadWaterTexture, engine);
     mesh->material = co_await lotus::Material::make_material(engine, material_buffer, 0, texture);
 

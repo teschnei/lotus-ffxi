@@ -10,7 +10,7 @@ module ffxi:dat.os2;
 
 import :dat;
 import glm;
-import vulkan_hpp;
+import vulkan;
 
 namespace FFXI
 {

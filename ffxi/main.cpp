@@ -3,7 +3,7 @@
 
 import ffxi;
 import lotus;
-import vulkan_hpp;
+import vulkan;
 
 int main(int argc, char* argv[])
 {

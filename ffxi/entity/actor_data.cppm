@@ -20,16 +20,16 @@ struct PCDatIDs
 // TODO: according to my own notes, there should be 64 slots for "motion", then another 64 and another 64 after that for
 // more battle animations
 //  then there's 32 dats of various animations, repeated until it hits the next skeleton id
-static std::array PCSkeletonIDs{PCDatIDs{.skel = 7072, .motion = 9672, .motion_dw_l = 40431, .motion_dw_r = 40815},
-                                PCDatIDs{.skel = 10248, .motion = 12848, .motion_dw_l = 41711, .motion_dw_r = 42095},
-                                PCDatIDs{.skel = 13424, .motion = 16024, .motion_dw_l = 42991, .motion_dw_r = 43375},
-                                PCDatIDs{.skel = 16600, .motion = 19200, .motion_dw_l = 44271, .motion_dw_r = 44655},
-                                PCDatIDs{.skel = 19776, .motion = 22376, .motion_dw_l = 45551, .motion_dw_r = 45935},
-                                PCDatIDs{.skel = 19776, .motion = 22376, .motion_dw_l = 45551, .motion_dw_r = 45935},
-                                PCDatIDs{.skel = 23176, .motion = 25776, .motion_dw_l = 46831, .motion_dw_r = 47215},
-                                PCDatIDs{.skel = 26352, .motion = 28952, .motion_dw_l = 48111, .motion_dw_r = 48495}};
+std::array PCSkeletonIDs{PCDatIDs{.skel = 7072, .motion = 9672, .motion_dw_l = 40431, .motion_dw_r = 40815},
+                         PCDatIDs{.skel = 10248, .motion = 12848, .motion_dw_l = 41711, .motion_dw_r = 42095},
+                         PCDatIDs{.skel = 13424, .motion = 16024, .motion_dw_l = 42991, .motion_dw_r = 43375},
+                         PCDatIDs{.skel = 16600, .motion = 19200, .motion_dw_l = 44271, .motion_dw_r = 44655},
+                         PCDatIDs{.skel = 19776, .motion = 22376, .motion_dw_l = 45551, .motion_dw_r = 45935},
+                         PCDatIDs{.skel = 19776, .motion = 22376, .motion_dw_l = 45551, .motion_dw_r = 45935},
+                         PCDatIDs{.skel = 23176, .motion = 25776, .motion_dw_l = 46831, .motion_dw_r = 47215},
+                         PCDatIDs{.skel = 26352, .motion = 28952, .motion_dw_l = 48111, .motion_dw_r = 48495}};
 
-static std::array PCModelIDs{
+std::array PCModelIDs{
     std::array{std::map<uint16_t, size_t>{{0, 7080}, {32, 0}},
                std::map<uint16_t, size_t>{{0, 7112}, {256, 63323}, {320, 71247}, {576, 98787}, {608, 102961}, {672, 0}},
                std::map<uint16_t, size_t>{{0, 7368}, {256, 63387}, {320, 71503}, {576, 98819}, {608, 103025}, {672, 0}},

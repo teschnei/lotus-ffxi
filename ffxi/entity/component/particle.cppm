@@ -4,6 +4,7 @@ module;
 #include <cmath>
 #include <coroutine>
 #include <map>
+#include <memory>
 
 module ffxi:entity.component.particle;
 

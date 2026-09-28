@@ -7,6 +7,7 @@ module;
 #include <latch>
 #include <memory>
 #include <numeric>
+#include <span>
 #include <string>
 #include <vector>
 
@@ -15,7 +16,7 @@ module ffxi:dat.d3m;
 import :dat;
 import glm;
 import lotus;
-import vulkan_hpp;
+import vulkan;
 
 namespace FFXI
 {
@@ -52,8 +53,11 @@ public:
     static lotus::Task<> LoadD3M(std::shared_ptr<lotus::Model>, lotus::Engine*, D3M* d3m);
     static lotus::Task<> LoadD3A(std::shared_ptr<lotus::Model>, lotus::Engine*, D3A* d3a);
     static lotus::Task<> LoadModelRing(std::shared_ptr<lotus::Model>, lotus::Engine*, std::vector<D3M::Vertex>&& vertices, std::vector<uint16_t>&& indices);
+    static void initializeSBTEntry() { sbtEntry = lotus::Renderer::insertSBTEntry("raytrace_d3m.spv", "ClosestHit", "AnyHit", {}, "AnyHit", {}); }
+    static std::uint32_t getSBTEntry() { return sbtEntry; }
 
 private:
+    static inline std::uint32_t sbtEntry;
     static lotus::Task<> InitPipeline(lotus::Engine*);
     static inline vk::Pipeline pipeline_add;
     static inline vk::Pipeline pipeline_blend;
@@ -189,10 +193,7 @@ lotus::Task<> D3MLoader::LoadModelAABB(std::shared_ptr<lotus::Model> model, lotu
     auto mesh = std::make_unique<lotus::Mesh>();
     mesh->has_transparency = true;
 
-    std::shared_ptr<lotus::Buffer> material_buffer = engine->renderer->gpu->memory_manager->GetBuffer(
-        lotus::Material::getMaterialBufferSize(engine),
-        vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eShaderDeviceAddress,
-        vk::MemoryPropertyFlagBits::eDeviceLocal);
+    auto material_buffer = lotus::Material::getNewMaterialBuffer(engine, 1);
     if (!texture)
         texture = blank_texture;
     mesh->material = co_await lotus::Material::make_material(engine, material_buffer, 0, texture);
@@ -236,10 +237,7 @@ lotus::Task<> D3MLoader::LoadModelTriangle(std::shared_ptr<lotus::Model> model, 
     auto mesh = std::make_unique<lotus::Mesh>();
     mesh->has_transparency = true;
 
-    std::shared_ptr<lotus::Buffer> material_buffer = engine->renderer->gpu->memory_manager->GetBuffer(
-        lotus::Material::getMaterialBufferSize(engine),
-        vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eShaderDeviceAddress,
-        vk::MemoryPropertyFlagBits::eDeviceLocal);
+    auto material_buffer = lotus::Material::getNewMaterialBuffer(engine, 1);
     if (!texture)
         texture = blank_texture;
     mesh->material = co_await lotus::Material::make_material(engine, material_buffer, 0, texture);

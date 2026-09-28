@@ -13,7 +13,7 @@ import :entity.component.actor_skeleton;
 import :entity.component.scheduler;
 import glm;
 import lotus;
-import vulkan_hpp;
+import vulkan;
 
 ParticleTester::ParticleTester(lotus::Entity* _entity, lotus::Engine* _engine, FFXI::ActorSkeletonComponent& _actor)
     : Component(_entity, _engine), actor(_actor)

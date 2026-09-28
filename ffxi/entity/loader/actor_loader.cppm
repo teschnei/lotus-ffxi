@@ -16,14 +16,17 @@ import :dat.os2;
 import :entity.actor;
 import lotus;
 import glm;
-import vulkan_hpp;
+import vulkan;
 
 class FFXIActorLoader
 {
 public:
     static lotus::Task<> LoadModel(std::shared_ptr<lotus::Model>, lotus::Engine* engine, std::span<FFXI::OS2* const> os2s);
+    static void initializeSBTEntry() { sbtEntry = lotus::Renderer::insertSBTEntry("raytrace_sk2.spv", "ClosestHit", "AnyHit", {}, "AnyHit", {}); }
+    static std::uint32_t getSBTEntry() { return sbtEntry; }
 
 private:
+    static inline std::uint32_t sbtEntry;
     static void InitPipeline(lotus::Engine*);
     static inline vk::Pipeline pipeline;
     static inline vk::Pipeline pipeline_shadowmap;
@@ -94,11 +97,8 @@ lotus::Task<> FFXIActorLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
     {
         if (os2->meshes.size() > 0)
         {
-            std::shared_ptr<lotus::Buffer> material_buffer = engine->renderer->gpu->memory_manager->GetBuffer(
-                lotus::Material::getMaterialBufferSize(engine) * os2->meshes.size(),
-                vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eShaderDeviceAddress,
-                vk::MemoryPropertyFlagBits::eDeviceLocal);
-            uint32_t material_buffer_offset = 0;
+            auto material_buffer = lotus::Material::getNewMaterialBuffer(engine, os2->meshes.size());
+            uint32_t material_buffer_index = 0;
             for (const auto& os2_mesh : os2->meshes)
             {
                 auto mesh = std::make_unique<lotus::Mesh>();
@@ -114,8 +114,8 @@ lotus::Task<> FFXIActorLoader::LoadModel(std::shared_ptr<lotus::Model> model, lo
                 //  observed values: intensity 1 + exponent 40, intensity 4 + exponent 32
                 float ior = os2_mesh.specular_intensity == 0 ? 0 : os2_mesh.specular_intensity;
                 material_map.insert(std::make_pair(
-                    mesh.get(), lotus::Material::make_material(engine, material_buffer, material_buffer_offset, texture, 0, glm::vec2(roughness), ior)));
-                material_buffer_offset += lotus::Material::getMaterialBufferSize(engine);
+                    mesh.get(), lotus::Material::make_material(engine, material_buffer, material_buffer_index, texture, 0, glm::vec2(roughness), ior)));
+                material_buffer_index++;
 
                 int passes = os2->mirror ? 2 : 1;
                 for (int i = 0; i < passes; ++i)

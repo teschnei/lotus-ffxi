@@ -14,7 +14,7 @@ module ffxi:dat.dxt3;
 import :dat;
 import glm;
 import lotus;
-import vulkan_hpp;
+import vulkan;
 
 namespace FFXI
 {

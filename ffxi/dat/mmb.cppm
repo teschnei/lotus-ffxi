@@ -19,7 +19,7 @@ import :dat;
 import :dat.key_tables;
 import glm;
 import lotus;
-import vulkan_hpp;
+import vulkan;
 
 namespace FFXI
 {
@@ -56,8 +56,11 @@ class MMBLoader
 {
 public:
     static lotus::Task<> LoadModel(std::shared_ptr<lotus::Model>, lotus::Engine* engine, MMB* mmb);
+    static void initializeSBTEntry() { sbtEntry = lotus::Renderer::insertSBTEntry("raytrace_mmb.spv", "ClosestHit", "AnyHit", {}, "AnyHit", {}); }
+    static std::uint32_t getSBTEntry() { return sbtEntry; }
 
 private:
+    static inline std::uint32_t sbtEntry;
     static void InitPipeline(lotus::Engine*);
     static inline vk::Pipeline pipeline;
     static inline vk::Pipeline pipeline_blend;
@@ -479,12 +482,9 @@ lotus::Task<> MMBLoader::LoadModel(std::shared_ptr<lotus::Model> model, lotus::E
     std::shared_ptr<lotus::Buffer> material_buffer;
     if (mmb->meshes.size() > 0)
     {
-        material_buffer = engine->renderer->gpu->memory_manager->GetBuffer(lotus::Material::getMaterialBufferSize(engine) * mmb->meshes.size(),
-                                                                           vk::BufferUsageFlagBits::eUniformBuffer | vk::BufferUsageFlagBits::eTransferDst |
-                                                                               vk::BufferUsageFlagBits::eShaderDeviceAddress,
-                                                                           vk::MemoryPropertyFlagBits::eDeviceLocal);
+        material_buffer = lotus::Material::getNewMaterialBuffer(engine, mmb->meshes.size());
     }
-    uint32_t material_buffer_offset = 0;
+    uint32_t material_index = 0;
 
     for (const auto& mmb_mesh : mmb->meshes)
     {
@@ -492,8 +492,8 @@ lotus::Task<> MMBLoader::LoadModel(std::shared_ptr<lotus::Model> model, lotus::E
         std::shared_ptr<lotus::Texture> texture = lotus::Texture::getTexture(mmb_mesh.textureName);
         if (!texture)
             texture = lotus::Texture::getTexture("default");
-        material_map.insert(std::make_pair(mesh.get(), lotus::Material::make_material(engine, material_buffer, material_buffer_offset, texture, 1)));
-        material_buffer_offset += lotus::Material::getMaterialBufferSize(engine);
+        material_map.insert(std::make_pair(mesh.get(), lotus::Material::make_material(engine, material_buffer, material_index, texture, 1)));
+        material_index++;
 
         mesh->setVertexInputAttributeDescription(getMMBAttributeDescriptions(), sizeof(FFXI::MMB::Vertex));
         mesh->setVertexInputBindingDescription(getMMBBindingDescriptions());

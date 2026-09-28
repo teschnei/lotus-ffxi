@@ -3,6 +3,7 @@ module;
 #include <lotus/renderer/sdl_inc.h>
 #include <memory>
 #include <unordered_map>
+#include <vector>
 
 module ffxi:test.particle_tester;
 

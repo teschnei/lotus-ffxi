@@ -10,7 +10,7 @@ module ffxi:test.loader;
 
 import glm;
 import lotus;
-import vulkan_hpp;
+import vulkan;
 
 class TestTextureLoader
 {

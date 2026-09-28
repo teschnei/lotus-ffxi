@@ -161,7 +161,7 @@ lotus::Task<> GeneratorComponent::tick(lotus::time_point time, lotus::duration d
             {
                 if (model && model->meshes[0]->pipelines.size() > 2)
                 {
-                    auto e = co_await engine->game->scene->AddEntity<FFXIParticle>(entity->getSharedPtr(), generator, model, index);
+                    // auto e = co_await engine->game->scene->AddEntity<FFXIParticle>(entity->getSharedPtr(), generator, model, index);
                 }
                 if (sound)
                 {

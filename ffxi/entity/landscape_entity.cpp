@@ -24,7 +24,7 @@ import :game;
 import :vana_time;
 import glm;
 import lotus;
-import vulkan_hpp;
+import vulkan;
 
 lotus::Task<std::pair<std::shared_ptr<lotus::Entity>, std::tuple<>>> FFXILandscapeEntity::Init(lotus::Engine* engine, lotus::Scene* scene, size_t zoneid)
 {
@@ -275,9 +275,10 @@ lotus::WorkerTask<> FFXILandscapeEntity::Load(std::shared_ptr<lotus::Entity> ent
         auto models_raster = engine->config->renderer.RasterizationEnabled()
                                  ? co_await lotus::Component::InstancedRasterComponent::make_component(entity.get(), engine, *models_c)
                                  : nullptr;
-        auto models_raytrace = engine->config->renderer.RaytraceEnabled()
-                                   ? co_await lotus::Component::InstancedRaytraceComponent::make_component(entity.get(), engine, *models_c)
-                                   : nullptr;
+        auto models_raytrace =
+            engine->config->renderer.RaytraceEnabled()
+                ? co_await lotus::Component::InstancedRaytraceComponent::make_component(entity.get(), engine, *models_c, FFXI::MMBLoader::getSBTEntry())
+                : nullptr;
         auto coll = co_await lotus::Component::StaticCollisionComponent::make_component(entity.get(), engine, collision_models);
         auto land_comp = co_await FFXI::LandscapeComponent::make_component(entity.get(), engine, std::move(weather_light_map));
         scene->AddComponents(std::move(models_c), std::move(models_raster), std::move(models_raytrace), std::move(coll), std::move(land_comp));

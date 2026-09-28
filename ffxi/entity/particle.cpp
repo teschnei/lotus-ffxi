@@ -7,6 +7,7 @@ module;
 
 module ffxi;
 
+import :dat.d3m;
 import :entity.particle;
 
 import :entity.component.particle;
@@ -29,8 +30,9 @@ lotus::WorkerTask<> FFXIParticle::Load(std::shared_ptr<lotus::Entity> entity, lo
     auto fpc = co_await FFXI::ParticleComponent::make_component(entity.get(), engine, *pc, *p, parent, generator, index);
     auto r = engine->config->renderer.RasterizationEnabled() ? co_await lotus::Component::ParticleRasterComponent::make_component(entity.get(), engine, *pc, *p)
                                                              : nullptr;
-    auto rt = engine->config->renderer.RaytraceEnabled() ? co_await lotus::Component::ParticleRaytraceComponent::make_component(entity.get(), engine, *pc, *p)
-                                                         : nullptr;
+    auto rt = engine->config->renderer.RaytraceEnabled()
+                  ? co_await lotus::Component::ParticleRaytraceComponent::make_component(entity.get(), engine, *pc, *p, FFXI::D3MLoader::getSBTEntry())
+                  : nullptr;
 
     scene->AddComponents(std::move(p), std::move(pc), std::move(fpc), std::move(r), std::move(rt));
 }
